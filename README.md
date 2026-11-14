@@ -4,6 +4,16 @@ A Business Health Score, a 90-day plan and one five-minute mission a day for sma
 
 **Demo only:** no login and no database. `/app` opens with a sample store ("Emberline Candle Co.") seeded into your browser's localStorage. All figures are sample data and not financial advice.
 
+## Landing page
+
+`/` serves `public/landing/index.html`, a static page built with the design-taste-frontend skill (its kit files are in `public/assets`, page CSS in `public/landing/landing.css`). The live figures on it, including the "Add a sample order" widget, come from `src/landing/proof.ts`, which bundles the app's own engine (`src/lib`) into `public/landing/proof.js`:
+
+```bash
+npm run build:landing
+```
+
+`npm run build` runs it first. The skill's finish gate passed on the final page (one waiver, in `.taste-skill/waivers.json`: the "sample data" footer note the plan requires).
+
 ## Run it
 
 ```bash

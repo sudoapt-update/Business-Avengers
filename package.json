@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "format": "prettier --write \"src/**/*.{ts,tsx,css}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
+    "build:landing": "esbuild src/landing/proof.ts --bundle --format=esm --minify --target=es2020 --outfile=public/landing/proof.js",
+    "prebuild": "npm run build:landing"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.8.0",
@@ -22,6 +24,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "esbuild": "^0.25.12",
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
     "prettier": "^3.10.1",

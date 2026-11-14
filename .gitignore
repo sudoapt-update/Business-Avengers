@@ -41,3 +41,9 @@ yarn-error.log*
 next-env.d.ts
 
 !.env.example
+
+# design-taste-frontend working files
+.taste-skill/chrome-*
+shots/
+.taste-skill/gate/
+.taste-skill/c.json

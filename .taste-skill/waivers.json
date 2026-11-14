@@ -1,0 +1,7 @@
+[
+  {
+    "check": "sample-label",
+    "target": "div.footer__legal > span",
+    "reason": "The client's plan (docs/PLAN.md, Honesty and labelling) requires the footer line 'Business Cup 2.0 demo, sample data, not financial or tax advice'; the demo really runs on sample data, so the label is a required disclosure, not an apology."
+  }
+]

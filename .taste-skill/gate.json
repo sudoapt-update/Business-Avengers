@@ -1,0 +1,482 @@
+{
+ "start": "2026-11-14T19:34:59.649Z",
+ "round": 1,
+ "idle": 0,
+ "errors": 0,
+ "status": "pass",
+ "history": [
+  {
+   "at": "2026-11-14T19:47:22.619Z",
+   "mode": "manual",
+   "status": "fail",
+   "fails": 18,
+   "round": 1,
+   "reused": false,
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-14T20:07:26.502Z",
+   "mode": "manual",
+   "status": "pass",
+   "fails": 0,
+   "round": 1,
+   "reused": false,
+   "stopHookActive": false
+  }
+ ],
+ "max": 3,
+ "marker": {
+  "page": null,
+  "dir": "/Users/byeadeal/BUSINESS/finpath",
+  "kind": "software",
+  "start": "2026-11-14T19:34:59.649Z",
+  "by": "start.mjs",
+  "url": "http://localhost:3210/",
+  "category": "health score app for online sellers",
+  "primary": "Try the live demo"
+ },
+ "manual": true,
+ "roundKey": "757e7d900366325e:da39a3ee",
+ "roundFree": false,
+ "idleFree": false,
+ "blockKey": null,
+ "fp": "f9573cac879786f3",
+ "page": "http://localhost:3210/",
+ "found": {
+  "fails": [
+   {
+    "check": "sample-label",
+    "where": "div.wrap > div.closing__links > div.footer__legal > span \"© 2026 FinPath Business Cup 2.0 demo wit\"",
+    "msg": "a note that the page's names or figures are examples (\"sample data\"): it reads as an apology and undercuts every claim",
+    "fix": "drop the \"sample\" tags and any note that names and figures are examples: take each from the brief, or remove the claim",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "sample-label"
+    ],
+    "wheres": [
+     "div.wrap > div.closing__links > div.footer__legal > span \"© 2026 FinPath Business Cup 2.0 demo wit\""
+    ]
+   }
+  ],
+  "warns": [
+   {
+    "check": "cut-text",
+    "where": "div.ui.ui-panel > ul > li:nth-of-type(8) > span.fp-list__keep \"$20.18\"",
+    "msg": "cut 12px at the bottom by the overflow of section#score > div.wrap > div.ui.app > div.app__pane.app__pane--list: a fragment run out through its panel's edge",
+    "fix": "give the text room: no overflow clipping a line, no line past its box",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "dark-ground",
+    "where": "section#costs > div.wrap > div.grid.grid--top > div.frame.frame--split",
+    "msg": "the ground behind the UI is nearly as light as the UI on it (white on near-white)",
+    "fix": "light the ground behind the UI (a daylight data-fx-palette): at least 3:1 against the card",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "cta",
+    "where": "section#rewards \"5 minutes a day, paid in AI tokens. You \"",
+    "msg": "a section over 1.5 screens long with no link or button in it",
+    "fix": "add the action: a button in the hero, one on every priced item, one in the closing section",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "copy-actions",
+    "where": "header.nav.nav--centre > div.wrap.nav__bar > div.nav__actions > a.btn.btn--primary \"Try the live demo\"",
+    "msg": "2 labels for one target /app: \"Try the live demo\", \"Try this plan\"",
+    "fix": "few actions, one wording: at most 2 in the hero, the main action word for word in nav, hero and close",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tilt",
+    "where": "h2#leak-total-h > span.mo-w:nth-of-type(5) > span.mo-c:nth-of-type(3) > span.mo-i \"t\"",
+    "msg": "rotated -17.3° (inside a held section or scroll scene, whose motion --quick does not check)",
+    "fix": "set it straight",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "text-contrast",
+    "where": "div.at-rise.to-edge > div.ui.ui-panel > div.ui-chat__input > span.ui-chat__ph \"Ask about your numbers\"",
+    "msg": "1 line of text in drawn mocks read under 4.5:1 (1 colour pair), the worst \"Ask about your numbers\" in #7a8192 on #fafafa at 3.74:1",
+    "fix": "lift the mocks' muted text (labels, meta, initials) to 4.5:1 on their own panel, or set it larger",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "section-gaps",
+    "where": "main#top > section.hero.hero--split / section#score",
+    "msg": "179px between these sections, -40% against the median 299px",
+    "fix": "use one gap between sections (all within 25% of each other)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "section-gaps",
+    "where": "section#score / section#costs",
+    "msg": "187px between these sections, -37% against the median 299px",
+    "fix": "use one gap between sections (all within 25% of each other)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "section-gaps",
+    "where": "section#costs / section#how",
+    "msg": "393px between these sections, +31% against the median 299px",
+    "fix": "use one gap between sections (all within 25% of each other)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "section-gaps",
+    "where": "section#how / section#proof",
+    "msg": "206px between these sections, -31% against the median 299px",
+    "fix": "use one gap between sections (all within 25% of each other)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "section-gaps",
+    "where": "section#rewards / section#adviser",
+    "msg": "187px between these sections, -37% against the median 299px",
+    "fix": "use one gap between sections (all within 25% of each other)",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "section-gaps",
+    "where": "section#adviser / section#pricing",
+    "msg": "393px between these sections, +31% against the median 299px",
+    "fix": "use one gap between sections (all within 25% of each other)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "links",
+    "where": "div.wrap > div.grid.fp-plans > article.card.card--plan:nth-of-type(1) > a.btn.btn--secondary \"Try this plan\"",
+    "msg": "4 \"Try this plan\" links in 4 cards all go to /app: none says which one was chosen",
+    "fix": "let each link carry its choice (#booking?room=fjara, a preset the form reads), or name the shared target (\"Book a room\")",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "nav-labels",
+    "where": "header.nav.nav--centre > div.wrap.nav__bar > a.nav__logo \"FinPath\"",
+    "msg": "\"FinPath\" opens a section headed \"Health score for Shopify and Amazon sellers\"",
+    "fix": "name each nav link after the heading of the section it opens",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "nav-labels",
+    "where": "div.wrap.nav__bar > nav.nav__links > div.nav__item:nth-of-type(1) > a.nav__link \"Product\"",
+    "msg": "\"Product\" opens a section headed \"Your score and orders on one screen\"",
+    "fix": "name each nav link after the heading of the section it opens",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "nav-labels",
+    "where": "div.nav__menu > div.wrap.grid > div.menu-col.span-3:nth-of-type(1) > a:nth-of-type(1) \"Health ScoreOne number out of 100\"",
+    "msg": "\"Health ScoreOne number out of 100\" opens a section headed \"Your score and orders on one screen\"",
+    "fix": "name each nav link after the heading of the section it opens",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "nav-labels",
+    "where": "div.nav__menu > div.wrap.grid > div.menu-col.span-3:nth-of-type(2) > a:nth-of-type(1) \"90-day planThree phases, one target\"",
+    "msg": "\"90-day planThree phases, one target\" opens a section headed \"Raise your score in 3 steps. Each one is a screen \"",
+    "fix": "name each nav link after the heading of the section it opens",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "fade-cut",
+    "where": "div.ui.ui-panel > ul > li:nth-of-type(8) > span.fp-list__who \"Amazon\"",
+    "msg": "a line of div.ui.ui-panel fades out under its edge (\"Amazon\"): drawn at a fraction of #0b1530 on #fafafa, half-erased",
+    "fix": "fit the mock's rows inside its panel (fewer rows, a taller panel), or end the fade below the last whole row: no row half-erased",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "copy-length",
+    "where": "section#faq \"Questions\"",
+    "msg": "2 sections over 90 words a screen outside the UI mocks (\"Questions\" 136, \"Pricing. Start free; the\" 118); 64 words a screen across the page (770 words in 12 screens): a tech page says it in about 80 or fewer",
+    "fix": "cut every section to its heading, one line and the product UI: the UI says the rest; no second paragraph, no list of feature sentences",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "nav-current",
+    "where": "header.nav.nav--centre",
+    "msg": "the nav stays on screen with 5 links to the page's sections, but never marks the one you are in (no link changes as the page scrolls)",
+    "fix": "mark the link of the section on screen (a colour, a weight or a line under it) as the visitor scrolls",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "button-contrast",
+    "where": "div.hero-text.grid > div.hero__text.span-5 > div.btn-row > a.btn.btn--secondary \"See how it works\"",
+    "msg": "the button \"See how it works\" (#e4e5e8) stands only 1.21:1 off the ground around it: it reads as part of the ground, or as switched off",
+    "fix": "give the button a fill that stands at least 1.5:1 off what is around it, or an outline in the ink",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "button-contrast",
+    "where": "div.grid.grid--top > div.span-5.fp-split-text > div.btn-row > button.btn.btn--secondary \"Add a sample order\"",
+    "msg": "the button \"Add a sample order\" (#dcdfe6) stands only 1.20:1 off the ground around it: it reads as part of the ground, or as switched off (inside a held section or scroll scene, whose motion --quick does not check)",
+    "fix": "give the button a fill that stands at least 1.5:1 off what is around it, or an outline in the ink",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "button-contrast",
+    "where": "div.wrap > div.grid.fp-plans > article.card.card--plan:nth-of-type(1) > a.btn.btn--secondary \"Try this plan\"",
+    "msg": "the button \"Try this plan\" (#e4e5e8) stands only 1.14:1 off the ground around it: it reads as part of the ground, or as switched off",
+    "fix": "give the button a fill that stands at least 1.5:1 off what is around it, or an outline in the ink",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "button-contrast",
+    "where": "div.wrap > div.grid.fp-plans > article.card.card--plan:nth-of-type(3) > a.btn.btn--secondary \"Try this plan\"",
+    "msg": "the button \"Try this plan\" (#e4e5e8) stands only 1.14:1 off the ground around it: it reads as part of the ground, or as switched off",
+    "fix": "give the button a fill that stands at least 1.5:1 off what is around it, or an outline in the ink",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "button-contrast",
+    "where": "div.wrap > div.grid.fp-plans > article.card.card--plan:nth-of-type(4) > a.btn.btn--secondary \"Try this plan\"",
+    "msg": "the button \"Try this plan\" (#e4e5e8) stands only 1.14:1 off the ground around it: it reads as part of the ground, or as switched off",
+    "fix": "give the button a fill that stands at least 1.5:1 off what is around it, or an outline in the ink",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "visual-empty",
+    "where": "div.hero-text.grid > div.hero__media.span-6 > div.fp-path > svg.fp-path__dots \"drawing (svg)\"",
+    "msg": "the drawing (svg) is nearly empty at 1440px: 5 colours in its 562x612px, 95.3% one colour (a thin line drawing or a logo can be this plain: look at it)",
+    "fix": "make the visual draw at this width: a picture that loads, an effect that renders, or its still fallback; never an empty ground or frame",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "action-repeat",
+    "where": "header.nav.nav--centre > div.wrap.nav__bar > div.nav__actions > a.btn.btn--primary \"try the live demo\"",
+    "msg": "\"try the live demo\" shows 2 times on the first screen at 1440px (nav, hero): the nav's button and the hero's; nothing else on the screen may repeat it",
+    "fix": "show the action once a screen besides the nav's button: the hero's, the close's or the phone bar's, never all at once",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "section-air",
+    "where": "section#rewards / section#adviser",
+    "msg": "566px of air between the content of these two sections: 128-480px (64-600px WARN) (every gap out of the band at 1440px, top to bottom: 566px after \"5 minutes a day, pai\", 530px after \"An AI Adviser that r\") (SR-3)",
+    "fix": "keep 128-480px of air between the content of neighbouring sections (112-420px on a phone): the sections' padding (--padt, --padb)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "section-air",
+    "where": "section#adviser / section#pricing",
+    "msg": "530px of air between the content of these two sections: 128-480px (64-600px WARN) (SR-3)",
+    "fix": "keep 128-480px of air between the content of neighbouring sections (112-420px on a phone): the sections' padding (--padt, --padb)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "section-air",
+    "where": "section#rewards \"5 minutes a day, paid in AI tokens. You \"",
+    "msg": "screen group 2 of this two-screen section fills 36.4% of a screen: 40% or more (25% WARN) (SR-3)",
+    "fix": "fill the section to 55%: more content, a picture or a background layer, or merge it into the section above as its last block",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "nav",
+    "where": "header.nav.nav--centre > div.wrap.nav__bar > button.nav__toggle",
+    "msg": "the nav is lopsided: its last item ends 13px inside the content's edge (366px), while its first starts on the other edge",
+    "fix": "start the nav's first item and end its last on the content's two edges",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "cut-text",
+    "where": "div.ui.ui-panel > ul > li:nth-of-type(6) > span \"Tools and running costs\"",
+    "msg": "cut 17px at the bottom by the overflow of section#costs > div.wrap > div.grid.grid--top > div.frame.frame--split: a fragment run out through its panel's edge (and 1 more like it: \"−$3,310\")",
+    "fix": "give the text room: no overflow clipping a line, no line past its box",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "cut-text",
+    "where": "div.ui.ui-panel > ul.fp-mult > li:nth-of-type(3) > span \"Pro\"",
+    "msg": "cut 16px at the bottom by the overflow of div.wrap > div.grid > article.card.card--row:nth-of-type(3) > div.panel.fp-panel: a fragment run out through its panel's edge (and 1 more like it: \"1.5×\")",
+    "fix": "give the text room: no overflow clipping a line, no line past its box",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "cta",
+    "where": "section#how \"Raise your score in 3 steps. Each one is\"",
+    "msg": "a section over 1.5 screens long with no link or button in it",
+    "fix": "add the action: a button in the hero, one on every priced item, one in the closing section",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "proximity",
+    "where": "section#pricing > div.wrap > div.grid.grid--top > div.ui.ui-panel \"Pricing. Start free; the sample store's \"",
+    "msg": "stacked at this width, the visual starts 13px under the text and buttons above it (\"Pricing. Start free; the sampl\"): it reads glued to them",
+    "fix": "give the stacked split the section's own gap between text and visual (40px or more on a phone)",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "orphan",
+    "where": "div.grid.grid--top > div.span-5.fp-split-text > ul.fp-facts > li:nth-of-type(2) \"Starter includes 50 tokens a month, Grow\"",
+    "msg": "its last line holds only \"500\"",
+    "fix": "rebalance the text (text-wrap: pretty, or a shorter line) so the last line holds more than one short word",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "fade-cut",
+    "where": "div.ui.ui-panel > ul.fp-factors > li:nth-of-type(5) > span \"Books up to date\"",
+    "msg": "a line of div.ui.ui-panel fades out under its edge (\"Books up to date\"): drawn at a fraction of #0b1530 on #fafafa, half-erased",
+    "fix": "fit the mock's rows inside its panel (fewer rows, a taller panel), or end the fade below the last whole row: no row half-erased",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "copy-stat-strip",
+    "msg": "stat strip x1",
+    "fix": "a strip only of figures the brief gives (a price, hours, a count); otherwise put each number in the sentence it proves, or leave it out (references/copy-tells.md)",
+    "widths": [],
+    "from": "copy",
+    "where": "copy x1: \"12% / 21% / 1\"",
+    "exact": false
+   }
+  ],
+  "crashed": [],
+  "seconds": {
+   "consistency": 148,
+   "layout": 5
+  }
+ },
+ "open": [],
+ "waived": [
+  {
+   "check": "sample-label",
+   "where": "div.wrap > div.closing__links > div.footer__legal > span \"© 2026 FinPath Business Cup 2.0 demo wit\"",
+   "msg": "a note that the page's names or figures are examples (\"sample data\"): it reads as an apology and undercuts every claim",
+   "fix": "drop the \"sample\" tags and any note that names and figures are examples: take each from the brief, or remove the claim",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "sample-label"
+   ],
+   "wheres": [
+    "div.wrap > div.closing__links > div.footer__legal > span \"© 2026 FinPath Business Cup 2.0 demo wit\""
+   ],
+   "reason": "The client's plan (docs/PLAN.md, Honesty and labelling) requires the footer line 'Business Cup 2.0 demo, sample data, not financial or tax advice'; the demo really runs on sample data, so the label is a required disclosure, not an apology."
+  }
+ ],
+ "warnCount": 38,
+ "at": "2026-11-14T20:07:26.504Z"
+}
