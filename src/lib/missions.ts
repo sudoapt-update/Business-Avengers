@@ -7,7 +7,8 @@ export type MissionId =
   | "add-expenses"
   | "review-leaks"
   | "apply-saving"
-  | "check-runway";
+  | "check-runway"
+  | "ask-adviser";
 
 export interface MissionDef {
   id: MissionId;
@@ -84,13 +85,23 @@ export const MISSIONS: Record<MissionId, MissionDef> = {
     cta: "Check runway",
     minutes: 1,
   },
+  "ask-adviser": {
+    id: "ask-adviser",
+    title: "Ask the AI Adviser one question",
+    why: "Earns back more tokens than the question costs.",
+    tokens: 10,
+    xp: 25,
+    difficulty: "Easy",
+    cta: "Ask a question",
+    minutes: 2,
+  },
 };
 
 const ROTATION: MissionId[][] = [
-  ["review-fees", "simulate-order", "add-expenses", "check-runway", "review-leaks"],
-  ["review-leaks", "simulate-order", "check-runway", "add-expenses", "review-fees"],
-  ["apply-saving", "review-fees", "simulate-order", "add-expenses", "check-runway"],
-  ["check-runway", "add-expenses", "review-leaks", "simulate-order", "review-fees"],
+  ["review-fees", "simulate-order", "add-expenses", "ask-adviser", "check-runway"],
+  ["ask-adviser", "review-leaks", "simulate-order", "check-runway", "add-expenses"],
+  ["apply-saving", "review-fees", "simulate-order", "add-expenses", "ask-adviser"],
+  ["check-runway", "ask-adviser", "add-expenses", "review-leaks", "simulate-order"],
 ];
 
 /** The day's missions. Day one of the demo always opens with the same three. */

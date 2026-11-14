@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Award, Check, Clock, Flame, Lock } from "lucide-react";
 import { useStore } from "@/store/store";
 import { useDerived } from "@/store/derived";
@@ -10,6 +11,7 @@ import { Button, Card, CardHeader, Caps, Pill, SegmentBar } from "@/components/u
 
 export function useMissionAction() {
   const d = useDerived();
+  const router = useRouter();
   const { openSheet, simulateOrder } = useStore.getState();
   return (id: MissionId) => {
     const largest = d.leaks.find((l) => !l.applied);
@@ -27,6 +29,8 @@ export function useMissionAction() {
         simulateOrder();
         document.getElementById("order-feed")?.scrollIntoView({ behavior: "smooth", block: "center" });
         return;
+      case "ask-adviser":
+        return router.push("/app/adviser");
     }
   };
 }

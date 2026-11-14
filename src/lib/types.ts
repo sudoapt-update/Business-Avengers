@@ -117,4 +117,17 @@ export interface DemoData {
   reviews: { day: Day; missionId: string }[];
   badges: BadgeEntry[];
   orderSeq: number;
+  /** AI Adviser conversation, oldest first. */
+  chat?: ChatEntry[];
+}
+
+export interface ChatEntry {
+  id: string;
+  role: "user" | "assistant";
+  text: string;
+  day: Day;
+  /** Tokens spent on a question. */
+  cost?: number;
+  /** Who wrote an answer: the model, or the calculation from the store's numbers. */
+  source?: "model" | "fallback";
 }

@@ -1,11 +1,13 @@
-import { ComingNext } from "@/components/app/ComingNext";
+import type { Metadata } from "next";
+import { Ready } from "@/components/app/Ready";
+import { AdviserView } from "@/components/adviser/AdviserView";
 
-export default function Page() {
+export const metadata: Metadata = { title: "AI Adviser" };
+
+export default function AdviserPage() {
   return (
-    <ComingNext
-      title="AI Adviser"
-      sub="Ask about your numbers. Each question costs 5 tokens."
-      note="The adviser chat is next in the build."
-    />
+    <Ready>
+      <AdviserView />
+    </Ready>
   );
 }

@@ -21,6 +21,14 @@ Open http://localhost:3000/app.
 - `src/store/store.ts` holds the one reward function (`grantReward`). It updates tokens, XP, streak and badges and shows the toast, so every mission pays out the same way.
 - Missions complete when you do the work: syncing an order, adding three expenses, or reviewing a fee breakdown.
 
+## AI Adviser
+
+`POST /api/adviser` (`src/app/api/adviser/route.ts`) sends the question and a compact summary of the store's numbers to Claude (`claude-opus-5-5`, low effort, with server-side refusal fallbacks), and the answer cites those numbers. Each question costs 5 tokens.
+
+- Set `ANTHROPIC_API_KEY` in `.env.local` locally, or in the host's environment variables (see `.env.example`). The key stays on the server.
+- The demo is public, so the route limits each IP to 8 questions per 10 minutes and caps total calls per day (`ADVISER_DAILY_LIMIT`, default 400). The counters are in memory per server instance, so also set a monthly spend limit on the key in the Claude Console.
+- If the key is missing, a limit is hit, or the call fails or is declined, the browser answers from the store's own numbers (`fallbackAnswer` in `src/lib/adviser.ts`). Visitors never see an error; the answer is labelled "Calculated from your numbers" instead of "Claude".
+
 ## Demo controls
 
 Open the avatar menu to find **Advance to tomorrow** (to see streaks), **View as tier** (real limits per plan) and **Reset demo**.

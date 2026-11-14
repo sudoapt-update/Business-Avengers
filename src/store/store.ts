@@ -18,7 +18,8 @@ import {
 } from "@/lib/missions";
 import { PRODUCTS, buildOrder, createSeed, ordersForDay, pickChannel, rng } from "@/lib/seed";
 import { tierInfo, tierRank } from "@/lib/tiers";
-import type { BadgeId, DemoData, Expense, Tier } from "@/lib/types";
+import type { BadgeId, ChatEntry, DemoData, Expense, Tier } from "@/lib/types";
+import { ADVISER_COST, MAX_QUESTION, buildContext, fallbackAnswer } from "@/lib/adviser";
 
 export interface Toast {
   id: number;
@@ -43,6 +44,7 @@ interface State {
   sheet: Sheet;
   lastOrderId: string | null;
   lastImpact: { orderId: string; scoreFrom: number; scoreTo: number; profit: number; cash: number } | null;
+  adviserBusy: boolean;
 
   today: () => Day;
   init: () => void;
@@ -56,6 +58,7 @@ interface State {
   deleteRow: (kind: "order" | "expense", id: string) => void;
   recountCash: (id: string, balance: number) => void;
   recountStock: (id: string, units: number) => void;
+  askAdviser: (question: string) => Promise<void>;
   markReviewed: (id: MissionId) => void;
   unlockLeak: (leakId: string) => boolean;
   applyLeak: (leakId: string) => void;
@@ -169,6 +172,7 @@ export const useStore = create<State>()(
         sheet: null,
         lastOrderId: null,
         lastImpact: null,
+        adviserBusy: false,
 
         today: () => addDays(realToday(), get().dayOffset),
 
@@ -202,7 +206,7 @@ export const useStore = create<State>()(
           });
           pushToast({
             title: "Advanced to tomorrow",
-            detail: `${overnight.length} orders synced overnight. New missions are ready.`,
+            detail: `${overnight.length} order${overnight.length === 1 ? "" : "s"} synced overnight. New missions are ready.`,
           });
         },
 
@@ -322,6 +326,41 @@ export const useStore = create<State>()(
             (d) => ({ ...d, inventory: d.inventory.map((x) => (x.id === id ? { ...x, units: n, countedAt: Date.now() } : x)) }),
             `${it.name} counted: ${n} units`,
           );
+        },
+
+        askAdviser: async (question) => {
+          const q = question.trim().slice(0, MAX_QUESTION);
+          if (!q || get().adviserBusy || !get().data) return;
+          if (!get().spendTokens(ADVISER_COST, "AI Adviser question")) return;
+
+          const today = get().today();
+          const data = get().data!;
+          const context = buildContext(data, computeMetrics(data, today, today), today);
+          const history = (data.chat ?? []).slice(-4).map(({ role, text }) => ({ role, text }));
+          const push = (entry: Omit<ChatEntry, "id" | "day">) => {
+            const d = get().data!;
+            set({ data: { ...d, chat: [...(d.chat ?? []), { ...entry, id: `c${Date.now()}${Math.random().toString(36).slice(2, 6)}`, day: today }].slice(-40) } });
+          };
+
+          push({ role: "user", text: q, cost: ADVISER_COST });
+          set({ adviserBusy: true });
+
+          let answer: string | null = null;
+          try {
+            const res = await fetch("/api/adviser", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ question: q, context, history }),
+            });
+            const json = (await res.json()) as { source?: string; answer?: string };
+            if (res.ok && json.source === "model" && json.answer) answer = json.answer;
+          } catch {
+            // Network failure: answer from the numbers below.
+          }
+
+          push(answer ? { role: "assistant", text: answer, source: "model" } : { role: "assistant", text: fallbackAnswer(q, context), source: "fallback" });
+          set({ adviserBusy: false });
+          grantReward("ask-adviser");
         },
 
         markReviewed: (id) => {
