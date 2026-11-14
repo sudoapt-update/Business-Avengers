@@ -47,3 +47,5 @@ next-env.d.ts
 shots/
 .taste-skill/gate/
 .taste-skill/c.json
+.taste-skill/gate.json
+.taste-skill/build.done.json
