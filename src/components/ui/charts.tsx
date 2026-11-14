@@ -2,7 +2,15 @@
 
 import { useId, useState } from "react";
 
-export function Sparkline({ values, tone = "good", className = "h-8 w-24" }: { values: number[]; tone?: "good" | "warn" | "bad" | "ink"; className?: string }) {
+export function Sparkline({
+  values,
+  tone = "good",
+  className = "h-8 w-24",
+}: {
+  values: number[];
+  tone?: "good" | "warn" | "bad" | "ink";
+  className?: string;
+}) {
   const w = 96;
   const h = 32;
   if (values.length < 2) return null;
@@ -11,11 +19,21 @@ export function Sparkline({ values, tone = "good", className = "h-8 w-24" }: { v
   const span = max - min || 1;
   const pts = values.map((v, i) => [(i / (values.length - 1)) * (w - 4) + 2, h - 4 - ((v - min) / span) * (h - 8)]);
   const d = pts.map((p, i) => `${i ? "L" : "M"}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(" ");
-  const color = { good: "#17b26a", warn: "#f5b70b", bad: "#f04461", ink: "#0a0a0b" }[tone];
+  const color = { good: "var(--color-good-dot)", warn: "var(--color-warn-dot)", bad: "var(--color-bad-dot)", ink: "var(--color-ink)" }[
+    tone
+  ];
   const last = pts.at(-1)!;
   return (
     <svg viewBox={`0 0 ${w} ${h}`} className={className} aria-hidden preserveAspectRatio="none">
-      <path d={d} fill="none" stroke={color} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+      <path
+        d={d}
+        fill="none"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+      />
       <circle cx={last[0]} cy={last[1]} r="2" fill={color} />
     </svg>
   );
@@ -61,37 +79,66 @@ export function ScoreChart({ values, labels, target }: { values: number[]; label
       >
         <defs>
           <linearGradient id={`${id}-l`} x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0" stopColor="#12b76a" />
-            <stop offset="1" stopColor="#2e90fa" />
+            <stop offset="0" stopColor="var(--color-brand-a)" />
+            <stop offset="1" stopColor="var(--color-brand-b)" />
           </linearGradient>
           <linearGradient id={`${id}-a`} x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stopColor="#2e90fa" stopOpacity="0.14" />
-            <stop offset="1" stopColor="#12b76a" stopOpacity="0" />
+            <stop offset="0" stopColor="var(--color-brand-b)" stopOpacity="0.14" />
+            <stop offset="1" stopColor="var(--color-brand-a)" stopOpacity="0" />
           </linearGradient>
         </defs>
         {ticks.map((t) => (
-          <line key={t} x1={padL} x2={w - 8} y1={y(t)} y2={y(t)} stroke="#ebebeb" strokeDasharray="3 4" vectorEffect="non-scaling-stroke" />
+          <line
+            key={t}
+            x1={padL}
+            x2={w - 8}
+            y1={y(t)}
+            y2={y(t)}
+            stroke="var(--color-line)"
+            strokeDasharray="3 4"
+            vectorEffect="non-scaling-stroke"
+          />
         ))}
         {target !== undefined && (
-          <line x1={padL} x2={w - 8} y1={y(target)} y2={y(target)} stroke="#a1a1aa" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+          <line
+            x1={padL}
+            x2={w - 8}
+            y1={y(target)}
+            y2={y(target)}
+            stroke="var(--color-faint)"
+            strokeWidth="1"
+            vectorEffect="non-scaling-stroke"
+          />
         )}
         <path d={area} fill={`url(#${id}-a)`} />
         <path d={line} fill="none" stroke={`url(#${id}-l)`} strokeWidth="2.25" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
-        <line x1={x(sel)} x2={x(sel)} y1={8} y2={h - padB} stroke="#d4d4d8" vectorEffect="non-scaling-stroke" />
-        <circle cx={x(sel)} cy={y(values[sel])} r="4" fill="#fff" stroke="#2e90fa" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+        <line x1={x(sel)} x2={x(sel)} y1={8} y2={h - padB} stroke="var(--color-line-strong)" vectorEffect="non-scaling-stroke" />
+        <circle
+          cx={x(sel)}
+          cy={y(values[sel])}
+          r="4"
+          fill="var(--color-panel)"
+          stroke="var(--color-brand-b)"
+          strokeWidth="2"
+          vectorEffect="non-scaling-stroke"
+        />
       </svg>
       {ticks.map((t) => (
-        <span key={t} className="tnum pointer-events-none absolute left-0 w-6 -translate-y-1/2 text-right font-mono text-[10px] text-faint" style={{ top: `${(y(t) / h) * 192}px` }}>
+        <span
+          key={t}
+          className="tnum text-muted pointer-events-none absolute left-0 w-6 -translate-y-1/2 text-right font-mono text-[11px]"
+          style={{ top: `${(y(t) / h) * 192}px` }}
+        >
           {t}
         </span>
       ))}
-      <div className="flex justify-between pl-[5%] font-mono text-[10px] text-faint">
+      <div className="text-muted flex justify-between pl-[5%] font-mono text-[11px]">
         <span>{labels[0]}</span>
         <span>{labels[Math.floor((values.length - 1) / 2)]}</span>
         <span>{labels.at(-1)}</span>
       </div>
       <div
-        className="pointer-events-none absolute top-1 rounded-md border border-line bg-panel px-2 py-1 text-xs shadow-sm"
+        className="border-line bg-panel pointer-events-none absolute top-1 rounded-md border px-2 py-1 text-xs shadow-sm"
         style={{ left: `clamp(0px, calc(${(x(sel) / w) * 100}% - 48px), calc(100% - 104px))` }}
         aria-live="polite"
       >

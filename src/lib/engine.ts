@@ -85,9 +85,7 @@ export function cashNow(data: DemoData) {
 /** Stock on hand = last count minus units sold in live orders since that count. */
 export function stockLevels(data: DemoData) {
   return data.inventory.map((item) => {
-    const sold = data.orders
-      .filter((o) => o.live && o.item === item.name && after(o.at, item.countedAt))
-      .reduce((s, o) => s + o.qty, 0);
+    const sold = data.orders.filter((o) => o.live && o.item === item.name && after(o.at, item.countedAt)).reduce((s, o) => s + o.qty, 0);
     const units = item.units - sold;
     return { item, sold, units, value: units * item.unitCost };
   });
@@ -140,7 +138,12 @@ export interface Metrics {
 
 export function computeMetrics(data: DemoData, day: Day, today: Day): Metrics {
   const from = addDays(day, -30);
-  let revenue = 0, cogs = 0, platformFees = 0, paymentFees = 0, shipping = 0, count = 0;
+  let revenue = 0,
+    cogs = 0,
+    platformFees = 0,
+    paymentFees = 0,
+    shipping = 0,
+    count = 0;
   for (const o of data.orders) {
     if (o.day <= from || o.day > day) continue;
     revenue += o.gross;
@@ -165,7 +168,10 @@ export function computeMetrics(data: DemoData, day: Day, today: Day): Metrics {
   const leakMonthly = leaks.reduce((s, l) => s + l.saving, 0);
   const leakRatio = tools > 0 ? leakMonthly / tools : 0;
 
-  const lastTouch = data.bookTouches.filter((t) => t <= day).sort().at(-1);
+  const lastTouch = data.bookTouches
+    .filter((t) => t <= day)
+    .sort()
+    .at(-1);
   const freshnessDays = lastTouch ? diffDays(day, lastTouch) : 30;
 
   const factors: Factor[] = [

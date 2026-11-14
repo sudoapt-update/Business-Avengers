@@ -42,13 +42,7 @@ export function rng(seed: number) {
 const r2 = (n: number) => Math.round(n * 100) / 100;
 
 /** Fee and cost model per channel. Prices are illustrative, not real platform rates. */
-export function buildOrder(
-  rand: () => number,
-  channel: Channel,
-  day: Day,
-  seq: number,
-  extra: Partial<Order> = {},
-): Order {
+export function buildOrder(rand: () => number, channel: Channel, day: Day, seq: number, extra: Partial<Order> = {}): Order {
   const p = PRODUCTS[Math.floor(rand() * PRODUCTS.length)];
   const qty = rand() < 0.68 ? 1 : rand() < 0.75 ? 2 : 3;
   const gross = r2(p.price * qty);

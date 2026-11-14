@@ -16,13 +16,31 @@ export function Sheets() {
   const close = () => useStore.getState().openSheet(null);
   return (
     <>
-      <Dialog side open={sheet?.kind === "review-fees"} onClose={close} title="Yesterday's Amazon fees" sub="Every marketplace order from yesterday, with what the platform kept.">
+      <Dialog
+        side
+        open={sheet?.kind === "review-fees"}
+        onClose={close}
+        title="Yesterday's Amazon fees"
+        sub="Every marketplace order from yesterday, with what the platform kept."
+      >
         <ReviewFees />
       </Dialog>
-      <Dialog side open={sheet?.kind === "add-expense"} onClose={close} title="Add an expense" sub="Anything you paid for the business that isn't in your books yet.">
+      <Dialog
+        side
+        open={sheet?.kind === "add-expense"}
+        onClose={close}
+        title="Add an expense"
+        sub="Anything you paid for the business that isn't in your books yet."
+      >
         <AddExpense />
       </Dialog>
-      <Dialog side open={sheet?.kind === "runway"} onClose={close} title="How long your cash lasts" sub="Weeks of fixed costs and your own pay you could cover if sales stopped today.">
+      <Dialog
+        side
+        open={sheet?.kind === "runway"}
+        onClose={close}
+        title="How long your cash lasts"
+        sub="Weeks of fixed costs and your own pay you could cover if sales stopped today."
+      >
         <Runway />
       </Dialog>
       <Dialog side open={sheet?.kind === "leak"} onClose={close} title="Money leak" sub="Illustrative tool categories and example prices.">
@@ -36,8 +54,8 @@ function Row({ label, value, sub, strong }: { label: string; value: string; sub?
   return (
     <div className="flex items-baseline justify-between gap-4 py-2">
       <div>
-        <div className={strong ? "text-sm font-medium" : "text-sm text-ink-2"}>{label}</div>
-        {sub && <div className="text-xs text-muted">{sub}</div>}
+        <div className={strong ? "text-sm font-medium" : "text-ink-2 text-sm"}>{label}</div>
+        {sub && <div className="text-muted text-xs">{sub}</div>}
       </div>
       <div className={`tnum font-mono text-sm ${strong ? "font-semibold" : ""}`}>{value}</div>
     </div>
@@ -61,31 +79,32 @@ function ReviewFees() {
         <Stat label="Sales" value={money(gross)} />
         <Stat label="Fees" value={money(fees)} sub={gross ? pct(fees / gross) + " of sales" : undefined} />
       </div>
-      <div className="mt-5 divide-y divide-line border-y border-line">
+      <div className="divide-line border-line mt-5 divide-y border-y">
         <Row label="Referral fee" sub="15% of each sale" value={money2(-referral)} />
         <Row label="Fulfilment fee" sub="Per unit picked, packed and shipped" value={money2(-(fees - referral))} />
         <Row label="You received" value={money2(gross - fees)} strong />
       </div>
       <Caps className="mt-6 mb-2">Orders · {formatDay(y, { weekday: "short", day: "numeric", month: "short" })}</Caps>
-      <ul className="divide-y divide-line rounded-card border border-line">
+      <ul className="divide-line rounded-card border-line divide-y border">
         {orders.slice(0, 6).map((o) => (
           <li key={o.id} className="flex items-center justify-between gap-3 px-3 py-2 text-sm">
             <div className="min-w-0">
               <div className="truncate">
                 {o.item} ×{o.qty}
               </div>
-              <div className="font-mono text-[11px] text-muted">{o.ref}</div>
+              <div className="text-muted font-mono text-xs">{o.ref}</div>
             </div>
             <div className="text-right">
               <div className="tnum font-mono">{money2(o.gross)}</div>
-              <div className="tnum font-mono text-[11px] text-bad">−{money2(o.platformFee)}</div>
+              <div className="tnum text-bad font-mono text-xs">−{money2(o.platformFee)}</div>
             </div>
           </li>
         ))}
-        {orders.length > 6 && <li className="px-3 py-2 text-xs text-muted">+{orders.length - 6} more in Books</li>}
+        {orders.length > 6 && <li className="text-muted px-3 py-2 text-xs">+{orders.length - 6} more in Books</li>}
       </ul>
-      <p className="mt-4 text-[13px] text-muted">
-        Fees took {gross ? pct(fees / gross, 0) : "0%"} of yesterday&apos;s marketplace sales. Your store&apos;s own checkout costs about 3%.
+      <p className="text-muted mt-4 text-[13px]">
+        Fees took {gross ? pct(fees / gross, 0) : "0%"} of yesterday&apos;s marketplace sales. Your store&apos;s own checkout costs about
+        3%.
       </p>
       <div className="mt-5">
         {done ? (
@@ -104,10 +123,10 @@ function ReviewFees() {
 
 function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="rounded-card border border-line p-3">
+    <div className="rounded-card border-line border p-3">
       <Caps>{label}</Caps>
       <div className="tnum mt-1 font-mono text-lg font-semibold">{value}</div>
-      {sub && <div className="text-[11px] text-muted">{sub}</div>}
+      {sub && <div className="text-muted text-xs">{sub}</div>}
     </div>
   );
 }
@@ -144,10 +163,10 @@ function AddExpense() {
   return (
     <div className="p-5">
       {mission && (
-        <div className="mb-5 rounded-card border border-line p-3">
+        <div className="rounded-card border-line mb-5 border p-3">
           <div className="flex items-center justify-between text-sm">
             <span className="font-medium">Mission: add {target} expenses</span>
-            <span className="tnum font-mono text-muted">
+            <span className="tnum text-muted font-mono">
               {Math.min(added.length, target)}/{target}
             </span>
           </div>
@@ -162,7 +181,14 @@ function AddExpense() {
         <div className="grid grid-cols-2 gap-3">
           <label className="block">
             <span className="mb-1 block text-[13px] font-medium">Amount (USD)</span>
-            <input className={`${field} tnum font-mono`} inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))} placeholder="0.00" required />
+            <input
+              className={`${field} tnum font-mono`}
+              inputMode="decimal"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
+              placeholder="0.00"
+              required
+            />
           </label>
           <label className="block">
             <span className="mb-1 block text-[13px] font-medium">Category</span>
@@ -182,21 +208,21 @@ function AddExpense() {
         {SUGGESTIONS.map((s) => (
           <button
             key={s.name}
-            className="rounded-lg border border-line px-2.5 py-1.5 text-left text-[13px] hover:bg-hover"
+            className="border-line hover:bg-hover rounded-lg border px-2.5 py-1.5 text-left text-[13px]"
             onClick={() => addExpense({ ...s, cadence: "one-off" })}
           >
-            {s.name} <span className="tnum font-mono text-muted">${s.amount}</span>
+            {s.name} <span className="tnum text-muted font-mono">${s.amount}</span>
           </button>
         ))}
       </div>
       {added.length > 0 && (
         <>
           <Caps className="mt-6 mb-2">Added today</Caps>
-          <ul className="divide-y divide-line rounded-card border border-line">
+          <ul className="divide-line rounded-card border-line divide-y border">
             {added.slice(-6).map((e) => (
-              <li key={e.id} className="flex animate-row-in justify-between px-3 py-2 text-sm">
+              <li key={e.id} className="animate-row-in flex justify-between px-3 py-2 text-sm">
                 <span>
-                  {e.name} <span className="text-xs text-muted">· {e.category}</span>
+                  {e.name} <span className="text-muted text-xs">· {e.category}</span>
                 </span>
                 <span className="tnum font-mono">{money2(e.amount)}</span>
               </li>
@@ -213,24 +239,26 @@ function Runway() {
   const m = d.metrics;
   return (
     <div className="p-5">
-      <div className="rounded-card border border-line p-4">
+      <div className="rounded-card border-line border p-4">
         <Caps>Cash runway</Caps>
         <div className="tnum mt-1 font-mono text-3xl font-semibold">{m.runwayWeeks.toFixed(1)} weeks</div>
-        <div className="mt-1 text-[13px] text-muted">
+        <div className="text-muted mt-1 text-[13px]">
           {money(m.cash)} in cash ÷ {money(m.weeklyFixed)} a week of fixed costs and owner pay.
         </div>
       </div>
       <Caps className="mt-6 mb-2">Where the cash is</Caps>
-      <div className="divide-y divide-line border-y border-line">
+      <div className="divide-line border-line divide-y border-y">
         {d.data.cash.map((a) => (
           <Row key={a.id} label={a.name} sub={a.note} value={money(a.balance)} />
         ))}
         <Row label="Orders and expenses since last count" value={money(m.cash - d.data.cash.reduce((s, a) => s + a.balance, 0))} />
         <Row label="Cash today" value={money(m.cash)} strong />
       </div>
-      <p className="mt-4 text-[13px] text-muted">
+      <p className="text-muted mt-4 text-[13px]">
         Twelve weeks or more lets you reorder stock for the holidays without a loan. You are{" "}
-        {m.runwayWeeks >= 12 ? "there." : `${(12 - m.runwayWeeks).toFixed(1)} weeks short; that's about ${money((12 - m.runwayWeeks) * m.weeklyFixed)}.`}
+        {m.runwayWeeks >= 12
+          ? "there."
+          : `${(12 - m.runwayWeeks).toFixed(1)} weeks short; that's about ${money((12 - m.runwayWeeks) * m.weeklyFixed)}.`}
       </p>
     </div>
   );
@@ -249,29 +277,29 @@ function LeakDetail({ leakId }: { leakId: string }) {
   return (
     <div className="p-5">
       <h3 className="text-[15px] font-semibold">{leak.title}</h3>
-      <p className="mt-1 text-sm text-ink-2">{leak.problem}</p>
-      <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-3 rounded-card border border-line p-4">
+      <p className="text-ink-2 mt-1 text-sm">{leak.problem}</p>
+      <div className="rounded-card border-line mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-3 border p-4">
         <div>
           <Caps>Now</Caps>
-          <div className="mt-1 text-[13px] text-ink-2">{expense.name}</div>
+          <div className="text-ink-2 mt-1 text-[13px]">{expense.name}</div>
           <div className="tnum font-mono text-lg font-semibold">{money(expense.amount)}/mo</div>
         </div>
         <span className="text-faint">→</span>
         <div>
           <Caps>Cheaper option</Caps>
-          <div className="mt-1 text-[13px] text-ink-2">{leak.alternative}</div>
-          <div className="tnum font-mono text-lg font-semibold text-good">{money(leak.altPrice)}/mo</div>
+          <div className="text-ink-2 mt-1 text-[13px]">{leak.alternative}</div>
+          <div className="tnum text-good font-mono text-lg font-semibold">{money(leak.altPrice)}/mo</div>
         </div>
       </div>
       <div className="mt-3 flex items-center justify-between">
         <Pill tone="good" className="font-mono">
           Save {money(saving)}/mo · {money(saving * 12)}/yr
         </Pill>
-        <span className="text-[11px] text-muted">Example prices</span>
+        <span className="text-muted text-xs">Example prices</span>
       </div>
 
       {view.applied ? (
-        <div className="mt-6 rounded-card border border-good-dot/30 bg-good-bg p-4 text-sm text-good">
+        <div className="rounded-card border-good-dot/30 bg-good-bg text-good mt-6 border p-4 text-sm">
           Applied on {formatDay(leak.appliedOn!)}. Your expenses now use {money(leak.altPrice)}/mo.
         </div>
       ) : open ? (
@@ -280,7 +308,9 @@ function LeakDetail({ leakId }: { leakId: string }) {
           <ol className="space-y-2">
             {leak.steps.map((s, i) => (
               <li key={s} className="flex gap-3 text-sm">
-                <span className="tnum grid size-5 shrink-0 place-items-center rounded-full border border-line font-mono text-[11px]">{i + 1}</span>
+                <span className="tnum border-line grid size-5 shrink-0 place-items-center rounded-full border font-mono text-xs">
+                  {i + 1}
+                </span>
                 {s}
               </li>
             ))}
@@ -290,16 +320,21 @@ function LeakDetail({ leakId }: { leakId: string }) {
           </Button>
         </>
       ) : (
-        <div className="mt-6 rounded-card border border-dashed border-line-strong p-4">
+        <div className="rounded-card border-line-strong mt-6 border border-dashed p-4">
           <div className="flex items-center gap-2 text-sm font-medium">
-            <Lock className="size-4 text-muted" /> Action steps are locked
+            <Lock className="text-muted size-4" /> Action steps are locked
           </div>
-          <p className="mt-1 text-[13px] text-muted">Unlock this one with tokens, or see every leak on Growth.</p>
+          <p className="text-muted mt-1 text-[13px]">Unlock this one with tokens, or see every leak on Growth.</p>
           <div className="mt-3 flex flex-wrap gap-2">
             <Button variant="primary" size="sm" onClick={() => unlockLeak(leak.id)}>
               Unlock for {leak.unlockCost} tokens
             </Button>
-            <Button size="sm" onClick={() => openUpgrade({ title: "See every leak on Growth", body: "Growth unlocks all four leaks with step-by-step fixes." })}>
+            <Button
+              size="sm"
+              onClick={() =>
+                openUpgrade({ title: "See every leak on Growth", body: "Growth unlocks all four leaks with step-by-step fixes." })
+              }
+            >
               See Growth
             </Button>
           </div>

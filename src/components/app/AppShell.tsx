@@ -29,8 +29,8 @@ export function AppShell({ children }: { children: ReactNode }) {
         </>
       ) : (
         <>
-          <div className="fixed inset-y-0 left-0 hidden w-[264px] border-r border-line bg-canvas lg:block" aria-hidden />
-          <div className="h-16 border-b border-line" aria-hidden />
+          <div className="border-line bg-canvas fixed inset-y-0 left-0 hidden w-[264px] border-r lg:block" aria-hidden />
+          <div className="border-line h-16 border-b" aria-hidden />
         </>
       )}
       <main className="mx-auto w-full max-w-[1320px] px-4 pt-6 pb-16 sm:px-6 lg:px-10">{children}</main>

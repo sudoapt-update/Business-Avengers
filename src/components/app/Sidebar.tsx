@@ -3,20 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import {
-  Bot,
-  BookOpen,
-  CreditCard,
-  Droplets,
-  History,
-  LayoutGrid,
-  Map,
-  Plug,
-  ShoppingBag,
-  Target,
-  X,
-  type LucideIcon,
-} from "lucide-react";
+import { Bot, BookOpen, CreditCard, Droplets, History, LayoutGrid, Map, Plug, ShoppingBag, Target, X, type LucideIcon } from "lucide-react";
 import { useDerived } from "@/store/derived";
 import { STORE } from "@/lib/seed";
 import { cn } from "@/lib/format";
@@ -49,7 +36,12 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
       items: [
         { href: "/app/orders", label: "Orders", icon: ShoppingBag },
         { href: "/app/books", label: "Books", icon: BookOpen },
-        { href: "/app/leaks", label: "Leaks", icon: Droplets, badge: d.metrics.leakCount ? { n: d.metrics.leakCount, tone: "bad" } : undefined },
+        {
+          href: "/app/leaks",
+          label: "Leaks",
+          icon: Droplets,
+          badge: d.metrics.leakCount ? { n: d.metrics.leakCount, tone: "bad" } : undefined,
+        },
         { href: "/app/time-machine", label: "Time Machine", icon: History },
       ],
     },
@@ -66,24 +58,25 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
   return (
     <>
       <div
-        className={cn("fixed inset-0 z-40 bg-ink/20 lg:hidden", open ? "block animate-fade-in" : "hidden")}
+        className={cn("bg-ink/20 fixed inset-0 z-40 lg:hidden", open ? "animate-fade-in block" : "hidden")}
         onClick={onClose}
         aria-hidden
       />
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-[264px] flex-col border-r border-line bg-canvas transition-transform lg:translate-x-0",
-          open ? "translate-x-0" : "-translate-x-full",
+          "border-line bg-canvas fixed inset-y-0 left-0 z-50 flex w-[264px] flex-col border-r transition-[transform,visibility] duration-200 lg:visible lg:translate-x-0",
+          // Hidden (not just off-screen) when closed on small screens, so its links leave the tab order.
+          open ? "visible translate-x-0" : "invisible -translate-x-full",
         )}
         aria-label="Main navigation"
       >
-        <div className="flex h-16 items-center gap-3 border-b border-line px-4">
+        <div className="border-line flex h-16 items-center gap-3 border-b px-4">
           <LogoMark />
           <div className="min-w-0 flex-1">
             <div className="truncate text-sm font-semibold tracking-tight">FinPath</div>
-            <div className="truncate font-mono text-[11px] text-muted">{STORE.name.replace(" Co.", "")} · demo</div>
+            <div className="text-muted truncate font-mono text-xs">{STORE.name.replace(" Co.", "")} · demo</div>
           </div>
-          <button className="rounded-md p-1.5 text-muted hover:bg-hover lg:hidden" onClick={onClose} aria-label="Close menu">
+          <button className="text-muted hover:bg-hover rounded-md p-1.5 lg:hidden" onClick={onClose} aria-label="Close menu">
             <X className="size-4" />
           </button>
         </div>
@@ -102,16 +95,16 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
                         href={it.href}
                         className={cn(
                           "flex h-9 items-center gap-2.5 rounded-lg px-2.5 text-sm transition-colors",
-                          active ? "bg-hover font-medium text-ink" : "text-ink-2 hover:bg-hover/70",
+                          active ? "bg-hover text-ink font-medium" : "text-ink-2 hover:bg-hover/70",
                         )}
                         aria-current={active ? "page" : undefined}
                       >
-                        <Icon className="size-4 text-muted" strokeWidth={1.75} />
+                        <Icon className="text-muted size-4" strokeWidth={1.75} />
                         <span className="flex-1">{it.label}</span>
                         {it.badge && (
                           <span
                             className={cn(
-                              "tnum min-w-5 rounded-md px-1.5 text-center font-mono text-[11px] leading-5",
+                              "tnum min-w-5 rounded-md px-1.5 text-center font-mono text-xs leading-5",
                               it.badge.tone === "warn" && "bg-warn-bg text-warn",
                               it.badge.tone === "bad" && "bg-bad-bg text-bad",
                               it.badge.tone === "neutral" && "bg-hover text-muted",
@@ -153,16 +146,16 @@ function MissionsWidget() {
   const streakLabel = d.doneToday ? `Day ${d.streak} streak` : d.streak ? `${d.streak}-day streak, keep it today` : "Start a streak today";
 
   return (
-    <Link href="/app/missions" className="m-3 block rounded-card border border-line bg-panel p-4 hover:border-line-strong">
+    <Link href="/app/missions" className="rounded-card border-line bg-panel hover:border-line-strong m-3 block border p-4">
       <div className="flex items-center justify-between">
         <Caps>Today&apos;s missions</Caps>
-        <span className="tnum font-mono text-[11px] text-muted" title="Missions reset at midnight">
+        <span className="tnum text-muted font-mono text-xs" title="Missions reset at midnight">
           {left}
         </span>
       </div>
       <SegmentBar total={d.missions.length} done={d.missionsDone} className="mt-3" />
       <div className="mt-3 text-sm font-medium">{streakLabel}</div>
-      <div className="mt-0.5 font-mono text-[11px] text-muted">
+      <div className="text-muted mt-0.5 font-mono text-xs">
         {d.missionsDone} of {d.missions.length} done · resets at 00:00
       </div>
     </Link>

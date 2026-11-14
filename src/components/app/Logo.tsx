@@ -1,6 +1,6 @@
 export function LogoMark({ className = "size-8" }: { className?: string }) {
   return (
-    <span className={`${className} grid place-items-center rounded-lg bg-ink`} aria-hidden>
+    <span className={`${className} bg-ink grid place-items-center rounded-lg`} aria-hidden>
       <svg viewBox="0 0 24 24" className="size-[62%]">
         <defs>
           <linearGradient id="fp-mark" x1="0" x2="1" y1="1" y2="0">

@@ -19,11 +19,17 @@ interface Row {
 }
 
 const ROWS: Row[] = [
-  { label: "Business Health Score", values: { starter: "Today's score", growth: "With 90-day history", pro: "With 90-day history", scale: "With 90-day history" } },
+  {
+    label: "Business Health Score",
+    values: { starter: "Today's score", growth: "With 90-day history", pro: "With 90-day history", scale: "With 90-day history" },
+  },
   { label: "Missions a day", values: { starter: "3", growth: "5", pro: "5", scale: "5" } },
   { label: "Mission rewards", values: { starter: "1×", growth: "1.25×", pro: "1.5×", scale: "2×" } },
   { label: "AI tokens a month", values: { starter: "50", growth: "500", pro: "2,000", scale: "8,000" } },
-  { label: "Money Leak Detector", values: { starter: "Largest leak", growth: "Every leak, with steps", pro: "Every leak, with steps", scale: "Every leak, with steps" } },
+  {
+    label: "Money Leak Detector",
+    values: { starter: "Largest leak", growth: "Every leak, with steps", pro: "Every leak, with steps", scale: "Every leak, with steps" },
+  },
   { label: "Books: income, expenses, stock, cash", values: { starter: true, growth: true, pro: true, scale: true } },
   { label: "Order sync (demo connections)", values: { starter: true, growth: true, pro: true, scale: true } },
   { label: "Time Machine what-ifs", soon: true, values: { starter: false, growth: "Limited", pro: "Unlimited", scale: "Unlimited" } },
@@ -45,10 +51,10 @@ export function PlansView() {
       <div className="space-y-4">
         <TokenPanel />
 
-        <div className="rounded-card border border-line bg-panel px-4 py-3 text-[13px] text-ink-2 sm:px-5">
-          The leaks found in this store are worth <span className="tnum font-mono font-medium text-ink">{money(leaksFound)}/mo</span>, more than{" "}
-          {Math.floor(leaksFound / tierInfo("pro").price)} times the Pro plan. Demo only: no payment is taken, and &ldquo;Preview&rdquo; switches the app to that
-          plan&apos;s real limits.
+        <div className="rounded-card border-line bg-panel text-ink-2 border px-4 py-3 text-[13px] sm:px-5">
+          The leaks found in this store are worth <span className="tnum text-ink font-mono font-medium">{money(leaksFound)}/mo</span>, more
+          than {Math.floor(leaksFound / tierInfo("pro").price)} times the Pro plan. Demo only: no payment is taken, and
+          &ldquo;Preview&rdquo; switches the app to that plan&apos;s real limits.
         </div>
 
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
@@ -61,7 +67,7 @@ export function PlansView() {
           <CardHeader title="Compare plans" sub="Rows marked Soon are on the roadmap and not in this demo yet." />
           <div className="relative mt-4 overflow-x-auto">
             <table className="w-full min-w-[720px] text-sm">
-              <thead className="border-y border-line bg-canvas text-left">
+              <thead className="border-line bg-canvas border-y text-left">
                 <tr>
                   <Th>Feature</Th>
                   {TIERS.map((t) => (
@@ -71,7 +77,7 @@ export function PlansView() {
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-line">
+              <tbody className="divide-line divide-y">
                 {ROWS.map((r) => (
                   <tr key={r.label} className={cn(r.soon && "text-muted")}>
                     <Td>
@@ -97,35 +103,40 @@ export function PlansView() {
 }
 
 function CellValue({ v }: { v: Cell }) {
-  if (v === true) return <Check className="size-4 text-good" aria-label="Included" />;
-  if (v === false) return <Minus className="size-4 text-faint" aria-label="Not included" />;
+  if (v === true) return <Check className="text-good size-4" aria-label="Included" />;
+  if (v === false) return <Minus className="text-faint size-4" aria-label="Not included" />;
   return <span className="text-[13px]">{v}</span>;
 }
 
 function TierCard({ t, current, onPick }: { t: TierInfo; current: boolean; onPick: () => void }) {
   return (
-    <Card className={cn("flex flex-col p-5", current && "border-ink ring-1 ring-ink")}>
+    <Card className={cn("flex flex-col p-5", current && "border-ink ring-ink ring-1")}>
       <div className="flex items-center justify-between gap-2">
         <span className="font-semibold">{t.name}</span>
         {current ? <Pill tone="info">Viewing now</Pill> : t.id === "growth" ? <Pill tone="good">Recommended</Pill> : null}
       </div>
       <div className="mt-3 flex items-baseline gap-1">
         <span className="tnum text-3xl font-semibold tracking-tight">{t.price === 0 ? "Free" : `$${t.price}`}</span>
-        {t.price > 0 && <span className="text-sm text-muted">/mo</span>}
+        {t.price > 0 && <span className="text-muted text-sm">/mo</span>}
       </div>
-      <div className="mt-1 text-[13px] text-muted">{t.id === "growth" ? "Recommended for active sellers" : t.blurb}</div>
-      <ul className="mt-4 flex-1 space-y-2 text-[13px] text-ink-2">
+      <div className="text-muted mt-1 text-[13px]">{t.id === "growth" ? "Recommended for active sellers" : t.blurb}</div>
+      <ul className="text-ink-2 mt-4 flex-1 space-y-2 text-[13px]">
         {t.adds.map((a) => (
           <li key={a} className="flex gap-2">
-            <Check className="mt-0.5 size-3.5 shrink-0 text-good" />
+            <Check className="text-good mt-0.5 size-3.5 shrink-0" />
             {a}
           </li>
         ))}
       </ul>
-      <div className="tnum mt-4 font-mono text-[11px] text-muted">
+      <div className="tnum text-muted mt-4 font-mono text-xs">
         {num(t.tokens)} tokens/mo · {t.missionsPerDay} missions/day · {t.rewardMultiplier}× rewards
       </div>
-      <Button variant={current ? "secondary" : t.id === "growth" ? "primary" : "secondary"} className="mt-3 w-full" disabled={current} onClick={onPick}>
+      <Button
+        variant={current ? "secondary" : t.id === "growth" ? "primary" : "secondary"}
+        className="mt-3 w-full"
+        disabled={current}
+        onClick={onPick}
+      >
         {current ? "Viewing this plan" : `Preview ${t.name}`}
       </Button>
     </Card>
@@ -148,15 +159,22 @@ function TokenPanel() {
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
         <div className="p-5">
           <div className="flex items-center gap-2">
-            <Coins className="size-4 text-warn" />
+            <Coins className="text-warn size-4" />
             <Caps>AI tokens this month</Caps>
           </div>
           <div className="tnum mt-3 text-4xl font-semibold tracking-tight">{num(d.tokens)}</div>
-          <div className="mt-1 text-[13px] text-muted">
+          <div className="text-muted mt-1 text-[13px]">
             left on {d.tier.name} · {num(d.tier.tokens)} included a month
           </div>
-          <div className="mt-4 h-2 overflow-hidden rounded-full bg-line" role="progressbar" aria-valuenow={d.tokens} aria-valuemin={0} aria-valuemax={pool} aria-label="Tokens left">
-            <div className="h-full rounded-full bg-warn-dot" style={{ width: `${Math.max(0, Math.min(1, d.tokens / pool)) * 100}%` }} />
+          <div
+            className="bg-line mt-4 h-2 overflow-hidden rounded-full"
+            role="progressbar"
+            aria-valuenow={d.tokens}
+            aria-valuemin={0}
+            aria-valuemax={pool}
+            aria-label="Tokens left"
+          >
+            <div className="bg-warn-dot h-full rounded-full" style={{ width: `${Math.max(0, Math.min(1, d.tokens / pool)) * 100}%` }} />
           </div>
           <dl className="mt-4 grid grid-cols-3 gap-3 text-[13px]">
             <div>
@@ -165,26 +183,26 @@ function TokenPanel() {
             </div>
             <div>
               <dt className="text-muted">Earned</dt>
-              <dd className="tnum font-mono text-good">+{num(earned)}</dd>
+              <dd className="tnum text-good font-mono">+{num(earned)}</dd>
             </div>
             <div>
               <dt className="text-muted">Spent</dt>
               <dd className="tnum font-mono">−{num(spent)}</dd>
             </div>
           </dl>
-          <p className="mt-4 text-[13px] text-ink-2">
+          <p className="text-ink-2 mt-4 text-[13px]">
             An adviser question costs 5 tokens and a detailed leak costs 3. Missions pay them back, so a daily habit keeps advice free.
           </p>
         </div>
-        <div className="border-t border-line lg:border-t-0 lg:border-l">
+        <div className="border-line border-t lg:border-t-0 lg:border-l">
           <div className="px-5 pt-4 pb-2">
             <Caps>Recent activity</Caps>
           </div>
-          <ul className="divide-y divide-line">
+          <ul className="divide-line divide-y">
             {recent.map((t) => (
               <li key={t.id} className="flex items-center gap-3 px-5 py-2.5 text-sm">
-                <span className="tnum w-14 shrink-0 font-mono text-[11px] text-muted">{formatDay(t.day)}</span>
-                <span className="min-w-0 flex-1 truncate text-ink-2">{t.reason}</span>
+                <span className="tnum text-muted w-14 shrink-0 font-mono text-xs">{formatDay(t.day)}</span>
+                <span className="text-ink-2 min-w-0 flex-1 truncate">{t.reason}</span>
                 <span className={cn("tnum font-mono", t.amount > 0 ? "text-good" : "text-ink")}>
                   {t.amount > 0 ? "+" : "−"}
                   {Math.abs(t.amount)}

@@ -8,7 +8,7 @@ export function Ready({ children }: { children: ReactNode }) {
   const hydrated = useStore((s) => s.hydrated);
   if (!hydrated) {
     return (
-      <div className="grid min-h-[60vh] place-items-center text-sm text-muted" role="status">
+      <div className="text-muted grid min-h-[60vh] place-items-center text-sm" role="status">
         Loading the sample store…
       </div>
     );

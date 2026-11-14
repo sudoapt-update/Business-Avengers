@@ -30,12 +30,7 @@ export const TIERS: TierInfo[] = [
     missionsPerDay: 5,
     rewardMultiplier: 1.25,
     blurb: "Active sellers",
-    adds: [
-      "Full leak detector with action steps",
-      "500 AI tokens a month",
-      "5 missions a day, 1.25× rewards",
-      "90-day score history",
-    ],
+    adds: ["Full leak detector with action steps", "500 AI tokens a month", "5 missions a day, 1.25× rewards", "90-day score history"],
   },
   {
     id: "pro",

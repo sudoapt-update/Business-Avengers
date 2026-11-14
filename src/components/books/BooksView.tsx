@@ -29,7 +29,12 @@ export function BooksView() {
   const tiles: { id: Tab; label: string; value: string; sub: string }[] = [
     { id: "income", label: "Income", value: money(income30), sub: "sales, last 30 days" },
     { id: "expenses", label: "Expenses", value: money(d.metrics.tools), sub: "running costs a month" },
-    { id: "inventory", label: "Stock", value: money(stock.reduce((s, x) => s + x.value, 0)), sub: `${num(stock.reduce((s, x) => s + x.units, 0))} units at cost` },
+    {
+      id: "inventory",
+      label: "Stock",
+      value: money(stock.reduce((s, x) => s + x.value, 0)),
+      sub: `${num(stock.reduce((s, x) => s + x.units, 0))} units at cost`,
+    },
     { id: "cash", label: "Cash", value: money(d.metrics.cash), sub: `${d.metrics.runwayWeeks.toFixed(1)} weeks of runway` },
   ];
 
@@ -40,34 +45,32 @@ export function BooksView() {
         <Explainer>
           Profit you can trust starts with complete books. Synced orders land here on their own; anything paid in cash, at the market or
           outside your store has to be added by hand. Click any figure with a pencil to correct it. Your score&apos;s{" "}
-          <span className="font-medium text-ink">Books up to date</span> part is{" "}
+          <span className="text-ink font-medium">Books up to date</span> part is{" "}
           <span className="tnum font-mono">
             {fresh.points.toFixed(1)}/{fresh.weight}
           </span>{" "}
           ({fresh.reading.toLowerCase()}); any edit today brings it to full marks.
         </Explainer>
 
-        <div className="grid grid-cols-2 gap-3 xl:grid-cols-4" role="tablist" aria-label="Books tables">
+        <div className="grid grid-cols-2 gap-3 xl:grid-cols-4" role="group" aria-label="Choose a table">
           {tiles.map((t) => (
             <button
               key={t.id}
-              role="tab"
-              aria-selected={tab === t.id}
-              aria-controls={`books-${t.id}`}
+              aria-pressed={tab === t.id}
               onClick={() => setTab(t.id)}
               className={cn(
-                "rounded-card border bg-panel p-4 text-left transition-colors sm:p-5",
-                tab === t.id ? "border-ink ring-1 ring-ink" : "border-line hover:border-line-strong",
+                "rounded-card bg-panel border p-4 text-left transition-colors sm:p-5",
+                tab === t.id ? "border-ink ring-ink ring-1" : "border-line hover:border-line-strong",
               )}
             >
               <Caps>{t.label}</Caps>
               <div className="tnum mt-2 text-xl font-semibold tracking-tight sm:text-2xl">{t.value}</div>
-              <div className="mt-1 text-[12px] text-muted">{t.sub}</div>
+              <div className="text-muted mt-1 text-[12px]">{t.sub}</div>
             </button>
           ))}
         </div>
 
-        <div id={`books-${tab}`} role="tabpanel">
+        <div id={`books-${tab}`}>
           {tab === "income" && <IncomeTable />}
           {tab === "expenses" && <ExpensesTable />}
           {tab === "inventory" && <InventoryTable />}
@@ -86,9 +89,7 @@ function IncomeTable() {
   const [page, setPage] = useState(0);
   const [adding, setAdding] = useState(false);
 
-  const rows = [...d.data.orders]
-    .filter((o) => filter === "all" || o.source === filter)
-    .sort(byNewest);
+  const rows = [...d.data.orders].filter((o) => filter === "all" || o.source === filter).sort(byNewest);
   const pages = Math.max(1, Math.ceil(rows.length / PAGE));
   const p = Math.min(page, pages - 1);
 
@@ -126,7 +127,7 @@ function IncomeTable() {
             { value: "manual", label: "Added by hand" },
           ]}
         />
-        <span className="font-mono text-[11px] text-muted">{num(rows.length)} rows</span>
+        <span className="text-muted font-mono text-xs">{num(rows.length)} rows</span>
       </div>
       <OrderList
         orders={rows.slice(p * PAGE, p * PAGE + PAGE)}
@@ -156,7 +157,10 @@ function SaleForm({ onAdd }: { onAdd: (s: { product: string; qty: number; price:
   };
 
   return (
-    <form onSubmit={submit} className="mx-5 mt-4 grid gap-3 rounded-card border border-line bg-canvas p-4 sm:grid-cols-[minmax(0,2fr)_80px_110px_auto_auto] sm:items-end">
+    <form
+      onSubmit={submit}
+      className="rounded-card border-line bg-canvas mx-5 mt-4 grid gap-3 border p-4 sm:grid-cols-[minmax(0,2fr)_80px_110px_auto_auto] sm:items-end"
+    >
       <label className="block">
         <span className="mb-1 block text-[13px] font-medium">Product</span>
         <select
@@ -178,10 +182,17 @@ function SaleForm({ onAdd }: { onAdd: (s: { product: string; qty: number; price:
       </label>
       <label className="block">
         <span className="mb-1 block text-[13px] font-medium">Price each</span>
-        <input className={`${field} tnum font-mono`} type="number" min="0" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} />
+        <input
+          className={`${field} tnum font-mono`}
+          type="number"
+          min="0"
+          step="0.01"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+        />
       </label>
       <label className="flex h-9 items-center gap-2 text-[13px]">
-        <input type="checkbox" checked={card} onChange={(e) => setCard(e.target.checked)} className="size-4 accent-ink" />
+        <input type="checkbox" checked={card} onChange={(e) => setCard(e.target.checked)} className="accent-ink size-4" />
         Paid by card
       </label>
       <Button variant="primary" type="submit">
@@ -235,7 +246,7 @@ function ExpensesTable() {
       </div>
       <div className="relative overflow-x-auto">
         <table className="w-full min-w-[560px] text-sm">
-          <thead className="border-y border-line bg-canvas text-left">
+          <thead className="border-line bg-canvas border-y text-left">
             <tr>
               <Th>Expense</Th>
               <Th>Category</Th>
@@ -246,7 +257,7 @@ function ExpensesTable() {
               </Th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-line">
+          <tbody className="divide-line divide-y">
             {rows.slice(p * PAGE, p * PAGE + PAGE).map((e) => {
               const leak = leakFor(e);
               const applied = !!leak?.appliedOn;
@@ -255,7 +266,7 @@ function ExpensesTable() {
                   <Td>
                     <div className="font-medium">{e.name}</div>
                     <div className="mt-0.5 flex flex-wrap gap-1">
-                      {e.addedOn && <span className="font-mono text-[11px] text-muted">added {formatDay(e.addedOn)}</span>}
+                      {e.addedOn && <span className="text-muted font-mono text-xs">added {formatDay(e.addedOn)}</span>}
                       {leak && !applied && <Pill tone="bad">Leak · could be {money(leak.altPrice)}</Pill>}
                       {applied && <Pill tone="good">Saving applied</Pill>}
                     </div>
@@ -267,16 +278,25 @@ function ExpensesTable() {
                   <Td right>
                     {applied ? (
                       <span className="tnum font-mono">
-                        <span className="mr-2 text-faint line-through">{money2(e.amount)}</span>
+                        <span className="text-faint mr-2 line-through">{money2(e.amount)}</span>
                         {money2(leak!.altPrice)}
                       </span>
                     ) : (
-                      <EditableNumber value={e.amount} display={money2(e.amount)} label={`Amount for ${e.name}`} onCommit={(n) => updateExpenseAmount(e.id, n)} />
+                      <EditableNumber
+                        value={e.amount}
+                        display={money2(e.amount)}
+                        label={`Amount for ${e.name}`}
+                        onCommit={(n) => updateExpenseAmount(e.id, n)}
+                      />
                     )}
                   </Td>
                   <Td right>
                     {e.addedOn && (
-                      <button className="rounded p-1 text-faint hover:bg-hover hover:text-bad" onClick={() => deleteRow("expense", e.id)} aria-label={`Remove ${e.name}`}>
+                      <button
+                        className="text-faint hover:bg-hover hover:text-bad grid size-7 place-items-center rounded-md"
+                        onClick={() => deleteRow("expense", e.id)}
+                        aria-label={`Remove ${e.name}`}
+                      >
                         <Trash2 className="size-3.5" />
                       </button>
                     )}
@@ -288,10 +308,11 @@ function ExpensesTable() {
         </table>
       </div>
       <Pager page={p} size={PAGE} total={rows.length} onPage={setPage} />
-      <div className="flex flex-wrap justify-between gap-2 border-t border-line px-5 py-3 text-[13px]">
+      <div className="border-line flex flex-wrap justify-between gap-2 border-t px-5 py-3 text-[13px]">
         <span className="text-muted">Running costs this month</span>
         <span className="tnum font-mono">
-          {money(d.metrics.tools - oneOff30)} monthly + {money(oneOff30)} one-off = <span className="font-semibold">{money(d.metrics.tools)}</span>
+          {money(d.metrics.tools - oneOff30)} monthly + {money(oneOff30)} one-off ={" "}
+          <span className="font-semibold">{money(d.metrics.tools)}</span>
         </span>
       </div>
     </Card>
@@ -306,10 +327,13 @@ function InventoryTable() {
 
   return (
     <Card>
-      <CardHeader title="Stock" sub="Units on hand at cost. Synced sales count down from your last count; type a new count after a stocktake." />
+      <CardHeader
+        title="Stock"
+        sub="Units on hand at cost. Synced sales count down from your last count; type a new count after a stocktake."
+      />
       <div className="relative mt-4 overflow-x-auto">
         <table className="w-full min-w-[560px] text-sm">
-          <thead className="border-y border-line bg-canvas text-left">
+          <thead className="border-line bg-canvas border-y text-left">
             <tr>
               <Th>Product</Th>
               <Th right>Unit cost</Th>
@@ -319,20 +343,26 @@ function InventoryTable() {
               <Th right>Value</Th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-line">
+          <tbody className="divide-line divide-y">
             {rows.map((r) => (
               <tr key={r.item.id}>
                 <Td>
                   <div className="font-medium">{r.item.name}</div>
-                  <div className="font-mono text-[11px] text-muted">{r.item.sku}</div>
+                  <div className="text-muted font-mono text-xs">{r.item.sku}</div>
                 </Td>
-                <Td right className="tnum font-mono text-ink-2">
+                <Td right className="tnum text-ink-2 font-mono">
                   {money2(r.item.unitCost)}
                 </Td>
                 <Td right>
-                  <EditableNumber value={r.item.units} display={num(r.item.units)} step="1" label={`Counted units of ${r.item.name}`} onCommit={(n) => recountStock(r.item.id, n)} />
+                  <EditableNumber
+                    value={r.item.units}
+                    display={num(r.item.units)}
+                    step="1"
+                    label={`Counted units of ${r.item.name}`}
+                    onCommit={(n) => recountStock(r.item.id, n)}
+                  />
                 </Td>
-                <Td right className="tnum font-mono text-muted">
+                <Td right className="tnum text-muted font-mono">
                   {r.sold ? `−${r.sold}` : "0"}
                 </Td>
                 <Td right>
@@ -349,7 +379,7 @@ function InventoryTable() {
           </tbody>
         </table>
       </div>
-      <div className="flex justify-between border-t border-line px-5 py-3 text-[13px]">
+      <div className="border-line flex justify-between border-t px-5 py-3 text-[13px]">
         <span className="text-muted">Stock value at cost</span>
         <span className="tnum font-mono font-semibold">{money(total)}</span>
       </div>
@@ -367,7 +397,7 @@ function CashTable() {
       <CardHeader title="Cash" sub="Where your money sits. Orders and expenses move these balances until you type a fresh count." />
       <div className="relative mt-4 overflow-x-auto">
         <table className="w-full min-w-[520px] text-sm">
-          <thead className="border-y border-line bg-canvas text-left">
+          <thead className="border-line bg-canvas border-y text-left">
             <tr>
               <Th>Account</Th>
               <Th right>Last count</Th>
@@ -375,15 +405,20 @@ function CashTable() {
               <Th right>Now</Th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-line">
+          <tbody className="divide-line divide-y">
             {rows.map((r) => (
               <tr key={r.account.id}>
                 <Td>
                   <div className="font-medium">{r.account.name}</div>
-                  <div className="text-[12px] text-muted">{r.account.note}</div>
+                  <div className="text-muted text-[12px]">{r.account.note}</div>
                 </Td>
                 <Td right>
-                  <EditableNumber value={r.account.balance} display={money2(r.account.balance)} label={`Counted balance of ${r.account.name}`} onCommit={(n) => recountCash(r.account.id, n)} />
+                  <EditableNumber
+                    value={r.account.balance}
+                    display={money2(r.account.balance)}
+                    label={`Counted balance of ${r.account.name}`}
+                    onCommit={(n) => recountCash(r.account.id, n)}
+                  />
                 </Td>
                 <Td right className={cn("tnum font-mono", r.flows > 0 ? "text-good" : r.flows < 0 ? "text-bad" : "text-muted")}>
                   {r.flows === 0 ? "—" : `${r.flows > 0 ? "+" : "−"}${money2(Math.abs(r.flows))}`}
@@ -396,10 +431,8 @@ function CashTable() {
           </tbody>
         </table>
       </div>
-      <div className="flex flex-wrap justify-between gap-2 border-t border-line px-5 py-3 text-[13px]">
-        <span className="text-muted">
-          Cash today ÷ {money(d.metrics.weeklyFixed)} a week of fixed costs and owner pay
-        </span>
+      <div className="border-line flex flex-wrap justify-between gap-2 border-t px-5 py-3 text-[13px]">
+        <span className="text-muted">Cash today ÷ {money(d.metrics.weeklyFixed)} a week of fixed costs and owner pay</span>
         <span className="tnum font-mono">
           <span className="font-semibold">{money(d.metrics.cash)}</span> = {d.metrics.runwayWeeks.toFixed(1)} weeks
         </span>

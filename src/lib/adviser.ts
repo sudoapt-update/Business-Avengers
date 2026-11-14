@@ -129,7 +129,8 @@ export function fallbackAnswer(question: string, c: AdviserContext): string {
   }
 
   if (/leak|save|saving|cut|subscription|tool|expense/.test(q)) {
-    if (!leak) return "Every leak we found is fixed. Next step: review your monthly costs in Books once a month so new ones don't stack up.";
+    if (!leak)
+      return "Every leak we found is fixed. Next step: review your monthly costs in Books once a month so new ones don't stack up.";
     return [
       `Start with "${leak.title.toLowerCase()}": you pay ${usd(leak.payingNow)}/mo and ${leak.cheaperOption.toLowerCase()} costs ${usd(leak.cheaperPrice)}, saving ${usd(leak.savingPerMonth)} a month.`,
       `All ${c.openLeaks.length} open leaks together come to ${usd(c.openLeaks.reduce((s, l) => s + l.savingPerMonth, 0))} a month, about ${Math.round((c.openLeaks.reduce((s, l) => s + l.savingPerMonth, 0) / Math.max(1, p.trueProfit)) * 100)}% of last month's profit.`,
@@ -178,6 +179,8 @@ export function fallbackAnswer(question: string, c: AdviserContext): string {
   return [
     `Your Health Score is ${c.healthScore} out of 100. Last month you kept ${usd(p.trueProfit)} from ${usd(p.sales)} of sales, and cash covers ${c.cash.runwayWeeks} weeks.`,
     `The biggest gap is ${weakest.part.toLowerCase()} (${weakest.points} of ${weakest.outOf}, ${weakest.reading}).`,
-    leak ? `Next step: fix "${leak.title.toLowerCase()}" to save ${usd(leak.savingPerMonth)} a month.` : "Next step: do today's missions to keep your books current.",
+    leak
+      ? `Next step: fix "${leak.title.toLowerCase()}" to save ${usd(leak.savingPerMonth)} a month.`
+      : "Next step: do today's missions to keep your books current.",
   ].join(" ");
 }

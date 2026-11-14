@@ -10,7 +10,7 @@ export function ComingNext({ title, sub, note }: { title: string; sub: string; n
     <>
       <PageHeader title={title} sub={sub} />
       <Card className="p-6">
-        <p className="text-sm text-ink-2">{note}</p>
+        <p className="text-ink-2 text-sm">{note}</p>
         <Link href="/app" className="mt-4 inline-block text-sm font-medium underline underline-offset-4">
           Back to Overview
         </Link>

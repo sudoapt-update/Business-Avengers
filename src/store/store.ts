@@ -70,11 +70,9 @@ interface State {
 
 let toastSeq = 1;
 
-export const tokenBalance = (data: DemoData, tier: Tier) =>
-  tierInfo(tier).tokens + data.tokenLedger.reduce((s, t) => s + t.amount, 0);
+export const tokenBalance = (data: DemoData, tier: Tier) => tierInfo(tier).tokens + data.tokenLedger.reduce((s, t) => s + t.amount, 0);
 export const totalXp = (data: DemoData) => data.missionLog.reduce((s, m) => s + m.xp, 0);
-export const leakUnlocked = (tier: Tier, l: DemoData["leaks"][number]) =>
-  tierRank(tier) >= tierRank(l.minTier) || !!l.unlockedWithTokens;
+export const leakUnlocked = (tier: Tier, l: DemoData["leaks"][number]) => tierRank(tier) >= tierRank(l.minTier) || !!l.unlockedWithTokens;
 
 export const useStore = create<State>()(
   persist(
@@ -197,7 +195,11 @@ export const useStore = create<State>()(
           const { data } = get();
           if (!data) return;
           const newDay = addDays(get().today(), 1);
-          const overnight = ordersForDay(newDay, data.orderSeq, 1.1, 7000 + data.orderSeq, 11).map((o) => ({ ...o, live: true, at: Date.now() }));
+          const overnight = ordersForDay(newDay, data.orderSeq, 1.1, 7000 + data.orderSeq, 11).map((o) => ({
+            ...o,
+            live: true,
+            at: Date.now(),
+          }));
           set({
             dayOffset: get().dayOffset + 1,
             data: { ...data, orders: [...data.orders, ...overnight], orderSeq: data.orderSeq + overnight.length + 2 },
@@ -339,7 +341,14 @@ export const useStore = create<State>()(
           const history = (data.chat ?? []).slice(-4).map(({ role, text }) => ({ role, text }));
           const push = (entry: Omit<ChatEntry, "id" | "day">) => {
             const d = get().data!;
-            set({ data: { ...d, chat: [...(d.chat ?? []), { ...entry, id: `c${Date.now()}${Math.random().toString(36).slice(2, 6)}`, day: today }].slice(-40) } });
+            set({
+              data: {
+                ...d,
+                chat: [...(d.chat ?? []), { ...entry, id: `c${Date.now()}${Math.random().toString(36).slice(2, 6)}`, day: today }].slice(
+                  -40,
+                ),
+              },
+            });
           };
 
           push({ role: "user", text: q, cost: ADVISER_COST });
@@ -358,7 +367,11 @@ export const useStore = create<State>()(
             // Network failure: answer from the numbers below.
           }
 
-          push(answer ? { role: "assistant", text: answer, source: "model" } : { role: "assistant", text: fallbackAnswer(q, context), source: "fallback" });
+          push(
+            answer
+              ? { role: "assistant", text: answer, source: "model" }
+              : { role: "assistant", text: fallbackAnswer(q, context), source: "fallback" },
+          );
           set({ adviserBusy: false });
           grantReward("ask-adviser");
         },
@@ -385,7 +398,9 @@ export const useStore = create<State>()(
             });
             return false;
           }
-          set({ data: { ...data, tokenLedger: [...data.tokenLedger, { id: `t${Date.now()}`, day: get().today(), amount: -amount, reason }] } });
+          set({
+            data: { ...data, tokenLedger: [...data.tokenLedger, { id: `t${Date.now()}`, day: get().today(), amount: -amount, reason }] },
+          });
           return true;
         },
 
@@ -416,9 +431,15 @@ export const useStore = create<State>()(
           const before = get().data!.missionLog.length;
           grantReward("apply-saving", from);
           if (get().data!.missionLog.length === before) {
-            pushToast({ title: "Saving applied", detail: `${leak.title}. The expense now reflects the cheaper option.`, scoreFrom: from, scoreTo: to });
+            pushToast({
+              title: "Saving applied",
+              detail: `${leak.title}. The expense now reflects the cheaper option.`,
+              scoreFrom: from,
+              scoreTo: to,
+            });
           }
-          if (!data.badges.some((b) => b.id === "leak-hunter")) pushToast({ title: `Badge earned · ${BADGES["leak-hunter"].name}`, detail: BADGES["leak-hunter"].hint });
+          if (!data.badges.some((b) => b.id === "leak-hunter"))
+            pushToast({ title: `Badge earned · ${BADGES["leak-hunter"].name}`, detail: BADGES["leak-hunter"].hint });
         },
 
         openSheet: (s) => {

@@ -39,7 +39,15 @@ export function OrdersView() {
     const gross = os.reduce((s, o) => s + o.gross, 0);
     const fees = os.reduce((s, o) => s + o.platformFee + o.paymentFee + o.shipping, 0);
     const keep = os.reduce((s, o) => s + orderProfit(o), 0);
-    return { channel: c, count: os.length, gross, fees, keep, feeShare: gross ? fees / gross : 0, keepPer100: gross ? (keep / gross) * 100 : 0 };
+    return {
+      channel: c,
+      count: os.length,
+      gross,
+      fees,
+      keep,
+      feeShare: gross ? fees / gross : 0,
+      keepPer100: gross ? (keep / gross) * 100 : 0,
+    };
   });
   const own = stats.find((s) => s.channel === "shopify")!;
   const mkt = stats.find((s) => s.channel === "amazon")!;
@@ -72,8 +80,8 @@ export function OrdersView() {
         <Explainer>
           A sale is not what lands in your bank. Each channel keeps a different share before you see the money: marketplace referral and
           fulfilment fees, card fees on your own checkout, and postage on free-shipping orders. This screen shows each order next to{" "}
-          <span className="font-medium text-ink">what you keep</span> once those and the product&apos;s cost come off. Shopify and
-          Amazon rows sync on their own in the demo; market sales are added by hand in Books.
+          <span className="text-ink font-medium">what you keep</span> once those and the product&apos;s cost come off. Shopify and Amazon
+          rows sync on their own in the demo; market sales are added by hand in Books.
         </Explainer>
 
         <div className="grid gap-3 md:grid-cols-3">
@@ -84,7 +92,7 @@ export function OrdersView() {
                 <Pill tone={s.channel === "market" ? "neutral" : "info"}>{s.channel === "market" ? "Added by hand" : "Demo sync"}</Pill>
               </div>
               <div className="tnum mt-3 text-[26px] leading-none font-semibold tracking-tight">{money(s.gross)}</div>
-              <div className="mt-1 text-[13px] text-muted">{s.count} orders · 30 days</div>
+              <div className="text-muted mt-1 text-[13px]">{s.count} orders · 30 days</div>
               <div className="mt-4 space-y-1.5 text-[13px]">
                 <div className="flex justify-between">
                   <span className="text-muted">Fees and postage</span>
@@ -92,9 +100,15 @@ export function OrdersView() {
                     {money(s.fees)} · {(s.feeShare * 100).toFixed(1)}%
                   </span>
                 </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-line" aria-hidden>
+                <div className="bg-line h-1.5 overflow-hidden rounded-full" aria-hidden>
                   <div
-                    className={s.feeShare > 0.2 ? "h-full rounded-full bg-bad-dot" : s.feeShare > 0.1 ? "h-full rounded-full bg-warn-dot" : "h-full rounded-full bg-good-dot"}
+                    className={
+                      s.feeShare > 0.2
+                        ? "bg-bad-dot h-full rounded-full"
+                        : s.feeShare > 0.1
+                          ? "bg-warn-dot h-full rounded-full"
+                          : "bg-good-dot h-full rounded-full"
+                    }
                     style={{ width: `${(s.feeShare / maxFee) * 100}%` }}
                   />
                 </div>
@@ -108,12 +122,12 @@ export function OrdersView() {
         </div>
 
         {own.gross > 0 && mkt.gross > 0 && (
-          <div className="rounded-card border border-line bg-panel px-4 py-3 text-[13px] text-ink-2 sm:px-5">
-            On every $100 sold, you keep <span className="tnum font-mono font-medium text-ink">{money2(own.keepPer100)}</span> on your own store and{" "}
-            <span className="tnum font-mono font-medium text-ink">{money2(mkt.keepPer100)}</span> on the marketplace. Moving one repeat buyer a
-            week to your store is worth about{" "}
-            <span className="tnum font-mono font-medium text-ink">
-              {money((((own.keepPer100 - mkt.keepPer100) / 100) * (mkt.gross / Math.max(1, mkt.count))) * 52)}
+          <div className="rounded-card border-line bg-panel text-ink-2 border px-4 py-3 text-[13px] sm:px-5">
+            On every $100 sold, you keep <span className="tnum text-ink font-mono font-medium">{money2(own.keepPer100)}</span> on your own
+            store and <span className="tnum text-ink font-mono font-medium">{money2(mkt.keepPer100)}</span> on the marketplace. Moving one
+            repeat buyer a week to your store is worth about{" "}
+            <span className="tnum text-ink font-mono font-medium">
+              {money(((own.keepPer100 - mkt.keepPer100) / 100) * (mkt.gross / Math.max(1, mkt.count)) * 52)}
             </span>{" "}
             a year.
           </div>
@@ -131,10 +145,7 @@ export function OrdersView() {
                   setFilter(v);
                   setPage(0);
                 }}
-                options={[
-                  { value: "all", label: "All" },
-                  ...CHANNELS.map((c) => ({ value: c, label: CHANNEL_LABEL[c] })),
-                ]}
+                options={[{ value: "all", label: "All" }, ...CHANNELS.map((c) => ({ value: c, label: CHANNEL_LABEL[c] }))]}
               />
             }
             className="flex-col sm:flex-row"
@@ -150,13 +161,13 @@ export function OrdersView() {
           <Caps>Connections</Caps>
           <ul className="mt-3 grid gap-2 sm:grid-cols-3">
             {CHANNELS.map((c) => (
-              <li key={c} className="flex items-center justify-between rounded-lg border border-line px-3 py-2.5 text-[13px]">
+              <li key={c} className="border-line flex items-center justify-between rounded-lg border px-3 py-2.5 text-[13px]">
                 <ChannelLabel channel={c} />
-                <span className="font-mono text-[11px] text-muted">{c === "market" ? "manual" : "demo · live"}</span>
+                <span className="text-muted font-mono text-xs">{c === "market" ? "manual" : "demo · live"}</span>
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-xs text-muted">Demo connection — no real account is accessed.</p>
+          <p className="text-muted mt-3 text-xs">Demo connection — no real account is accessed.</p>
         </Card>
       </div>
     </>

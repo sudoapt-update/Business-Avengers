@@ -2,13 +2,7 @@ import { diffDays, type Day } from "./date";
 import type { DemoData } from "./types";
 
 export type MissionId =
-  | "review-fees"
-  | "simulate-order"
-  | "add-expenses"
-  | "review-leaks"
-  | "apply-saving"
-  | "check-runway"
-  | "ask-adviser";
+  "review-fees" | "simulate-order" | "add-expenses" | "review-leaks" | "apply-saving" | "check-runway" | "ask-adviser";
 
 export interface MissionDef {
   id: MissionId;

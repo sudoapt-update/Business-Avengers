@@ -13,7 +13,7 @@ export const CHANNEL_TONE: Record<Channel, Tone> = { shopify: "good", amazon: "w
 
 export function ChannelLabel({ channel }: { channel: Channel }) {
   return (
-    <span className="inline-flex items-center gap-1.5 text-[13px] text-ink-2">
+    <span className="text-ink-2 inline-flex items-center gap-1.5 text-[13px]">
       <span className={cn("size-1.5 rounded-full", dotTone[CHANNEL_TONE[channel]])} aria-hidden />
       {CHANNEL_LABEL[channel]}
     </span>
@@ -45,7 +45,12 @@ export function OrderList({
 
   return (
     <>
-      <div className={cn("hidden gap-3 border-y border-line bg-canvas px-5 py-2 text-[11px] font-medium tracking-[0.08em] text-muted uppercase md:grid", cols)}>
+      <div
+        className={cn(
+          "border-line bg-canvas text-muted hidden gap-3 border-y px-5 py-2 text-[11px] font-medium tracking-[0.08em] uppercase md:grid",
+          cols,
+        )}
+      >
         <span>{showSource ? "Date" : "Time"}</span>
         <span>Order</span>
         <span>Channel</span>
@@ -54,20 +59,24 @@ export function OrderList({
         <span className="text-right">You keep</span>
         {showSource && <span className="text-right">Source</span>}
       </div>
-      <ul className="divide-y divide-line border-t border-line md:border-t-0" aria-live="polite">
+      <ul className="divide-line border-line divide-y border-t md:border-t-0" aria-live="polite">
         {orders.map((o) => {
           const fees = o.platformFee + o.paymentFee + o.shipping;
           return (
             <li
               key={o.id}
-              className={cn("grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-1 px-5 py-3 text-sm md:items-center", cols, o.id === highlightId && "animate-row-in")}
+              className={cn(
+                "grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-1 px-5 py-3 text-sm md:items-center",
+                cols,
+                o.id === highlightId && "animate-row-in",
+              )}
             >
-              <span className="tnum hidden font-mono text-[12px] text-muted md:block">{when(o, today)}</span>
+              <span className="tnum text-muted hidden font-mono text-[12px] md:block">{when(o, today)}</span>
               <div className="min-w-0">
                 <div className="truncate">
                   {o.item} <span className="text-muted">×{o.qty}</span>
                 </div>
-                <div className="truncate font-mono text-[11px] text-muted">
+                <div className="text-muted truncate font-mono text-xs">
                   {o.ref}
                   <span className="md:hidden">
                     {" "}
@@ -80,16 +89,20 @@ export function OrderList({
                 <ChannelLabel channel={o.channel} />
               </span>
               <span className="tnum hidden text-right font-mono md:block">{money2(o.gross)}</span>
-              <span className="tnum hidden text-right font-mono text-muted md:block">−{money2(fees)}</span>
+              <span className="tnum text-muted hidden text-right font-mono md:block">−{money2(fees)}</span>
               <span className="tnum text-right font-mono font-medium">
-                <span className="mr-2 font-normal text-muted md:hidden">{money2(o.gross)} →</span>
+                <span className="text-muted mr-2 font-normal md:hidden">{money2(o.gross)} →</span>
                 {money2(orderProfit(o))}
               </span>
               {showSource && (
                 <span className="hidden items-center justify-end gap-1 md:flex">
                   <Pill tone={o.source === "synced" ? "info" : "neutral"}>{o.source}</Pill>
                   {onDelete && o.source === "manual" && o.live && (
-                    <button className="rounded p-1 text-faint hover:bg-hover hover:text-bad" onClick={() => onDelete(o)} aria-label={`Remove sale ${o.ref}`}>
+                    <button
+                      className="text-faint hover:bg-hover hover:text-bad grid size-7 place-items-center rounded-md"
+                      onClick={() => onDelete(o)}
+                      aria-label={`Remove sale ${o.ref}`}
+                    >
                       <Trash2 className="size-3.5" />
                     </button>
                   )}
@@ -98,7 +111,7 @@ export function OrderList({
             </li>
           );
         })}
-        {orders.length === 0 && <li className="px-5 py-8 text-center text-sm text-muted">No orders match this filter.</li>}
+        {orders.length === 0 && <li className="text-muted px-5 py-8 text-center text-sm">No orders match this filter.</li>}
       </ul>
     </>
   );

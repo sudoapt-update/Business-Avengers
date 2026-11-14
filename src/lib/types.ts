@@ -23,13 +23,7 @@ export interface Order {
   at?: number;
 }
 
-export type ExpenseCategory =
-  | "Software"
-  | "Advertising"
-  | "Packaging"
-  | "Market booth"
-  | "Utilities"
-  | "Other";
+export type ExpenseCategory = "Software" | "Advertising" | "Packaging" | "Market booth" | "Utilities" | "Other";
 
 export interface Expense {
   id: string;

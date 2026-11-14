@@ -35,14 +35,15 @@ export function useMissionAction() {
   };
 }
 
-export function MissionCard({ m, compact = false }: { m: MissionDef & { done: boolean; progress: number }; compact?: boolean }) {
+/** One mission as a row inside the missions list; `primary` marks the next one to do. */
+export function MissionCard({ m, primary = false }: { m: MissionDef & { done: boolean; progress: number }; primary?: boolean }) {
   const d = useDerived();
   const act = useMissionAction();
   const r = d.reward(m);
   const earned = d.data.missionLog.find((x) => x.day === d.today && x.missionId === m.id);
 
   return (
-    <div className={cn("rounded-card border p-4", m.done ? "border-line bg-canvas" : "border-line bg-panel")}>
+    <li className={cn("px-5 py-4", m.done && "bg-canvas")}>
       <div className="flex items-start gap-3">
         <span
           className={cn(
@@ -54,8 +55,8 @@ export function MissionCard({ m, compact = false }: { m: MissionDef & { done: bo
           {m.done && <Check className="size-3" strokeWidth={3} />}
         </span>
         <div className="min-w-0 flex-1">
-          <div className={cn("text-sm font-medium", m.done && "text-muted line-through decoration-faint")}>{m.title}</div>
-          {!compact && !m.done && <div className="mt-0.5 text-[13px] text-muted">{m.why}</div>}
+          <div className={cn("text-sm font-medium", m.done && "text-muted decoration-faint line-through")}>{m.title}</div>
+          {!m.done && <div className="text-muted mt-0.5 text-[13px]">{m.why}</div>}
           <div className="mt-2 flex flex-wrap items-center gap-1.5">
             {m.done && earned ? (
               <Pill tone="good" className="tnum font-mono">
@@ -67,7 +68,7 @@ export function MissionCard({ m, compact = false }: { m: MissionDef & { done: bo
                   +{r.tokens} tokens · +{r.xp} XP
                 </Pill>
                 {d.streakBonus && <Pill tone="warn">Streak +20%</Pill>}
-                <span className="inline-flex items-center gap-1 text-[11px] text-muted">
+                <span className="text-muted inline-flex items-center gap-1 text-xs">
                   <Clock className="size-3" /> {m.minutes} min
                 </span>
               </>
@@ -76,7 +77,7 @@ export function MissionCard({ m, compact = false }: { m: MissionDef & { done: bo
           {m.target && !m.done && (
             <div className="mt-3">
               <SegmentBar total={m.target} done={Math.min(m.progress, m.target)} />
-              <div className="tnum mt-1 font-mono text-[11px] text-muted">
+              <div className="tnum text-muted mt-1 font-mono text-xs">
                 {Math.min(m.progress, m.target)} of {m.target} added
               </div>
             </div>
@@ -84,35 +85,36 @@ export function MissionCard({ m, compact = false }: { m: MissionDef & { done: bo
         </div>
       </div>
       {!m.done && (
-        <Button size="sm" variant={compact ? "secondary" : "primary"} className="mt-3 w-full" onClick={() => act(m.id)}>
+        <Button size="sm" variant={primary ? "primary" : "secondary"} className="mt-3 ml-8" onClick={() => act(m.id)}>
           {m.cta}
         </Button>
       )}
-    </div>
+    </li>
   );
 }
 
 export function MissionsRail() {
   const d = useDerived();
+  const next = d.missions.slice(0, 3).find((m) => !m.done);
   return (
     <Card>
       <CardHeader
         title="Today's missions"
         sub="Five minutes a day. Each one finishes when you actually do it."
         right={
-          <span className="tnum shrink-0 font-mono text-[12px] text-muted">
+          <span className="tnum text-muted shrink-0 font-mono text-[12px]">
             {d.missionsDone}/{d.missions.length}
           </span>
         }
       />
-      <div className="space-y-2.5 p-4 pt-3">
+      <ul className="divide-line border-line mt-3 divide-y border-t">
         {d.missions.slice(0, 3).map((m) => (
-          <MissionCard key={m.id} m={m} />
+          <MissionCard key={m.id} m={m} primary={m.id === next?.id} />
         ))}
-        {d.missions.length > 3 && (
-          <div className="pt-1 text-center text-xs text-muted">+{d.missions.length - 3} more on the Missions page</div>
-        )}
-      </div>
+      </ul>
+      {d.missions.length > 3 && (
+        <div className="border-line text-muted border-t px-5 py-2.5 text-xs">+{d.missions.length - 3} more on the Missions page</div>
+      )}
     </Card>
   );
 }
@@ -132,30 +134,45 @@ export function LevelCard() {
           <Caps>Financial level</Caps>
           <div className="mt-1.5 text-xl font-semibold tracking-tight">{lv.name}</div>
         </div>
-        <span className="inline-flex items-center gap-1.5 rounded-lg border border-line px-2 py-1 text-[13px]">
+        <span className="border-line inline-flex items-center gap-1.5 rounded-lg border px-2 py-1 text-[13px]">
           <Flame className={cn("size-3.5", d.doneToday ? "text-bad-dot" : "text-faint")} />
           <span className="tnum font-mono">{d.streak}</span>
           <span className="text-muted">day streak</span>
         </span>
       </div>
-      <div className="mt-4 h-2 overflow-hidden rounded-full bg-line" role="progressbar" aria-valuenow={d.xp} aria-valuemin={lv.floor} aria-valuemax={lv.ceil} aria-label="XP to next level">
-        <div className="h-full rounded-full bg-linear-to-r from-brand-a to-brand-b transition-[width] duration-700" style={{ width: `${lv.progress * 100}%` }} />
+      <div
+        className="bg-line mt-4 h-2 overflow-hidden rounded-full"
+        role="progressbar"
+        aria-valuenow={d.xp}
+        aria-valuemin={lv.floor}
+        aria-valuemax={lv.ceil}
+        aria-label="XP to next level"
+      >
+        <div
+          className="from-brand-a to-brand-b h-full rounded-full bg-linear-to-r transition-[width] duration-700"
+          style={{ width: `${lv.progress * 100}%` }}
+        />
       </div>
-      <div className="tnum mt-2 flex justify-between font-mono text-[11px] text-muted">
+      <div className="tnum text-muted mt-2 flex justify-between font-mono text-xs">
         <span>
           {d.xp} / {lv.ceil} XP
         </span>
         <span>{lv.next ? `${lv.ceil - d.xp} XP to ${lv.next}` : "Top level"}</span>
       </div>
-      <div className="mt-4 rounded-lg bg-canvas px-3 py-2 text-[13px] text-ink-2">
+      <div className="bg-canvas text-ink-2 mt-4 rounded-lg px-3 py-2 text-[13px]">
         {bonusActive ? (
           <>
-            <span className="font-medium text-ink">+20% tokens</span> on every mission while your streak is {STREAK_BONUS_FROM}+ days.
+            <span className="text-ink font-medium">+20% tokens</span> on every mission while your streak is {STREAK_BONUS_FROM}+ days.
           </>
         ) : (
           <>Reach a {STREAK_BONUS_FROM}-day streak to earn +20% tokens on every mission.</>
         )}
-        {d.tier.rewardMultiplier > 1 && <> {d.tier.name} adds {d.tier.rewardMultiplier}×.</>}
+        {d.tier.rewardMultiplier > 1 && (
+          <>
+            {" "}
+            {d.tier.name} adds {d.tier.rewardMultiplier}×.
+          </>
+        )}
       </div>
       <Caps className="mt-4 mb-2">Badges</Caps>
       <ul className="flex flex-wrap gap-1.5">
@@ -164,11 +181,11 @@ export function LevelCard() {
             key={id}
             title={BADGES[id].hint}
             className={cn(
-              "inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[11px]",
-              earned.has(id) ? "border-line bg-panel text-ink" : "border-dashed border-line text-faint",
+              "inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-xs",
+              earned.has(id) ? "border-line bg-panel text-ink" : "border-line text-faint border-dashed",
             )}
           >
-            {earned.has(id) ? <Award className="size-3 text-warn" /> : <Lock className="size-3" />}
+            {earned.has(id) ? <Award className="text-warn size-3" /> : <Lock className="size-3" />}
             {BADGES[id].name}
           </li>
         ))}

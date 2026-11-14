@@ -17,7 +17,7 @@ export function AlertBanner() {
   const msg = largest
     ? {
         title: `You're losing ${money(m.leakMonthly)}/mo to ${m.leakCount} leak${m.leakCount === 1 ? "" : "s"}. The largest is ${money(m.largestLeak)}/mo.`,
-        body: `That's ${money(m.leakMonthly * 12)} a year, or ${(m.leakMonthly / Math.max(1, m.trueProfit) * 100).toFixed(0)}% of what you kept last month.`,
+        body: `That's ${money(m.leakMonthly * 12)} a year, or ${((m.leakMonthly / Math.max(1, m.trueProfit)) * 100).toFixed(0)}% of what you kept last month.`,
         cta: "See leaks",
         go: () => openSheet({ kind: "leak", leakId: largest.leak.id }),
       }
@@ -29,13 +29,13 @@ export function AlertBanner() {
       };
 
   return (
-    <div className="flex flex-col gap-3 rounded-card border border-line bg-panel px-4 py-3.5 sm:flex-row sm:items-center sm:px-5">
-      <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-warn-bg text-warn" aria-hidden>
+    <div className="rounded-card border-line bg-panel flex flex-col gap-3 border px-4 py-3.5 sm:flex-row sm:items-center sm:px-5">
+      <span className="bg-warn-bg text-warn grid size-8 shrink-0 place-items-center rounded-lg" aria-hidden>
         <AlertTriangle className="size-4" />
       </span>
       <div className="min-w-0 flex-1">
         <div className="text-sm font-medium">{msg.title}</div>
-        <div className="text-[13px] text-muted">{msg.body}</div>
+        <div className="text-muted text-[13px]">{msg.body}</div>
       </div>
       <Button onClick={msg.go} className="self-start sm:self-auto">
         {msg.cta}
@@ -62,16 +62,16 @@ function Kpi({
   tone?: "good" | "warn" | "bad" | "ink";
 }) {
   return (
-    <div className="rounded-card border border-line bg-panel p-4 sm:p-5">
+    <div className="rounded-card border-line bg-panel border p-4 sm:p-5">
       <div className="flex items-start justify-between gap-2">
         <Caps>{label}</Caps>
         {spark && <Sparkline values={spark} tone={tone} className="-mt-1 h-7 w-20" />}
       </div>
       <div className="tnum mt-3 text-[28px] leading-none font-semibold tracking-tight">
         {value}
-        {unit && <span className="ml-1 text-base font-medium text-muted">{unit}</span>}
+        {unit && <span className="text-muted ml-1 text-base font-medium">{unit}</span>}
       </div>
-      <div className="mt-3 flex flex-wrap items-center gap-2 text-[13px] text-muted">
+      <div className="text-muted mt-3 flex flex-wrap items-center gap-2 text-[13px]">
         {delta}
         <span>{caption}</span>
       </div>

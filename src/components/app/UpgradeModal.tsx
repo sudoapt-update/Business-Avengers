@@ -20,8 +20,8 @@ export function UpgradeModal() {
     <Dialog open={!!upgrade} onClose={() => openUpgrade(null)} title={upgrade?.title ?? ""} sub={upgrade?.body}>
       <div className="space-y-3 p-5">
         {leaks > 0 && options[0] && (
-          <p className="rounded-lg bg-canvas px-3 py-2 text-[13px] text-ink-2">
-            This store is leaking <span className="tnum font-mono font-medium text-ink">{money(leaks)}/mo</span>. {options[0].name} costs $
+          <p className="bg-canvas text-ink-2 rounded-lg px-3 py-2 text-[13px]">
+            This store is leaking <span className="tnum text-ink font-mono font-medium">{money(leaks)}/mo</span>. {options[0].name} costs $
             {options[0].price}, so fixing the leaks pays for it {(leaks / options[0].price).toFixed(1)} times over.
           </p>
         )}
@@ -34,16 +34,16 @@ export function UpgradeModal() {
               </div>
               <span className="tnum font-mono text-sm">${t.price}/mo</span>
             </div>
-            <ul className="mt-3 space-y-1.5 text-[13px] text-ink-2">
+            <ul className="text-ink-2 mt-3 space-y-1.5 text-[13px]">
               {t.adds.map((a) => (
                 <li key={a} className="flex gap-2">
-                  <Check className="mt-0.5 size-3.5 shrink-0 text-good" />
+                  <Check className="text-good mt-0.5 size-3.5 shrink-0" />
                   {a}
                 </li>
               ))}
             </ul>
             <div className="mt-3 flex items-center justify-between gap-3">
-              <span className="font-mono text-[11px] text-muted">
+              <span className="text-muted font-mono text-xs">
                 {num(t.tokens)} tokens/mo · {t.rewardMultiplier}× mission rewards
               </span>
               <Button
@@ -59,8 +59,8 @@ export function UpgradeModal() {
             </div>
           </div>
         ))}
-        {options.length === 0 && <p className="text-sm text-muted">You are viewing the top plan.</p>}
-        <p className="pt-1 text-xs text-muted">
+        {options.length === 0 && <p className="text-muted text-sm">You are viewing the top plan.</p>}
+        <p className="text-muted pt-1 text-xs">
           Demo only: no payment is taken. &ldquo;Preview&rdquo; switches the demo to that plan&apos;s real limits.{" "}
           <Link href="/app/plans" className="underline underline-offset-2" onClick={() => openUpgrade(null)}>
             Compare all plans
