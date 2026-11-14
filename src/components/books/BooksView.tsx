@@ -1,0 +1,409 @@
+"use client";
+
+import { useState, type FormEvent } from "react";
+import { Plus, Trash2 } from "lucide-react";
+import { useStore } from "@/store/store";
+import { useDerived } from "@/store/derived";
+import { addDays, formatDay } from "@/lib/date";
+import { accountBalances, byNewest, effectiveAmount, stockLevels } from "@/lib/engine";
+import { PRODUCTS } from "@/lib/seed";
+import { cn, money, money2, num } from "@/lib/format";
+import type { Expense } from "@/lib/types";
+import { PageHeader } from "@/components/app/PageHeader";
+import { Explainer } from "@/components/app/Explainer";
+import { Button, Card, CardHeader, Caps, Pill } from "@/components/ui/primitives";
+import { EditableNumber, Pager, Segmented, Td, Th } from "@/components/ui/table";
+import { OrderList } from "@/components/orders/OrderList";
+
+type Tab = "income" | "expenses" | "inventory" | "cash";
+const PAGE = 6;
+
+export function BooksView() {
+  const d = useDerived();
+  const [tab, setTab] = useState<Tab>("income");
+  const fresh = d.metrics.factors.find((f) => f.key === "freshness")!;
+  const from = addDays(d.today, -30);
+  const income30 = d.data.orders.filter((o) => o.day > from && o.day <= d.today).reduce((s, o) => s + o.gross, 0);
+  const stock = stockLevels(d.data);
+
+  const tiles: { id: Tab; label: string; value: string; sub: string }[] = [
+    { id: "income", label: "Income", value: money(income30), sub: "sales, last 30 days" },
+    { id: "expenses", label: "Expenses", value: money(d.metrics.tools), sub: "running costs a month" },
+    { id: "inventory", label: "Stock", value: money(stock.reduce((s, x) => s + x.value, 0)), sub: `${num(stock.reduce((s, x) => s + x.units, 0))} units at cost` },
+    { id: "cash", label: "Cash", value: money(d.metrics.cash), sub: `${d.metrics.runwayWeeks.toFixed(1)} weeks of runway` },
+  ];
+
+  return (
+    <>
+      <PageHeader title="Books" sub="Your income, expenses, stock and cash in four simple tables. Every edit updates the whole app." />
+      <div className="space-y-4">
+        <Explainer>
+          Profit you can trust starts with complete books. Synced orders land here on their own; anything paid in cash, at the market or
+          outside your store has to be added by hand. Click any figure with a pencil to correct it. Your score&apos;s{" "}
+          <span className="font-medium text-ink">Books up to date</span> part is{" "}
+          <span className="tnum font-mono">
+            {fresh.points.toFixed(1)}/{fresh.weight}
+          </span>{" "}
+          ({fresh.reading.toLowerCase()}); any edit today brings it to full marks.
+        </Explainer>
+
+        <div className="grid grid-cols-2 gap-3 xl:grid-cols-4" role="tablist" aria-label="Books tables">
+          {tiles.map((t) => (
+            <button
+              key={t.id}
+              role="tab"
+              aria-selected={tab === t.id}
+              aria-controls={`books-${t.id}`}
+              onClick={() => setTab(t.id)}
+              className={cn(
+                "rounded-card border bg-panel p-4 text-left transition-colors sm:p-5",
+                tab === t.id ? "border-ink ring-1 ring-ink" : "border-line hover:border-line-strong",
+              )}
+            >
+              <Caps>{t.label}</Caps>
+              <div className="tnum mt-2 text-xl font-semibold tracking-tight sm:text-2xl">{t.value}</div>
+              <div className="mt-1 text-[12px] text-muted">{t.sub}</div>
+            </button>
+          ))}
+        </div>
+
+        <div id={`books-${tab}`} role="tabpanel">
+          {tab === "income" && <IncomeTable />}
+          {tab === "expenses" && <ExpensesTable />}
+          {tab === "inventory" && <InventoryTable />}
+          {tab === "cash" && <CashTable />}
+        </div>
+      </div>
+    </>
+  );
+}
+
+function IncomeTable() {
+  const d = useDerived();
+  const { deleteRow, addSale } = useStore.getState();
+  const lastOrderId = useStore((s) => s.lastOrderId);
+  const [filter, setFilter] = useState<"all" | "synced" | "manual">("all");
+  const [page, setPage] = useState(0);
+  const [adding, setAdding] = useState(false);
+
+  const rows = [...d.data.orders]
+    .filter((o) => filter === "all" || o.source === filter)
+    .sort(byNewest);
+  const pages = Math.max(1, Math.ceil(rows.length / PAGE));
+  const p = Math.min(page, pages - 1);
+
+  return (
+    <Card>
+      <CardHeader
+        title="Income"
+        sub="One row per order. Synced rows come from the order feed; market sales you add here."
+        right={
+          <Button size="sm" variant={adding ? "secondary" : "primary"} onClick={() => setAdding((a) => !a)} className="shrink-0">
+            <Plus className="size-3.5" /> {adding ? "Close" : "Add a market sale"}
+          </Button>
+        }
+      />
+      {adding && (
+        <SaleForm
+          onAdd={(s) => {
+            addSale(s);
+            setFilter("all");
+            setPage(0);
+          }}
+        />
+      )}
+      <div className="flex flex-wrap items-center justify-between gap-2 px-5 pt-4 pb-3">
+        <Segmented
+          label="Filter income"
+          value={filter}
+          onChange={(v) => {
+            setFilter(v);
+            setPage(0);
+          }}
+          options={[
+            { value: "all", label: "All" },
+            { value: "synced", label: "Synced" },
+            { value: "manual", label: "Added by hand" },
+          ]}
+        />
+        <span className="font-mono text-[11px] text-muted">{num(rows.length)} rows</span>
+      </div>
+      <OrderList
+        orders={rows.slice(p * PAGE, p * PAGE + PAGE)}
+        today={d.today}
+        highlightId={lastOrderId}
+        showSource
+        onDelete={(o) => deleteRow("order", o.id)}
+      />
+      <Pager page={p} size={PAGE} total={rows.length} onPage={setPage} />
+    </Card>
+  );
+}
+
+function SaleForm({ onAdd }: { onAdd: (s: { product: string; qty: number; price: number; card: boolean }) => void }) {
+  const [product, setProduct] = useState(PRODUCTS[0].name);
+  const [qty, setQty] = useState("1");
+  const [price, setPrice] = useState(String(PRODUCTS[0].price));
+  const [card, setCard] = useState(true);
+  const field = "h-9 w-full rounded-lg border border-line-strong bg-panel px-3 text-sm outline-none focus:border-ink";
+
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    const q = Math.max(1, Math.round(Number(qty)));
+    const pr = Number(price);
+    if (!(pr > 0)) return;
+    onAdd({ product, qty: q, price: pr, card });
+  };
+
+  return (
+    <form onSubmit={submit} className="mx-5 mt-4 grid gap-3 rounded-card border border-line bg-canvas p-4 sm:grid-cols-[minmax(0,2fr)_80px_110px_auto_auto] sm:items-end">
+      <label className="block">
+        <span className="mb-1 block text-[13px] font-medium">Product</span>
+        <select
+          className={field}
+          value={product}
+          onChange={(e) => {
+            setProduct(e.target.value);
+            setPrice(String(PRODUCTS.find((p) => p.name === e.target.value)?.price ?? ""));
+          }}
+        >
+          {PRODUCTS.map((p) => (
+            <option key={p.name}>{p.name}</option>
+          ))}
+        </select>
+      </label>
+      <label className="block">
+        <span className="mb-1 block text-[13px] font-medium">Qty</span>
+        <input className={`${field} tnum font-mono`} type="number" min="1" step="1" value={qty} onChange={(e) => setQty(e.target.value)} />
+      </label>
+      <label className="block">
+        <span className="mb-1 block text-[13px] font-medium">Price each</span>
+        <input className={`${field} tnum font-mono`} type="number" min="0" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} />
+      </label>
+      <label className="flex h-9 items-center gap-2 text-[13px]">
+        <input type="checkbox" checked={card} onChange={(e) => setCard(e.target.checked)} className="size-4 accent-ink" />
+        Paid by card
+      </label>
+      <Button variant="primary" type="submit">
+        Add sale
+      </Button>
+    </form>
+  );
+}
+
+function ExpensesTable() {
+  const d = useDerived();
+  const { updateExpenseAmount, deleteRow, openSheet } = useStore.getState();
+  const [filter, setFilter] = useState<"all" | "monthly" | "one-off">("all");
+  const [page, setPage] = useState(0);
+
+  const leakFor = (e: Expense) => d.data.leaks.find((l) => l.expenseId === e.id);
+  const rows = d.data.expenses
+    .filter((e) => filter === "all" || e.cadence === filter)
+    .sort((a, b) => (b.at ?? 0) - (a.at ?? 0) || effectiveAmount(b, d.data.leaks, d.today) - effectiveAmount(a, d.data.leaks, d.today));
+  const pages = Math.max(1, Math.ceil(rows.length / PAGE));
+  const p = Math.min(page, pages - 1);
+  const oneOff30 = d.data.expenses
+    .filter((e) => e.cadence === "one-off" && e.day > addDays(d.today, -30) && e.day <= d.today)
+    .reduce((s, e) => s + e.amount, 0);
+
+  return (
+    <Card>
+      <CardHeader
+        title="Expenses"
+        sub="Monthly costs and one-off purchases. Applied savings show the new price."
+        right={
+          <Button size="sm" variant="primary" onClick={() => openSheet({ kind: "add-expense" })} className="shrink-0">
+            <Plus className="size-3.5" /> Add expense
+          </Button>
+        }
+      />
+      <div className="px-5 pt-4 pb-3">
+        <Segmented
+          label="Filter expenses"
+          value={filter}
+          onChange={(v) => {
+            setFilter(v);
+            setPage(0);
+          }}
+          options={[
+            { value: "all", label: "All" },
+            { value: "monthly", label: "Monthly" },
+            { value: "one-off", label: "One-off" },
+          ]}
+        />
+      </div>
+      <div className="relative overflow-x-auto">
+        <table className="w-full min-w-[560px] text-sm">
+          <thead className="border-y border-line bg-canvas text-left">
+            <tr>
+              <Th>Expense</Th>
+              <Th>Category</Th>
+              <Th>Repeats</Th>
+              <Th right>Amount</Th>
+              <Th className="w-10">
+                <span className="sr-only">Actions</span>
+              </Th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-line">
+            {rows.slice(p * PAGE, p * PAGE + PAGE).map((e) => {
+              const leak = leakFor(e);
+              const applied = !!leak?.appliedOn;
+              return (
+                <tr key={e.id} className={cn(e.addedOn === d.today && "animate-row-in")}>
+                  <Td>
+                    <div className="font-medium">{e.name}</div>
+                    <div className="mt-0.5 flex flex-wrap gap-1">
+                      {e.addedOn && <span className="font-mono text-[11px] text-muted">added {formatDay(e.addedOn)}</span>}
+                      {leak && !applied && <Pill tone="bad">Leak · could be {money(leak.altPrice)}</Pill>}
+                      {applied && <Pill tone="good">Saving applied</Pill>}
+                    </div>
+                  </Td>
+                  <Td className="text-ink-2">{e.category}</Td>
+                  <Td>
+                    <Pill tone={e.cadence === "monthly" ? "neutral" : "info"}>{e.cadence === "monthly" ? "Monthly" : "One-off"}</Pill>
+                  </Td>
+                  <Td right>
+                    {applied ? (
+                      <span className="tnum font-mono">
+                        <span className="mr-2 text-faint line-through">{money2(e.amount)}</span>
+                        {money2(leak!.altPrice)}
+                      </span>
+                    ) : (
+                      <EditableNumber value={e.amount} display={money2(e.amount)} label={`Amount for ${e.name}`} onCommit={(n) => updateExpenseAmount(e.id, n)} />
+                    )}
+                  </Td>
+                  <Td right>
+                    {e.addedOn && (
+                      <button className="rounded p-1 text-faint hover:bg-hover hover:text-bad" onClick={() => deleteRow("expense", e.id)} aria-label={`Remove ${e.name}`}>
+                        <Trash2 className="size-3.5" />
+                      </button>
+                    )}
+                  </Td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <Pager page={p} size={PAGE} total={rows.length} onPage={setPage} />
+      <div className="flex flex-wrap justify-between gap-2 border-t border-line px-5 py-3 text-[13px]">
+        <span className="text-muted">Running costs this month</span>
+        <span className="tnum font-mono">
+          {money(d.metrics.tools - oneOff30)} monthly + {money(oneOff30)} one-off = <span className="font-semibold">{money(d.metrics.tools)}</span>
+        </span>
+      </div>
+    </Card>
+  );
+}
+
+function InventoryTable() {
+  const d = useDerived();
+  const recountStock = useStore((s) => s.recountStock);
+  const rows = stockLevels(d.data);
+  const total = rows.reduce((s, r) => s + r.value, 0);
+
+  return (
+    <Card>
+      <CardHeader title="Stock" sub="Units on hand at cost. Synced sales count down from your last count; type a new count after a stocktake." />
+      <div className="relative mt-4 overflow-x-auto">
+        <table className="w-full min-w-[560px] text-sm">
+          <thead className="border-y border-line bg-canvas text-left">
+            <tr>
+              <Th>Product</Th>
+              <Th right>Unit cost</Th>
+              <Th right>Counted</Th>
+              <Th right>Sold since</Th>
+              <Th right>On hand</Th>
+              <Th right>Value</Th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-line">
+            {rows.map((r) => (
+              <tr key={r.item.id}>
+                <Td>
+                  <div className="font-medium">{r.item.name}</div>
+                  <div className="font-mono text-[11px] text-muted">{r.item.sku}</div>
+                </Td>
+                <Td right className="tnum font-mono text-ink-2">
+                  {money2(r.item.unitCost)}
+                </Td>
+                <Td right>
+                  <EditableNumber value={r.item.units} display={num(r.item.units)} step="1" label={`Counted units of ${r.item.name}`} onCommit={(n) => recountStock(r.item.id, n)} />
+                </Td>
+                <Td right className="tnum font-mono text-muted">
+                  {r.sold ? `−${r.sold}` : "0"}
+                </Td>
+                <Td right>
+                  <span className="inline-flex items-center gap-2">
+                    {r.units < 20 && <Pill tone={r.units < 10 ? "bad" : "warn"}>Low</Pill>}
+                    <span className="tnum font-mono font-medium">{num(r.units)}</span>
+                  </span>
+                </Td>
+                <Td right className="tnum font-mono">
+                  {money(r.value)}
+                </Td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="flex justify-between border-t border-line px-5 py-3 text-[13px]">
+        <span className="text-muted">Stock value at cost</span>
+        <span className="tnum font-mono font-semibold">{money(total)}</span>
+      </div>
+    </Card>
+  );
+}
+
+function CashTable() {
+  const d = useDerived();
+  const recountCash = useStore((s) => s.recountCash);
+  const rows = accountBalances(d.data);
+
+  return (
+    <Card>
+      <CardHeader title="Cash" sub="Where your money sits. Orders and expenses move these balances until you type a fresh count." />
+      <div className="relative mt-4 overflow-x-auto">
+        <table className="w-full min-w-[520px] text-sm">
+          <thead className="border-y border-line bg-canvas text-left">
+            <tr>
+              <Th>Account</Th>
+              <Th right>Last count</Th>
+              <Th right>Since then</Th>
+              <Th right>Now</Th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-line">
+            {rows.map((r) => (
+              <tr key={r.account.id}>
+                <Td>
+                  <div className="font-medium">{r.account.name}</div>
+                  <div className="text-[12px] text-muted">{r.account.note}</div>
+                </Td>
+                <Td right>
+                  <EditableNumber value={r.account.balance} display={money2(r.account.balance)} label={`Counted balance of ${r.account.name}`} onCommit={(n) => recountCash(r.account.id, n)} />
+                </Td>
+                <Td right className={cn("tnum font-mono", r.flows > 0 ? "text-good" : r.flows < 0 ? "text-bad" : "text-muted")}>
+                  {r.flows === 0 ? "—" : `${r.flows > 0 ? "+" : "−"}${money2(Math.abs(r.flows))}`}
+                </Td>
+                <Td right className="tnum font-mono font-medium">
+                  {money2(r.balance)}
+                </Td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="flex flex-wrap justify-between gap-2 border-t border-line px-5 py-3 text-[13px]">
+        <span className="text-muted">
+          Cash today ÷ {money(d.metrics.weeklyFixed)} a week of fixed costs and owner pay
+        </span>
+        <span className="tnum font-mono">
+          <span className="font-semibold">{money(d.metrics.cash)}</span> = {d.metrics.runwayWeeks.toFixed(1)} weeks
+        </span>
+      </div>
+    </Card>
+  );
+}

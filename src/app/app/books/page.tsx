@@ -1,11 +1,13 @@
-import { ComingNext } from "@/components/app/ComingNext";
+import type { Metadata } from "next";
+import { Ready } from "@/components/app/Ready";
+import { BooksView } from "@/components/books/BooksView";
 
-export default function Page() {
+export const metadata: Metadata = { title: "Books" };
+
+export default function BooksPage() {
   return (
-    <ComingNext
-      title="Books"
-      sub="Your income, expenses, stock and cash in four simple tables."
-      note="Editable tables are next in the build. You can already add expenses from the Overview missions."
-    />
+    <Ready>
+      <BooksView />
+    </Ready>
   );
 }

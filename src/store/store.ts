@@ -16,7 +16,7 @@ import {
   streakOf,
   type MissionId,
 } from "@/lib/missions";
-import { buildOrder, createSeed, ordersForDay, pickChannel, rng } from "@/lib/seed";
+import { PRODUCTS, buildOrder, createSeed, ordersForDay, pickChannel, rng } from "@/lib/seed";
 import { tierInfo, tierRank } from "@/lib/tiers";
 import type { BadgeId, DemoData, Expense, Tier } from "@/lib/types";
 
@@ -51,6 +51,11 @@ interface State {
   setTier: (t: Tier) => void;
   simulateOrder: () => void;
   addExpense: (e: Pick<Expense, "name" | "category" | "amount" | "cadence">) => void;
+  addSale: (s: { product: string; qty: number; price: number; card: boolean }) => void;
+  updateExpenseAmount: (id: string, amount: number) => void;
+  deleteRow: (kind: "order" | "expense", id: string) => void;
+  recountCash: (id: string, balance: number) => void;
+  recountStock: (id: string, units: number) => void;
   markReviewed: (id: MissionId) => void;
   unlockLeak: (leakId: string) => boolean;
   applyLeak: (leakId: string) => void;
@@ -91,6 +96,17 @@ export const useStore = create<State>()(
 
       const award = (d: DemoData, id: BadgeId, day: Day): DemoData =>
         d.badges.some((b) => b.id === id) ? d : { ...d, badges: [...d.badges, { id, day }] };
+
+      /** Any hand edit to the tables: applies it, marks the books as updated today and reports the score change. */
+      const editBooks = (fn: (d: DemoData) => DemoData, title: string) => {
+        const today = get().today();
+        const { from, to } = mutate((d) => {
+          const next = fn(d);
+          return next.bookTouches.includes(today) ? next : { ...next, bookTouches: [...next.bookTouches, today] };
+        });
+        const moved = Math.abs(from - to) >= 0.05;
+        pushToast({ title, detail: "Books updated.", scoreFrom: moved ? from : undefined, scoreTo: moved ? to : undefined });
+      };
 
       /**
        * The one reward function. Every mission completion goes through here:
@@ -177,7 +193,7 @@ export const useStore = create<State>()(
           const { data } = get();
           if (!data) return;
           const newDay = addDays(get().today(), 1);
-          const overnight = ordersForDay(newDay, data.orderSeq, 1.1, 7000 + data.orderSeq, 11).map((o) => ({ ...o, live: true }));
+          const overnight = ordersForDay(newDay, data.orderSeq, 1.1, 7000 + data.orderSeq, 11).map((o) => ({ ...o, live: true, at: Date.now() }));
           set({
             dayOffset: get().dayOffset + 1,
             data: { ...data, orders: [...data.orders, ...overnight], orderSeq: data.orderSeq + overnight.length + 2 },
@@ -205,6 +221,7 @@ export const useStore = create<State>()(
           const now = new Date();
           const order = buildOrder(rand, channel === "market" ? "shopify" : channel, today, seq, {
             live: true,
+            at: Date.now(),
             source: "synced",
             id: `o${seq}-live`,
             time: `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`,
@@ -228,11 +245,83 @@ export const useStore = create<State>()(
           const today = get().today();
           const { from } = mutate((d) => ({
             ...d,
-            expenses: [...d.expenses, { ...e, id: `e${Date.now()}`, day: today, addedOn: today, live: true }],
+            expenses: [...d.expenses, { ...e, id: `e${Date.now()}`, day: today, addedOn: today, live: true, at: Date.now() }],
             bookTouches: d.bookTouches.includes(today) ? d.bookTouches : [...d.bookTouches, today],
           }));
           const d = get().data!;
           if (progressOf(d, today, "add-expenses") >= (MISSIONS["add-expenses"].target ?? 3)) grantReward("add-expenses", from);
+        },
+
+        addSale: ({ product, qty, price, card }) => {
+          const today = get().today();
+          const p = PRODUCTS.find((x) => x.name === product) ?? PRODUCTS[0];
+          const r2 = (n: number) => Math.round(n * 100) / 100;
+          const gross = r2(price * qty);
+          const now = new Date();
+          const hhmm = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+          editBooks(
+            (d) => ({
+              ...d,
+              orderSeq: d.orderSeq + 1,
+              orders: [
+                ...d.orders,
+                {
+                  id: `o${d.orderSeq}-manual`,
+                  ref: `MKT-${String(d.orderSeq).padStart(4, "0")}`,
+                  day: today,
+                  time: hhmm,
+                  channel: "market",
+                  item: p.name,
+                  qty,
+                  gross,
+                  cogs: r2(p.cost * qty),
+                  platformFee: 0,
+                  paymentFee: card ? r2(gross * 0.026 + 0.15) : 0,
+                  shipping: 0,
+                  source: "manual",
+                  live: true,
+                  at: Date.now(),
+                },
+              ],
+            }),
+            `Sale added · ${p.name} ×${qty}`,
+          );
+        },
+
+        updateExpenseAmount: (id, amount) => {
+          const e = get().data?.expenses.find((x) => x.id === id);
+          if (!e || !(amount >= 0) || amount === e.amount) return;
+          editBooks(
+            (d) => ({ ...d, expenses: d.expenses.map((x) => (x.id === id ? { ...x, amount } : x)) }),
+            `${e.name} set to ${amount.toLocaleString("en-US", { style: "currency", currency: "USD" })}`,
+          );
+        },
+
+        deleteRow: (kind, id) => {
+          if (kind === "order") {
+            editBooks((d) => ({ ...d, orders: d.orders.filter((o) => !(o.id === id && o.source === "manual" && o.live)) }), "Sale removed");
+          } else {
+            editBooks((d) => ({ ...d, expenses: d.expenses.filter((e) => !(e.id === id && e.addedOn)) }), "Expense removed");
+          }
+        },
+
+        recountCash: (id, balance) => {
+          const a = get().data?.cash.find((x) => x.id === id);
+          if (!a || !Number.isFinite(balance)) return;
+          editBooks(
+            (d) => ({ ...d, cash: d.cash.map((x) => (x.id === id ? { ...x, balance, countedAt: Date.now() } : x)) }),
+            `${a.name} recounted`,
+          );
+        },
+
+        recountStock: (id, units) => {
+          const it = get().data?.inventory.find((x) => x.id === id);
+          if (!it || !(units >= 0)) return;
+          const n = Math.round(units);
+          editBooks(
+            (d) => ({ ...d, inventory: d.inventory.map((x) => (x.id === id ? { ...x, units: n, countedAt: Date.now() } : x)) }),
+            `${it.name} counted: ${n} units`,
+          );
         },
 
         markReviewed: (id) => {

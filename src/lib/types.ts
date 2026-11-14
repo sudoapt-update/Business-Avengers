@@ -17,8 +17,10 @@ export interface Order {
   paymentFee: number;
   shipping: number;
   source: "synced" | "manual";
-  /** Added after the seed snapshot, so it also moves cash. */
+  /** Added after the seed snapshot, so it also moves cash and stock. */
   live?: boolean;
+  /** When a live row was created (ms), compared against cash and stock counts. */
+  at?: number;
 }
 
 export type ExpenseCategory =
@@ -39,21 +41,26 @@ export interface Expense {
   /** Day the row was typed in by the seller (manual rows only). */
   addedOn?: Day;
   live?: boolean;
+  at?: number;
 }
 
 export interface InventoryItem {
   id: string;
   sku: string;
   name: string;
+  /** Units at the last count. */
   units: number;
   unitCost: number;
+  countedAt?: number;
 }
 
 export interface CashAccount {
   id: string;
   name: string;
   note: string;
+  /** Balance at the last count. */
   balance: number;
+  countedAt?: number;
 }
 
 export interface Leak {

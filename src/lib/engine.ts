@@ -1,5 +1,5 @@
 import { addDays, diffDays, type Day } from "./date";
-import type { DemoData, Expense, Leak, Order } from "./types";
+import type { Channel, DemoData, Expense, Leak, Order } from "./types";
 
 // Every number on the dashboard comes from here. Nothing derived is stored:
 // the score, profit bridge, runway and leak totals are recomputed from the
@@ -7,6 +7,17 @@ import type { DemoData, Expense, Leak, Order } from "./types";
 
 export const orderNet = (o: Order) => o.gross - o.platformFee - o.paymentFee - o.shipping;
 export const orderProfit = (o: Order) => orderNet(o) - o.cogs;
+
+/**
+ * Newest first. Rows created during the demo (live) are newer than any seeded row on the
+ * same day, because the seed fills today's morning even when the visitor arrives earlier.
+ */
+export function byNewest(a: Order, b: Order) {
+  if (a.day !== b.day) return a.day < b.day ? 1 : -1;
+  if (a.live && b.live) return (b.at ?? 0) - (a.at ?? 0);
+  if (a.live !== b.live) return a.live ? -1 : 1;
+  return a.time < b.time ? 1 : -1;
+}
 
 const clamp01 = (n: number) => Math.max(0, Math.min(1, n));
 
@@ -46,12 +57,40 @@ export function leaksFor(data: DemoData, day: Day): LeakView[] {
     .sort((a, b) => b.saving - a.saving);
 }
 
-/** Cash today = account balances + every live order and one-off since the seed snapshot. */
+/** Which cash account each channel pays into. Stock is paid for from checking. */
+export const PAYOUT_ACCOUNT: Record<Channel, string> = { shopify: "c2", amazon: "c3", market: "c4" };
+const CHECKING = "c1";
+
+const after = (at: number | undefined, countedAt: number | undefined) => (at ?? 1) > (countedAt ?? 0);
+
+/** Each account = its last counted balance plus live orders and expenses recorded since that count. */
+export function accountBalances(data: DemoData) {
+  return data.cash.map((a) => {
+    let flows = 0;
+    for (const o of data.orders) {
+      if (!o.live || !after(o.at, a.countedAt)) continue;
+      if (PAYOUT_ACCOUNT[o.channel] === a.id) flows += orderNet(o);
+      if (a.id === CHECKING) flows -= o.cogs;
+    }
+    if (a.id === CHECKING)
+      for (const e of data.expenses) if (e.live && e.cadence === "one-off" && after(e.at, a.countedAt)) flows -= e.amount;
+    return { account: a, flows, balance: a.balance + flows };
+  });
+}
+
 export function cashNow(data: DemoData) {
-  let c = data.cash.reduce((s, a) => s + a.balance, 0);
-  for (const o of data.orders) if (o.live) c += orderProfit(o);
-  for (const e of data.expenses) if (e.live && e.cadence === "one-off") c -= e.amount;
-  return c;
+  return accountBalances(data).reduce((s, a) => s + a.balance, 0);
+}
+
+/** Stock on hand = last count minus units sold in live orders since that count. */
+export function stockLevels(data: DemoData) {
+  return data.inventory.map((item) => {
+    const sold = data.orders
+      .filter((o) => o.live && o.item === item.name && after(o.at, item.countedAt))
+      .reduce((s, o) => s + o.qty, 0);
+    const units = item.units - sold;
+    return { item, sold, units, value: units * item.unitCost };
+  });
 }
 
 /** Cash on an earlier day, walked back from today through the recorded flows. */

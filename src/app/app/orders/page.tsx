@@ -1,11 +1,13 @@
-import { ComingNext } from "@/components/app/ComingNext";
+import type { Metadata } from "next";
+import { Ready } from "@/components/app/Ready";
+import { OrdersView } from "@/components/orders/OrdersView";
 
-export default function Page() {
+export const metadata: Metadata = { title: "Orders" };
+
+export default function OrdersPage() {
   return (
-    <ComingNext
-      title="Orders"
-      sub="Every order synced from your channels, with what each one left you."
-      note="The full order history is next in the build. Simulate an order from the Overview to see it sync."
-    />
+    <Ready>
+      <OrdersView />
+    </Ready>
   );
 }

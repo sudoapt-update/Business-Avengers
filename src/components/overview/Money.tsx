@@ -4,21 +4,16 @@ import Link from "next/link";
 import { ArrowRight, Lock, RefreshCw } from "lucide-react";
 import { leakUnlocked, useStore } from "@/store/store";
 import { useDerived } from "@/store/derived";
-import { orderProfit } from "@/lib/engine";
-import { CHANNEL_LABEL } from "@/lib/seed";
-import { formatDay } from "@/lib/date";
+import { byNewest } from "@/lib/engine";
 import { cn, money, money2, pct } from "@/lib/format";
-import type { Channel } from "@/lib/types";
 import { Button, Card, CardHeader, Pill, dotTone, type Tone } from "@/components/ui/primitives";
-
-const CHANNEL_TONE: Record<Channel, Tone> = { shopify: "good", amazon: "warn", market: "info" };
+import { OrderList } from "@/components/orders/OrderList";
 
 export function OrderFeed() {
   const d = useDerived();
   const simulateOrder = useStore((s) => s.simulateOrder);
   const lastOrderId = useStore((s) => s.lastOrderId);
-  const impact = useStore((s) => s.lastImpact);
-  const recent = [...d.data.orders].sort((a, b) => (a.day + a.time < b.day + b.time ? 1 : -1)).slice(0, 5);
+  const recent = [...d.data.orders].sort(byNewest).slice(0, 5);
   const todayCount = d.data.orders.filter((o) => o.day === d.today).length;
 
   return (
@@ -33,54 +28,18 @@ export function OrderFeed() {
           </Button>
         }
       />
-      <div className="mt-3 hidden grid-cols-[64px_1fr_110px_84px_84px_90px] gap-3 border-y border-line bg-canvas px-5 py-2 text-[11px] font-medium tracking-[0.08em] text-muted uppercase md:grid">
-        <span>Time</span>
-        <span>Order</span>
-        <span>Channel</span>
-        <span className="text-right">Sale</span>
-        <span className="text-right">Fees</span>
-        <span className="text-right">You keep</span>
+      <div className="mt-3">
+        <OrderList orders={recent} today={d.today} highlightId={lastOrderId} />
       </div>
-      <ul className="divide-y divide-line border-t border-line md:border-t-0" aria-live="polite">
-        {recent.map((o) => {
-          const fees = o.platformFee + o.paymentFee + o.shipping;
-          const keep = orderProfit(o);
-          return (
-            <li
-              key={o.id}
-              className={cn(
-                "grid grid-cols-[1fr_auto] gap-x-3 gap-y-1 px-5 py-3 text-sm md:grid-cols-[64px_1fr_110px_84px_84px_90px] md:items-center",
-                o.id === lastOrderId && "animate-row-in",
-              )}
-            >
-              <span className="tnum hidden font-mono text-[12px] text-muted md:block">
-                {o.day === d.today ? o.time : formatDay(o.day)}
-              </span>
-              <div className="min-w-0">
-                <div className="truncate">
-                  {o.item} <span className="text-muted">×{o.qty}</span>
-                </div>
-                <div className="font-mono text-[11px] text-muted">
-                  {o.ref}
-                  <span className="md:hidden"> · {o.day === d.today ? o.time : formatDay(o.day)} · {CHANNEL_LABEL[o.channel]}</span>
-                </div>
-              </div>
-              <span className="hidden md:block">
-                <span className="inline-flex items-center gap-1.5 text-[13px] text-ink-2">
-                  <span className={cn("size-1.5 rounded-full", dotTone[CHANNEL_TONE[o.channel]])} />
-                  {CHANNEL_LABEL[o.channel]}
-                </span>
-              </span>
-              <span className="tnum hidden text-right font-mono md:block">{money2(o.gross)}</span>
-              <span className="tnum hidden text-right font-mono text-muted md:block">−{money2(fees)}</span>
-              <span className="tnum text-right font-mono font-medium">
-                <span className="mr-2 font-normal text-muted md:hidden">{money2(o.gross)} →</span>
-                {money2(keep)}
-              </span>
-            </li>
-          );
-        })}
-      </ul>
+      <SyncImpact todayCount={todayCount} />
+    </Card>
+  );
+}
+
+/** What the last synced order changed, or a plain note when nothing has synced yet. */
+export function SyncImpact({ todayCount }: { todayCount: number }) {
+  const impact = useStore((s) => s.lastImpact);
+  return (
       <div className="flex flex-wrap items-center gap-2 border-t border-line px-5 py-3 text-[13px] text-muted">
         {impact ? (
           <>
@@ -98,7 +57,6 @@ export function OrderFeed() {
           </span>
         )}
       </div>
-    </Card>
   );
 }
 
