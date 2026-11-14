@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check, Loader2, Lock, PenLine, Plug, ShieldCheck } from "lucide-react";
+import { ArrowRight, Bell, Check, Loader2, Lock, PenLine, Plug, ShieldCheck } from "lucide-react";
 import { useStore } from "@/store/store";
 import { useDerived } from "@/store/derived";
 import { CONNECTORS, CONNECTOR_GROUPS, CONNECT_REWARD, extraConnectionsFor, type Connector } from "@/lib/connectors";
@@ -22,7 +22,10 @@ export function ConnectionsView() {
 
   return (
     <>
-      <PageHeader title="Connections" sub="Where FinPath reads your sales, fees and payouts from. Connect a platform once and its orders arrive on their own." />
+      <PageHeader
+        title="Connections"
+        sub="Where FinPath reads your sales, fees and payouts from. Connect a platform once and its orders arrive on their own."
+      />
       <div className="space-y-4">
         <div className="rounded-card border-info-dot/30 bg-info-bg flex items-center gap-3 border px-4 py-3 sm:px-5">
           <span className="bg-panel text-info grid size-8 shrink-0 place-items-center rounded-lg" aria-hidden>
@@ -109,6 +112,35 @@ export function ConnectionsView() {
             </ul>
           </section>
         ))}
+
+        <section aria-label="Calendars">
+          <div className="mb-2 flex flex-wrap items-baseline gap-x-3 px-1 pt-2">
+            <h2 className="text-[15px] font-semibold tracking-tight">Calendars</h2>
+            <p className="text-muted text-[13px]">Payouts and bills in the calendar you already check every day.</p>
+          </div>
+          <div className="rounded-card border-line bg-panel flex flex-col gap-4 border p-4 sm:flex-row sm:items-center sm:p-5">
+            <div className="flex shrink-0 -space-x-2">
+              <BrandIcon id="googlecalendar" size="lg" className="relative z-10 shadow-sm" />
+              <BrandIcon id="apple" size="lg" className="shadow-sm" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-medium">Google &amp; Apple Calendar</div>
+              <p className="text-muted mt-0.5 text-[13px]">
+                Add each payout and bill from your payment calendar, with a reminder the day before. Google Calendar opens one event at a
+                time; Apple Calendar and Outlook import all of them from one .ics file.
+              </p>
+              <p className="text-ink-2 mt-1.5 inline-flex items-center gap-1.5 text-xs">
+                <Bell className="size-3.5" aria-hidden /> Nothing is synced automatically in the demo. Events go only where you add them.
+              </p>
+            </div>
+            <Link
+              href="/app/books?tab=calendar"
+              className="bg-ink hover:bg-ink-2 inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg px-3.5 text-sm font-medium text-white"
+            >
+              Open payment calendar <ArrowRight className="size-3.5" aria-hidden />
+            </Link>
+          </div>
+        </section>
       </div>
     </>
   );
@@ -128,7 +160,12 @@ function ConnectorCard({ c, on }: { c: Connector; on: boolean }) {
   };
 
   return (
-    <li className={cn("rounded-card bg-panel flex items-center gap-3 border p-4 transition-colors", on ? "border-good-dot/40" : "border-line")}>
+    <li
+      className={cn(
+        "rounded-card bg-panel flex items-center gap-3 border p-4 transition-colors",
+        on ? "border-good-dot/40" : "border-line",
+      )}
+    >
       <BrandIcon id={c.id} size="lg" />
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">

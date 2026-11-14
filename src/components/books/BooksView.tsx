@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { ArrowDown, Boxes, Landmark, Plus, Receipt, ShoppingBag, Trash2, type LucideIcon } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { ArrowDown, Boxes, CalendarDays, Landmark, Plus, Receipt, ShoppingBag, Trash2, type LucideIcon } from "lucide-react";
 import { useStore } from "@/store/store";
 import { useDerived } from "@/store/derived";
 import { addDays, formatDay } from "@/lib/date";
 import { accountBalances, byNewest, effectiveAmount, stockLevels } from "@/lib/engine";
 import { CHANNEL_LABEL, PRODUCTS } from "@/lib/seed";
-import { cn, money, money2, num } from "@/lib/format";
+import { cn, money, money2, num, signedMoney } from "@/lib/format";
+import { paymentEvents } from "@/lib/calendar";
 import type { Channel, Expense, ExpenseCategory } from "@/lib/types";
 import { PageHeader } from "@/components/app/PageHeader";
 import { Explainer } from "@/components/app/Explainer";
@@ -18,13 +20,27 @@ import { CATEGORY_ICON } from "@/components/ui/icons";
 import { CashFlowCard } from "@/components/overview/Money";
 import { EditableNumber, Pager, Segmented, Td, Th } from "@/components/ui/table";
 import { OrderList } from "@/components/orders/OrderList";
+import { PaymentCalendar } from "./PaymentCalendar";
 
-type Tab = "income" | "expenses" | "inventory" | "cash";
+const TABS = ["income", "expenses", "inventory", "cash", "calendar"] as const;
+type Tab = (typeof TABS)[number];
+const isTab = (v: string | null): v is Tab => !!v && (TABS as readonly string[]).includes(v);
 const PAGE = 6;
 
 export function BooksView() {
   const d = useDerived();
-  const [tab, setTab] = useState<Tab>("income");
+  // The open table is in the URL (?tab=calendar), so a link can open it and a reload keeps it.
+  const params = useSearchParams();
+  const [tab, setTabState] = useState<Tab>(() => {
+    const t = params.get("tab");
+    return isTab(t) ? t : "income";
+  });
+  const setTab = (t: Tab) => {
+    setTabState(t);
+    // Next.js keeps useSearchParams in step with the native History API, without a server round trip.
+    window.history.replaceState(null, "", t === "income" ? window.location.pathname : `?tab=${t}`);
+  };
+  const calNet = paymentEvents(d.data, d.today, 30).reduce((s, e) => s + e.amount, 0);
   const fresh = d.metrics.factors.find((f) => f.key === "freshness")!;
   const from = addDays(d.today, -30);
   const income30 = d.data.orders.filter((o) => o.day > from && o.day <= d.today).reduce((s, o) => s + o.gross, 0);
@@ -41,24 +57,42 @@ export function BooksView() {
       icon: Boxes,
       tone: "violet",
     },
-    { id: "cash", label: "Cash", value: money(d.metrics.cash), sub: `${d.metrics.runwayWeeks.toFixed(1)} weeks of runway`, icon: Landmark, tone: "info" },
+    {
+      id: "cash",
+      label: "Cash",
+      value: money(d.metrics.cash),
+      sub: `${d.metrics.runwayWeeks.toFixed(1)} weeks of runway`,
+      icon: Landmark,
+      tone: "info",
+    },
+    {
+      id: "calendar",
+      label: "Calendar",
+      value: signedMoney(calNet),
+      sub: "payouts minus bills, next 30 days",
+      icon: CalendarDays,
+      tone: "warn",
+    },
   ];
 
   return (
     <>
-      <PageHeader title="Books" sub="Your income, expenses, stock and cash in four simple tables. Every edit updates the whole app." />
+      <PageHeader
+        title="Books"
+        sub="Your income, expenses, stock and cash, plus a calendar of payments due. Every edit updates the whole app."
+      />
       <div className="space-y-4">
         <Explainer>
           Profit you can trust starts with complete books. Synced orders land here on their own; anything paid in cash, at the market or
           outside your store has to be added by hand. Click any figure with a pencil to correct it. Your score&apos;s{" "}
-          <span className="text-ink font-medium">Books up to date</span> part is{" "}
+          <span className="text-ink font-medium">Books fresh</span> part is{" "}
           <span className="tnum font-mono">
             {fresh.points.toFixed(1)}/{fresh.weight}
           </span>{" "}
           ({fresh.reading.toLowerCase()}); any edit today brings it to full marks.
         </Explainer>
 
-        <div className="grid grid-cols-2 gap-3 xl:grid-cols-4" role="tablist" aria-label="Choose a table">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5" role="tablist" aria-label="Choose a table">
           {tiles.map((t) => {
             const Icon = t.icon;
             const on = tab === t.id;
@@ -85,8 +119,10 @@ export function BooksView() {
                 <div className={cn("mt-3 inline-flex items-center gap-1 text-xs font-medium", on ? "text-ink" : "text-muted")}>
                   {on ? (
                     <>
-                      Table shown below <ArrowDown className="size-3" aria-hidden />
+                      {t.id === "calendar" ? "Calendar" : "Table"} shown below <ArrowDown className="size-3" aria-hidden />
                     </>
+                  ) : t.id === "calendar" ? (
+                    "Open calendar"
                   ) : (
                     "Open table"
                   )}
@@ -102,6 +138,7 @@ export function BooksView() {
           {tab === "inventory" && <InventoryTable />}
           {tab === "cash" && <CashFlowCard weeks={12} booksLink={false} />}
           {tab === "cash" && <CashTable />}
+          {tab === "calendar" && <PaymentCalendar />}
         </div>
       </div>
     </>
@@ -135,7 +172,9 @@ function IncomeTable() {
         <PartsBar
           parts={(["shopify", "amazon", "market"] as Channel[]).map((c) => ({
             label: CHANNEL_LABEL[c],
-            value: d.data.orders.filter((o) => o.channel === c && o.day > addDays(d.today, -30) && o.day <= d.today).reduce((s, o) => s + o.gross, 0),
+            value: d.data.orders
+              .filter((o) => o.channel === c && o.day > addDays(d.today, -30) && o.day <= d.today)
+              .reduce((s, o) => s + o.gross, 0),
             color: CHANNEL_COLOR[c],
             icon: <BrandIcon id={c} size="xs" />,
           }))}
@@ -257,7 +296,11 @@ function ExpensesTable() {
   const totals = new Map<ExpenseCategory, number>();
   for (const e of d.data.expenses) {
     const counts = e.cadence === "monthly" ? e.day <= d.today : e.day > addDays(d.today, -30) && e.day <= d.today;
-    if (counts) totals.set(e.category, (totals.get(e.category) ?? 0) + (e.cadence === "monthly" ? effectiveAmount(e, d.data.leaks, d.today) : e.amount));
+    if (counts)
+      totals.set(
+        e.category,
+        (totals.get(e.category) ?? 0) + (e.cadence === "monthly" ? effectiveAmount(e, d.data.leaks, d.today) : e.amount),
+      );
   }
   const byCategory = [...totals.entries()].sort((a, b) => b[1] - a[1]);
 
