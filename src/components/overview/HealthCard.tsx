@@ -1,0 +1,77 @@
+"use client";
+
+import { useState } from "react";
+import { useDerived } from "@/store/derived";
+import { formatDay } from "@/lib/date";
+import { scoreBand } from "@/lib/engine";
+import { cn } from "@/lib/format";
+import { Card, CardHeader, Pill } from "@/components/ui/primitives";
+import { ScoreChart } from "@/components/ui/charts";
+
+export function HealthCard() {
+  const d = useDerived();
+  const [range, setRange] = useState<30 | 90>(30);
+  const m = d.metrics;
+  const band = scoreBand(m.score);
+  const series = d.hist.slice(-range);
+  const weakest = [...m.factors].sort((a, b) => b.weight - b.points - (a.weight - a.points))[0];
+
+  return (
+    <Card>
+      <CardHeader
+        title="Business Health Score"
+        sub="One number from five parts of your business. It moves only when the numbers do."
+        right={
+          <div className="flex rounded-lg border border-line bg-canvas p-0.5 text-[13px]" role="group" aria-label="Chart range">
+            {([30, 90] as const).map((r) => (
+              <button
+                key={r}
+                onClick={() => setRange(r)}
+                aria-pressed={range === r}
+                className={cn("rounded-md px-2.5 py-1", range === r ? "bg-panel font-medium shadow-sm" : "text-muted")}
+              >
+                {r}d
+              </button>
+            ))}
+          </div>
+        }
+      />
+      <div className="grid gap-4 px-5 pt-4 md:grid-cols-[180px_1fr]">
+        <div>
+          <div className="flex items-baseline gap-1">
+            <span className="tnum bg-linear-to-r from-brand-a to-brand-b bg-clip-text text-5xl font-semibold tracking-tight text-transparent">
+              {m.score.toFixed(1)}
+            </span>
+            <span className="text-sm text-muted">/100</span>
+          </div>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            <Pill tone={band.tone}>{band.label}</Pill>
+            <Pill tone="info">Target 80</Pill>
+          </div>
+          <p className="mt-3 text-[13px] leading-relaxed text-muted">
+            Biggest gap: <span className="text-ink">{weakest.label.toLowerCase()}</span>, worth {(weakest.weight - weakest.points).toFixed(1)} more points.
+          </p>
+        </div>
+        <ScoreChart values={series.map((x) => x.score)} labels={series.map((x) => formatDay(x.day))} target={80} />
+      </div>
+      <div className="mt-4 grid grid-cols-1 border-t border-line sm:grid-cols-2 lg:grid-cols-5">
+        {m.factors.map((f, i) => (
+          <div key={f.key} className={cn("px-5 py-3.5", i > 0 && "border-t border-line sm:border-t-0 lg:border-l", i % 2 === 1 && "sm:border-l", i >= 2 && "sm:border-t lg:border-t-0")} title={f.hint}>
+            <div className="truncate text-[13px] text-muted">{f.label}</div>
+            <div className="tnum mt-0.5 font-mono text-[15px] font-medium">
+              {f.points.toFixed(1)}
+              <span className="text-[12px] font-normal text-faint"> / {f.weight}</span>
+            </div>
+            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-line" aria-hidden>
+              <div
+                className={cn("h-full rounded-full transition-[width] duration-500", f.value >= 0.7 ? "bg-good-dot" : f.value >= 0.4 ? "bg-warn-dot" : "bg-bad-dot")}
+                style={{ width: `${f.value * 100}%` }}
+              />
+            </div>
+            <div className="tnum mt-1.5 font-mono text-[11px] text-ink-2">{f.reading}</div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+}

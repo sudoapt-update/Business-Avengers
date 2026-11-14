@@ -1,26 +1,94 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme {
+  --color-canvas: #fafafa;
+  --color-panel: #ffffff;
+  --color-line: #ebebeb;
+  --color-line-strong: #dcdcdc;
+  --color-ink: #0a0a0b;
+  --color-ink-2: #3f3f46;
+  --color-muted: #6b6b73;
+  --color-faint: #a1a1aa;
+  --color-hover: #f4f4f5;
+
+  --color-good: #067647;
+  --color-good-bg: #ecfdf3;
+  --color-good-dot: #17b26a;
+  --color-warn: #b54708;
+  --color-warn-bg: #fffaeb;
+  --color-warn-dot: #f5b70b;
+  --color-bad: #c01048;
+  --color-bad-bg: #fff1f3;
+  --color-bad-dot: #f04461;
+  --color-info: #175cd3;
+  --color-info-bg: #eff8ff;
+  --color-info-dot: #2e90fa;
+
+  --color-brand-a: #12b76a;
+  --color-brand-b: #2e90fa;
+
+  --radius-card: 10px;
+
+  --animate-row-in: row-in 700ms ease-out;
+  --animate-toast-in: toast-in 220ms ease-out;
+  --animate-sheet-in: sheet-in 220ms ease-out;
+  --animate-fade-in: fade-in 160ms ease-out;
+}
+
+@keyframes row-in {
+  0% { background-color: #ecfdf3; transform: translateY(-6px); opacity: 0; }
+  30% { opacity: 1; transform: translateY(0); }
+  100% { background-color: transparent; }
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes sheet-in {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01";
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-info-dot);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
 }
