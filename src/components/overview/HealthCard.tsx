@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Lock } from "lucide-react";
+import { useStore } from "@/store/store";
 import { useDerived } from "@/store/derived";
 import { formatDay } from "@/lib/date";
 import { scoreBand } from "@/lib/engine";
@@ -10,7 +12,11 @@ import { ScoreChart } from "@/components/ui/charts";
 
 export function HealthCard() {
   const d = useDerived();
-  const [range, setRange] = useState<30 | 90>(30);
+  const openUpgrade = useStore((s) => s.openUpgrade);
+  const [picked, setRange] = useState<30 | 90>(30);
+  // Starter shows the last 30 days; the 90-day history is a Growth feature.
+  const historyLocked = d.tier.id === "starter";
+  const range = historyLocked ? 30 : picked;
   const m = d.metrics;
   const band = scoreBand(m.score);
   const series = d.hist.slice(-range);
@@ -26,10 +32,18 @@ export function HealthCard() {
             {([30, 90] as const).map((r) => (
               <button
                 key={r}
-                onClick={() => setRange(r)}
+                onClick={() =>
+                  r === 90 && historyLocked
+                    ? openUpgrade({
+                        title: "See 90 days of history on Growth",
+                        body: "Starter shows the last 30 days. Growth keeps your full score history, so you can see what each change did.",
+                      })
+                    : setRange(r)
+                }
                 aria-pressed={range === r}
-                className={cn("rounded-md px-2.5 py-1", range === r ? "bg-panel font-medium shadow-sm" : "text-muted")}
+                className={cn("inline-flex items-center gap-1 rounded-md px-2.5 py-1", range === r ? "bg-panel font-medium shadow-sm" : "text-muted")}
               >
+                {r === 90 && historyLocked && <Lock className="size-3" aria-label="Growth plan" />}
                 {r}d
               </button>
             ))}

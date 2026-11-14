@@ -1,11 +1,13 @@
-import { ComingNext } from "@/components/app/ComingNext";
+import type { Metadata } from "next";
+import { Ready } from "@/components/app/Ready";
+import { PlansView } from "@/components/plans/PlansView";
 
-export default function Page() {
+export const metadata: Metadata = { title: "Plans" };
+
+export default function PlansPage() {
   return (
-    <ComingNext
-      title="Plans"
-      sub="What each plan includes and your token allowance."
-      note="The pricing page is next in the build. Use View as tier in the avatar menu to try each plan's limits."
-    />
+    <Ready>
+      <PlansView />
+    </Ready>
   );
 }

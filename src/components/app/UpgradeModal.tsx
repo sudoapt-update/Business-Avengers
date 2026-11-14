@@ -4,7 +4,8 @@ import Link from "next/link";
 import { Check } from "lucide-react";
 import { useStore } from "@/store/store";
 import { TIERS, tierRank } from "@/lib/tiers";
-import { cn, num } from "@/lib/format";
+import { useDerived } from "@/store/derived";
+import { cn, money, num } from "@/lib/format";
 import { Button, Pill } from "@/components/ui/primitives";
 import { Dialog } from "@/components/ui/Dialog";
 
@@ -13,10 +14,17 @@ export function UpgradeModal() {
   const tier = useStore((s) => s.tier);
   const { openUpgrade, setTier } = useStore.getState();
   const options = TIERS.filter((t) => tierRank(t.id) > tierRank(tier)).slice(0, 2);
+  const leaks = useDerived().metrics.leakMonthly;
 
   return (
     <Dialog open={!!upgrade} onClose={() => openUpgrade(null)} title={upgrade?.title ?? ""} sub={upgrade?.body}>
       <div className="space-y-3 p-5">
+        {leaks > 0 && options[0] && (
+          <p className="rounded-lg bg-canvas px-3 py-2 text-[13px] text-ink-2">
+            This store is leaking <span className="tnum font-mono font-medium text-ink">{money(leaks)}/mo</span>. {options[0].name} costs $
+            {options[0].price}, so fixing the leaks pays for it {(leaks / options[0].price).toFixed(1)} times over.
+          </p>
+        )}
         {options.map((t, i) => (
           <div key={t.id} className={cn("rounded-card border p-4", i === 0 ? "border-ink" : "border-line")}>
             <div className="flex items-center justify-between">

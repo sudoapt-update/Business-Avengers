@@ -34,7 +34,7 @@ export const TIERS: TierInfo[] = [
       "Full leak detector with action steps",
       "500 AI tokens a month",
       "5 missions a day, 1.25× rewards",
-      "Score history and Time Machine",
+      "90-day score history",
     ],
   },
   {
@@ -45,7 +45,7 @@ export const TIERS: TierInfo[] = [
     missionsPerDay: 5,
     rewardMultiplier: 1.5,
     blurb: "Serious growth",
-    adds: ["2,000 AI tokens a month", "One-click savings", "1.5× mission rewards", "Export and Wrapped"],
+    adds: ["Everything in Growth", "2,000 AI tokens a month", "1.5× mission rewards", "Export and Wrapped (soon)"],
   },
   {
     id: "scale",
@@ -55,7 +55,7 @@ export const TIERS: TierInfo[] = [
     missionsPerDay: 5,
     rewardMultiplier: 2,
     blurb: "Higher volume sellers",
-    adds: ["8,000 AI tokens a month", "Multi-store", "2× mission rewards", "Custom milestones"],
+    adds: ["Everything in Pro", "8,000 AI tokens a month", "2× mission rewards", "Multi-store (soon)"],
   },
 ];
 
