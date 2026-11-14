@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Award,
   Bot,
@@ -41,6 +41,7 @@ export const OPEN_SECTION_EVENT = "finpath:open-section";
 export function useMissionAction() {
   const d = useDerived();
   const router = useRouter();
+  const pathname = usePathname();
   const { openSheet, simulateOrder } = useStore.getState();
   return (id: MissionId) => {
     const largest = d.leaks.find((l) => !l.applied);
@@ -55,6 +56,7 @@ export function useMissionAction() {
       case "apply-saving":
         return largest && openSheet({ kind: "leak", leakId: largest.leak.id });
       case "simulate-order":
+        if (pathname !== "/app") return simulateOrder({ viewLink: pathname !== "/app/orders" });
         simulateOrder();
         // The order feed sits in the Money section, which may be closed: ask the page to open it, then scroll once it has.
         window.dispatchEvent(new CustomEvent(OPEN_SECTION_EVENT, { detail: "money" }));
@@ -129,7 +131,7 @@ export function MissionsRail() {
   const d = useDerived();
   const next = d.missions.slice(0, 3).find((m) => !m.done);
   return (
-    <Card>
+    <Card className="overflow-hidden">
       <CardHeader
         icon={
           <IconTile tone="warn">
@@ -221,7 +223,7 @@ export function LevelCard() {
         {BADGE_ORDER.map((id) => (
           <li
             key={id}
-            title={BADGES[id].hint}
+            title={earned.has(id) ? BADGES[id].hint : BADGES[id].todo}
             className={cn(
               "inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-xs",
               earned.has(id) ? "border-warn-dot/50 bg-warn-bg text-ink" : "border-line text-faint border-dashed",

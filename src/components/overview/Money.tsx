@@ -43,7 +43,7 @@ export function OrderFeed() {
         title="Live order sync"
         sub="Demo connection — no real account is accessed."
         right={
-          <Button variant="primary" size="sm" onClick={simulateOrder} className="shrink-0">
+          <Button variant="primary" size="sm" onClick={() => simulateOrder()} className="shrink-0">
             <RefreshCw className="size-3.5" /> Simulate new order
           </Button>
         }

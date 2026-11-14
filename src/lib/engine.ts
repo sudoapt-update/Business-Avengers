@@ -172,7 +172,11 @@ export interface Metrics {
   score: number;
 }
 
-export function computeMetrics(data: DemoData, day: Day, today: Day): Metrics {
+/**
+ * `opts.cash` replaces the cash balance. The Time Machine uses it to replay the last 30 days with a
+ * change: the cash today then differs from the real balance by the change in profit.
+ */
+export function computeMetrics(data: DemoData, day: Day, today: Day, opts: { cash?: number } = {}): Metrics {
   const from = addDays(day, -30);
   let revenue = 0,
     cogs = 0,
@@ -194,7 +198,7 @@ export function computeMetrics(data: DemoData, day: Day, today: Day): Metrics {
   const trueProfit = revenue - cogs - platformFees - paymentFees - shipping - tools;
   const margin = revenue > 0 ? trueProfit / revenue : 0;
 
-  const cash = cashAt(data, day, today);
+  const cash = opts.cash ?? cashAt(data, day, today);
   const weeklyFixed = ((exp.monthly + data.ownerDrawMonthly) * 12) / 52;
   const runwayWeeks = weeklyFixed > 0 ? Math.max(0, cash / weeklyFixed) : 52;
 
