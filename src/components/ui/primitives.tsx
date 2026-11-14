@@ -45,12 +45,28 @@ export function Card({
   return <As className={cn("rounded-card border-line bg-panel border", className)}>{children}</As>;
 }
 
-export function CardHeader({ title, sub, right, className }: { title: ReactNode; sub?: ReactNode; right?: ReactNode; className?: string }) {
+export function CardHeader({
+  title,
+  sub,
+  right,
+  icon,
+  className,
+}: {
+  title: ReactNode;
+  sub?: ReactNode;
+  right?: ReactNode;
+  /** An IconTile shown before the title. */
+  icon?: ReactNode;
+  className?: string;
+}) {
   return (
     <div className={cn("flex items-start justify-between gap-3 px-5 pt-4", className)}>
-      <div className="min-w-0">
-        <h2 className="text-ink text-[15px] font-semibold tracking-tight">{title}</h2>
-        {sub && <p className="text-muted mt-0.5 text-[13px]">{sub}</p>}
+      <div className="flex min-w-0 items-start gap-3">
+        {icon}
+        <div className="min-w-0">
+          <h3 className="text-ink text-[15px] font-semibold tracking-tight">{title}</h3>
+          {sub && <p className="text-muted mt-0.5 text-[13px]">{sub}</p>}
+        </div>
       </div>
       {right}
     </div>
@@ -109,3 +125,147 @@ export function Delta({
     </Pill>
   );
 }
+
+export type TileTone = Tone | "violet" | "ink";
+
+const tileTone: Record<TileTone, string> = {
+  good: "bg-good-bg text-good",
+  warn: "bg-warn-bg text-warn",
+  bad: "bg-bad-bg text-bad",
+  info: "bg-info-bg text-info",
+  violet: "bg-violet-bg text-violet",
+  neutral: "bg-hover text-ink-2",
+  ink: "bg-ink text-white",
+};
+
+/** A small tinted square holding an icon. Marks what a card or row is about before the text is read. */
+export function IconTile({
+  children,
+  tone = "neutral",
+  size = "md",
+  className,
+}: {
+  children: ReactNode;
+  tone?: TileTone;
+  size?: "sm" | "md" | "lg";
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn(
+        "grid shrink-0 place-items-center [&>svg]:size-4",
+        size === "sm" && "size-7 rounded-md [&>svg]:size-3.5",
+        size === "md" && "size-8 rounded-lg",
+        size === "lg" && "size-10 rounded-[10px] [&>svg]:size-5",
+        tileTone[tone],
+        className,
+      )}
+      aria-hidden
+    >
+      {children}
+    </span>
+  );
+}
+
+const bandTone = {
+  warn: "border-warn-dot/30 bg-warn-bg/70",
+  good: "border-good-dot/25 bg-good-bg/70",
+  info: "border-info-dot/25 bg-info-bg/70",
+} as const;
+
+/**
+ * A named, tinted panel holding a group of cards. Its header is a button: the panel opens and
+ * closes smoothly, and shows a one-line summary so a closed panel still says something.
+ * Runs edge to edge on phones so the cards inside keep their width.
+ */
+export function Band({
+  id,
+  icon,
+  tone,
+  title,
+  sub,
+  summary,
+  open,
+  onToggle,
+  children,
+}: {
+  id: string;
+  icon: ReactNode;
+  tone: keyof typeof bandTone;
+  title: string;
+  sub?: ReactNode;
+  /** Short figures shown in the header, open or closed. */
+  summary?: ReactNode;
+  open: boolean;
+  onToggle: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <section
+      aria-labelledby={`${id}-title`}
+      className={cn("-mx-4 border-y sm:mx-0 sm:rounded-2xl sm:border", bandTone[tone], open ? "shadow-none" : "hover:shadow-sm")}
+    >
+      <h2 id={`${id}-title`}>
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={open}
+          aria-controls={`${id}-panel`}
+          className="flex w-full items-center gap-3 px-4 py-4 text-left sm:rounded-2xl sm:px-5"
+        >
+          <span
+            className={cn("bg-panel grid size-9 shrink-0 place-items-center rounded-[10px] shadow-sm [&>svg]:size-[18px]", tileText[tone])}
+            aria-hidden
+          >
+            {icon}
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[17px] leading-tight font-semibold tracking-tight">{title}</span>
+            {sub && <span className="text-ink-2 block text-[13px] font-normal">{sub}</span>}
+          </span>
+          {summary && <span className="hidden shrink-0 items-center gap-1.5 md:flex">{summary}</span>}
+          <span className="bg-panel text-ink-2 grid size-8 shrink-0 place-items-center rounded-full shadow-sm" aria-hidden>
+            <svg
+              viewBox="0 0 24 24"
+              className={cn("size-4 transition-transform duration-300", open && "rotate-180")}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </span>
+        </button>
+      </h2>
+      {summary && !open && <div className="flex flex-wrap gap-1.5 px-4 pb-4 md:hidden">{summary}</div>}
+      <div
+        id={`${id}-panel`}
+        role="region"
+        aria-labelledby={`${id}-title`}
+        inert={!open}
+        className={cn(
+          "grid transition-[grid-template-rows,opacity] duration-300 ease-out",
+          open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+        )}
+      >
+        <div className="min-h-0 overflow-hidden">
+          <div className="px-4 pb-5 sm:px-5">{children}</div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** A small figure for a band's header summary. */
+export function BandStat({ label, value }: { label: string; value: ReactNode }) {
+  return (
+    <span className="bg-panel/80 border-line inline-flex items-baseline gap-1.5 rounded-md border px-2 py-1 text-xs">
+      <span className="text-muted">{label}</span>
+      <span className="tnum text-ink font-mono font-medium">{value}</span>
+    </span>
+  );
+}
+
+const tileText = { warn: "text-warn", good: "text-good", info: "text-info" } as const;

@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { MessageSquare } from "lucide-react";
+import { Bot, Map, MessageSquare } from "lucide-react";
 import { useDerived } from "@/store/derived";
 import { diffDays } from "@/lib/date";
 import { cn, money } from "@/lib/format";
-import { Card, CardHeader, Caps, Pill } from "@/components/ui/primitives";
+import { Card, CardHeader, Caps, IconTile, Pill } from "@/components/ui/primitives";
 
 export const PHASES = [
   { name: "Stop the leaks", days: [1, 30] as const, goal: "Cancel tools you don't use and keep books current every week.", milestone: 66 },
@@ -23,6 +23,11 @@ export function PlanStrip() {
   return (
     <Card>
       <CardHeader
+        icon={
+          <IconTile tone="info">
+            <Map />
+          </IconTile>
+        }
         title="Your 90-day plan"
         sub={`Day ${day} of 90 · from ${d.hist[d.hist.length - day]?.score.toFixed(0) ?? "62"} to a score of 80`}
         right={
@@ -91,6 +96,11 @@ export function AdviserPrompt() {
   return (
     <Card>
       <CardHeader
+        icon={
+          <IconTile tone="violet">
+            <Bot />
+          </IconTile>
+        }
         title="Ask the AI Adviser"
         sub={`Answers use your numbers, like ${money(m.trueProfit)} profit and ${m.runwayWeeks.toFixed(1)} weeks of cash.`}
       />
@@ -101,7 +111,7 @@ export function AdviserPrompt() {
               href={`/app/adviser?q=${encodeURIComponent(q)}`}
               className="border-line hover:bg-hover flex items-center gap-2.5 rounded-lg border px-3 py-2.5 text-sm"
             >
-              <MessageSquare className="text-muted size-3.5 shrink-0" />
+              <MessageSquare className="text-violet size-3.5 shrink-0" />
               <span className="flex-1">{q}</span>
               <span className="tnum text-muted font-mono text-xs">5 tokens</span>
             </Link>

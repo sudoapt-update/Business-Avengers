@@ -164,4 +164,5 @@ export const BADGES = {
   "streak-7": { name: "7-Day Streak", hint: "Seven days in a row" },
   "score-80": { name: "Score 80+", hint: "Health Score reached 80" },
   "level-growing": { name: "Growing", hint: "Reached the Growing level" },
+  connected: { name: "Connected", hint: "Connected another platform" },
 } as const;

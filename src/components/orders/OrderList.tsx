@@ -7,14 +7,13 @@ import { orderProfit } from "@/lib/engine";
 import { CHANNEL_LABEL } from "@/lib/seed";
 import { cn, money2 } from "@/lib/format";
 import type { Channel, Order } from "@/lib/types";
-import { Pill, dotTone, type Tone } from "@/components/ui/primitives";
+import { Pill } from "@/components/ui/primitives";
+import { BrandIcon } from "@/components/ui/brand";
 
-export const CHANNEL_TONE: Record<Channel, Tone> = { shopify: "good", amazon: "warn", market: "info" };
-
-export function ChannelLabel({ channel }: { channel: Channel }) {
+export function ChannelLabel({ channel, size = "xs" }: { channel: Channel; size?: "xs" | "sm" | "md" }) {
   return (
-    <span className="text-ink-2 inline-flex items-center gap-1.5 text-[13px]">
-      <span className={cn("size-1.5 rounded-full", dotTone[CHANNEL_TONE[channel]])} aria-hidden />
+    <span className={cn("text-ink-2 inline-flex items-center gap-2", size === "md" ? "text-ink text-sm font-medium" : "text-[13px]")}>
+      <BrandIcon id={channel} size={size} />
       {CHANNEL_LABEL[channel]}
     </span>
   );

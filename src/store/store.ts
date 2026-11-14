@@ -18,6 +18,7 @@ import {
 } from "@/lib/missions";
 import { PRODUCTS, buildOrder, createSeed, ordersForDay, pickChannel, rng } from "@/lib/seed";
 import { tierInfo, tierRank } from "@/lib/tiers";
+import { CONNECTORS, CONNECT_REWARD, extraConnectionsFor } from "@/lib/connectors";
 import type { BadgeId, ChatEntry, DemoData, Expense, Tier } from "@/lib/types";
 import { ADVISER_COST, MAX_QUESTION, buildContext, fallbackAnswer } from "@/lib/adviser";
 
@@ -63,6 +64,8 @@ interface State {
   unlockLeak: (leakId: string) => boolean;
   applyLeak: (leakId: string) => void;
   spendTokens: (amount: number, reason: string) => boolean;
+  connectPlatform: (id: string) => boolean;
+  disconnectPlatform: (id: string) => void;
   openSheet: (s: Sheet) => void;
   openUpgrade: (r: UpgradeReason) => void;
   dismissToast: (id: number) => void;
@@ -440,6 +443,47 @@ export const useStore = create<State>()(
           }
           if (!data.badges.some((b) => b.id === "leak-hunter"))
             pushToast({ title: `Badge earned · ${BADGES["leak-hunter"].name}`, detail: BADGES["leak-hunter"].hint });
+        },
+
+        connectPlatform: (id) => {
+          const { data, tier } = get();
+          const c = CONNECTORS.find((x) => x.id === id);
+          const have = data?.connections ?? [];
+          if (!data || !c || c.builtIn || have.includes(id)) return false;
+          if (have.length >= extraConnectionsFor(tier)) {
+            set({
+              upgrade: {
+                title: "Connect every platform on Growth",
+                body: `Starter connects ${extraConnectionsFor(tier)} platforms on top of your two stores. Growth connects all ${CONNECTORS.length}, so every fee lands in one place.`,
+              },
+            });
+            return false;
+          }
+          const today = get().today();
+          const first = have.length === 0 && !data.badges.some((b) => b.id === "connected");
+          const tokens = first ? Math.round(CONNECT_REWARD * tierInfo(tier).rewardMultiplier) : 0;
+          let next: DemoData = { ...data, connections: [...have, id] };
+          if (first) {
+            next = award(next, "connected", today);
+            next = {
+              ...next,
+              tokenLedger: [...next.tokenLedger, { id: `t${Date.now()}`, day: today, amount: tokens, reason: `Connected ${c.name}` }],
+            };
+          }
+          set({ data: next });
+          pushToast(
+            first
+              ? { title: `${c.name} connected`, detail: "Demo connection. No real account is accessed.", chips: [`+${tokens} tokens`, "Badge: Connected"] }
+              : { title: `${c.name} connected`, detail: "Demo connection. No real account is accessed." },
+          );
+          return true;
+        },
+
+        disconnectPlatform: (id) => {
+          const { data } = get();
+          if (!data?.connections?.includes(id)) return;
+          set({ data: { ...data, connections: data.connections.filter((x) => x !== id) } });
+          pushToast({ title: `${CONNECTORS.find((x) => x.id === id)?.name ?? "Platform"} disconnected` });
         },
 
         openSheet: (s) => {

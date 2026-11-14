@@ -103,6 +103,42 @@ export function cashAt(data: DemoData, day: Day, today: Day) {
   return c;
 }
 
+export interface CashWeek {
+  /** First and last day of the week, oldest week first. */
+  from: Day;
+  to: Day;
+  in: Record<Channel, number>;
+  totalIn: number;
+  /** Stock, fees, postage, running costs and owner pay for the week. */
+  out: number;
+  net: number;
+}
+
+/**
+ * Money in and out for each of the last `weeks` seven-day blocks, ending today.
+ * Uses the same flows as cashAt, so the nets add up to the change in cash.
+ */
+export function weeklyCashflow(data: DemoData, today: Day, weeks: number): CashWeek[] {
+  const out: CashWeek[] = [];
+  for (let w = weeks - 1; w >= 0; w--) {
+    const to = addDays(today, -7 * w);
+    const from = addDays(to, -6);
+    const before = addDays(from, -1);
+    const inBy: Record<Channel, number> = { shopify: 0, amazon: 0, market: 0 };
+    let spent = 0;
+    for (const o of data.orders) {
+      if (o.day <= before || o.day > to) continue;
+      inBy[o.channel] += o.gross;
+      spent += o.cogs + o.platformFee + o.paymentFee + o.shipping;
+    }
+    spent += ((expensesFor(data, to).monthly + data.ownerDrawMonthly) / 30) * 7;
+    for (const e of data.expenses) if (e.cadence === "one-off" && e.day > before && e.day <= to) spent += e.amount;
+    const totalIn = inBy.shopify + inBy.amazon + inBy.market;
+    out.push({ from, to, in: inBy, totalIn, out: spent, net: totalIn - spent });
+  }
+  return out;
+}
+
 export interface Factor {
   key: "margin" | "runway" | "fees" | "expenses" | "freshness";
   label: string;

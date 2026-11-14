@@ -49,3 +49,6 @@ shots/
 .taste-skill/c.json
 .taste-skill/gate.json
 .taste-skill/build.done.json
+
+.claude/
+skills-lock.json

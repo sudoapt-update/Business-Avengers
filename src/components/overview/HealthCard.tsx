@@ -1,14 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Lock } from "lucide-react";
+import { HeartPulse, Lock } from "lucide-react";
 import { useStore } from "@/store/store";
 import { useDerived } from "@/store/derived";
 import { formatDay } from "@/lib/date";
-import { scoreBand } from "@/lib/engine";
+import { scoreBand, type Factor } from "@/lib/engine";
 import { cn } from "@/lib/format";
-import { Card, CardHeader, Pill } from "@/components/ui/primitives";
+import { Card, CardHeader, IconTile, Pill } from "@/components/ui/primitives";
 import { ScoreChart } from "@/components/ui/charts";
+
+/** Shorter names for the factor row, where five columns share the card's width. */
+const SHORT_LABEL: Partial<Record<Factor["key"], string>> = { freshness: "Books fresh" };
 
 export function HealthCard() {
   const d = useDerived();
@@ -25,6 +28,11 @@ export function HealthCard() {
   return (
     <Card>
       <CardHeader
+        icon={
+          <IconTile tone="info">
+            <HeartPulse />
+          </IconTile>
+        }
         title="Business Health Score"
         sub="One number from five parts of your business. It moves only when the numbers do."
         right={
@@ -84,7 +92,7 @@ export function HealthCard() {
             )}
             title={f.hint}
           >
-            <div className="text-muted truncate text-[13px]">{f.label}</div>
+            <div className="text-muted truncate text-[13px]">{SHORT_LABEL[f.key] ?? f.label}</div>
             <div className="tnum mt-0.5 font-mono text-[15px] font-medium">
               {f.points.toFixed(1)}
               <span className="text-faint text-[12px] font-normal"> / {f.weight}</span>

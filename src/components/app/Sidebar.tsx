@@ -156,7 +156,7 @@ function MissionsWidget() {
       <SegmentBar total={d.missions.length} done={d.missionsDone} className="mt-3" />
       <div className="mt-3 text-sm font-medium">{streakLabel}</div>
       <div className="text-muted mt-0.5 font-mono text-xs">
-        {d.missionsDone} of {d.missions.length} done · resets at 00:00
+        {d.missionsDone} of {d.missions.length} done
       </div>
     </Link>
   );
