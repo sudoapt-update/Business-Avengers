@@ -493,3 +493,17 @@
 .fp-story__sign { margin-top: 28px; font-size: 14px; color: var(--muted); }
 @media (max-width: 760px) { .fp-story__points { grid-template-columns: 1fr; } }
 @media (max-width: 400px) { .fp-h h1 { font-size: 36px; } }
+
+/* ---------- RHYTHM: sections as tall as their content ----------
+   The kit sizes every section to one or two full screens; on this shorter page that left screens of empty
+   ground under short blocks. Every section but the hero and the logo orbit (which needs the screen for its
+   rings) now takes its content's height, with one even gap between blocks. */
+main > section.section:not(.fp-connects), footer.closing {
+  height: auto !important; min-height: 0 !important;
+  padding-top: clamp(72px, 8vw, 120px); padding-bottom: 0;
+}
+main > section.section:not(.fp-connects) > .wrap { height: auto; }
+main > section.section:last-of-type { padding-bottom: clamp(72px, 8vw, 120px); }
+main > section.fp-connects + section.section { padding-top: clamp(72px, 8vw, 120px); }
+footer.closing { padding-top: clamp(72px, 8vw, 120px); }
+.fp-connects { margin-top: clamp(72px, 8vw, 120px); }
