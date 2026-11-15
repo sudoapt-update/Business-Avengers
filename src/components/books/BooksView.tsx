@@ -1,80 +1,144 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { ArrowDown, Boxes, CalendarDays, Landmark, Plus, Receipt, ShoppingBag, Trash2, type LucideIcon } from "lucide-react";
 import { useStore } from "@/store/store";
 import { useDerived } from "@/store/derived";
 import { addDays, formatDay } from "@/lib/date";
 import { accountBalances, byNewest, effectiveAmount, stockLevels } from "@/lib/engine";
-import { PRODUCTS } from "@/lib/seed";
-import { cn, money, money2, num } from "@/lib/format";
-import type { Expense } from "@/lib/types";
+import { CHANNEL_LABEL, PRODUCTS } from "@/lib/seed";
+import { cn, money, money2, num, signedMoney } from "@/lib/format";
+import { paymentEvents } from "@/lib/calendar";
+import type { Channel, Expense, ExpenseCategory } from "@/lib/types";
 import { PageHeader } from "@/components/app/PageHeader";
 import { Explainer } from "@/components/app/Explainer";
-import { Button, Card, CardHeader, Caps, Pill } from "@/components/ui/primitives";
+import { Button, Card, CardHeader, Caps, IconTile, Pill, type TileTone } from "@/components/ui/primitives";
+import { HBars, PartsBar } from "@/components/ui/charts";
+import { BrandIcon, CHANNEL_COLOR } from "@/components/ui/brand";
+import { CATEGORY_ICON } from "@/components/ui/icons";
+import { CashFlowCard } from "@/components/overview/Money";
 import { EditableNumber, Pager, Segmented, Td, Th } from "@/components/ui/table";
 import { OrderList } from "@/components/orders/OrderList";
+import { PaymentCalendar } from "./PaymentCalendar";
 
-type Tab = "income" | "expenses" | "inventory" | "cash";
+const TABS = ["income", "expenses", "inventory", "cash", "calendar"] as const;
+type Tab = (typeof TABS)[number];
+const isTab = (v: string | null): v is Tab => !!v && (TABS as readonly string[]).includes(v);
 const PAGE = 6;
 
 export function BooksView() {
   const d = useDerived();
-  const [tab, setTab] = useState<Tab>("income");
+  // The open table is in the URL (?tab=calendar), so a link can open it and a reload keeps it.
+  const params = useSearchParams();
+  const [tab, setTabState] = useState<Tab>(() => {
+    const t = params.get("tab");
+    return isTab(t) ? t : "income";
+  });
+  const setTab = (t: Tab) => {
+    setTabState(t);
+    // Next.js keeps useSearchParams in step with the native History API, without a server round trip.
+    window.history.replaceState(null, "", t === "income" ? window.location.pathname : `?tab=${t}`);
+  };
+  const calNet = paymentEvents(d.data, d.today, 30).reduce((s, e) => s + e.amount, 0);
   const fresh = d.metrics.factors.find((f) => f.key === "freshness")!;
   const from = addDays(d.today, -30);
   const income30 = d.data.orders.filter((o) => o.day > from && o.day <= d.today).reduce((s, o) => s + o.gross, 0);
   const stock = stockLevels(d.data);
 
-  const tiles: { id: Tab; label: string; value: string; sub: string }[] = [
-    { id: "income", label: "Income", value: money(income30), sub: "sales, last 30 days" },
-    { id: "expenses", label: "Expenses", value: money(d.metrics.tools), sub: "running costs a month" },
+  const tiles: { id: Tab; label: string; value: string; sub: string; icon: LucideIcon; tone: TileTone }[] = [
+    { id: "income", label: "Income", value: money(income30), sub: "sales, last 30 days", icon: ShoppingBag, tone: "good" },
+    { id: "expenses", label: "Expenses", value: money(d.metrics.tools), sub: "running costs a month", icon: Receipt, tone: "bad" },
     {
       id: "inventory",
       label: "Stock",
       value: money(stock.reduce((s, x) => s + x.value, 0)),
       sub: `${num(stock.reduce((s, x) => s + x.units, 0))} units at cost`,
+      icon: Boxes,
+      tone: "violet",
     },
-    { id: "cash", label: "Cash", value: money(d.metrics.cash), sub: `${d.metrics.runwayWeeks.toFixed(1)} weeks of runway` },
+    {
+      id: "cash",
+      label: "Cash",
+      value: money(d.metrics.cash),
+      sub: `${d.metrics.runwayWeeks.toFixed(1)} weeks of runway`,
+      icon: Landmark,
+      tone: "info",
+    },
+    {
+      id: "calendar",
+      label: "Calendar",
+      value: signedMoney(calNet),
+      sub: "payouts minus bills, next 30 days",
+      icon: CalendarDays,
+      tone: "warn",
+    },
   ];
 
   return (
     <>
-      <PageHeader title="Books" sub="Your income, expenses, stock and cash in four simple tables. Every edit updates the whole app." />
+      <PageHeader
+        title="Books"
+        sub="Your income, expenses, stock and cash, plus a calendar of payments due. Every edit updates the whole app."
+      />
       <div className="space-y-4">
         <Explainer>
           Profit you can trust starts with complete books. Synced orders land here on their own; anything paid in cash, at the market or
           outside your store has to be added by hand. Click any figure with a pencil to correct it. Your score&apos;s{" "}
-          <span className="text-ink font-medium">Books up to date</span> part is{" "}
+          <span className="text-ink font-medium">Books fresh</span> part is{" "}
           <span className="tnum font-mono">
             {fresh.points.toFixed(1)}/{fresh.weight}
           </span>{" "}
           ({fresh.reading.toLowerCase()}); any edit today brings it to full marks.
         </Explainer>
 
-        <div className="grid grid-cols-2 gap-3 xl:grid-cols-4" role="group" aria-label="Choose a table">
-          {tiles.map((t) => (
-            <button
-              key={t.id}
-              aria-pressed={tab === t.id}
-              onClick={() => setTab(t.id)}
-              className={cn(
-                "rounded-card bg-panel border p-4 text-left transition-colors sm:p-5",
-                tab === t.id ? "border-ink ring-ink ring-1" : "border-line hover:border-line-strong",
-              )}
-            >
-              <Caps>{t.label}</Caps>
-              <div className="tnum mt-2 text-xl font-semibold tracking-tight sm:text-2xl">{t.value}</div>
-              <div className="text-muted mt-1 text-[12px]">{t.sub}</div>
-            </button>
-          ))}
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5" role="tablist" aria-label="Choose a table">
+          {tiles.map((t) => {
+            const Icon = t.icon;
+            const on = tab === t.id;
+            return (
+              <button
+                key={t.id}
+                role="tab"
+                aria-selected={on}
+                aria-controls={`books-${t.id}`}
+                onClick={() => setTab(t.id)}
+                className={cn(
+                  "rounded-card bg-panel relative border p-4 text-left transition-colors sm:p-5",
+                  on ? "border-ink ring-ink ring-1" : "border-line hover:border-line-strong",
+                )}
+              >
+                <div className="flex items-center gap-2">
+                  <IconTile tone={t.tone} size="sm">
+                    <Icon />
+                  </IconTile>
+                  <Caps>{t.label}</Caps>
+                </div>
+                <div className="tnum mt-3 text-xl font-semibold tracking-tight sm:text-2xl">{t.value}</div>
+                <div className="text-muted mt-1 text-[12px]">{t.sub}</div>
+                <div className={cn("mt-3 inline-flex items-center gap-1 text-xs font-medium", on ? "text-ink" : "text-muted")}>
+                  {on ? (
+                    <>
+                      {t.id === "calendar" ? "Calendar" : "Table"} shown below <ArrowDown className="size-3" aria-hidden />
+                    </>
+                  ) : t.id === "calendar" ? (
+                    "Open calendar"
+                  ) : (
+                    "Open table"
+                  )}
+                </div>
+              </button>
+            );
+          })}
         </div>
 
-        <div id={`books-${tab}`}>
+        <div id={`books-${tab}`} role="tabpanel" key={tab} className="animate-rise-in space-y-4">
           {tab === "income" && <IncomeTable />}
           {tab === "expenses" && <ExpensesTable />}
           {tab === "inventory" && <InventoryTable />}
+          {tab === "cash" && <CashFlowCard weeks={12} booksLink={false} />}
           {tab === "cash" && <CashTable />}
+          {tab === "calendar" && <PaymentCalendar />}
         </div>
       </div>
     </>
@@ -104,6 +168,18 @@ function IncomeTable() {
           </Button>
         }
       />
+      <ChartBlock title="Sales by channel · last 30 days">
+        <PartsBar
+          parts={(["shopify", "amazon", "market"] as Channel[]).map((c) => ({
+            label: CHANNEL_LABEL[c],
+            value: d.data.orders
+              .filter((o) => o.channel === c && o.day > addDays(d.today, -30) && o.day <= d.today)
+              .reduce((s, o) => s + o.gross, 0),
+            color: CHANNEL_COLOR[c],
+            icon: <BrandIcon id={c} size="xs" />,
+          }))}
+        />
+      </ChartBlock>
       {adding && (
         <SaleForm
           onAdd={(s) => {
@@ -217,6 +293,16 @@ function ExpensesTable() {
   const oneOff30 = d.data.expenses
     .filter((e) => e.cadence === "one-off" && e.day > addDays(d.today, -30) && e.day <= d.today)
     .reduce((s, e) => s + e.amount, 0);
+  const totals = new Map<ExpenseCategory, number>();
+  for (const e of d.data.expenses) {
+    const counts = e.cadence === "monthly" ? e.day <= d.today : e.day > addDays(d.today, -30) && e.day <= d.today;
+    if (counts)
+      totals.set(
+        e.category,
+        (totals.get(e.category) ?? 0) + (e.cadence === "monthly" ? effectiveAmount(e, d.data.leaks, d.today) : e.amount),
+      );
+  }
+  const byCategory = [...totals.entries()].sort((a, b) => b[1] - a[1]);
 
   return (
     <Card>
@@ -229,6 +315,15 @@ function ExpensesTable() {
           </Button>
         }
       />
+      <ChartBlock title="Running costs by category · this month">
+        <HBars
+          color="var(--color-bad-dot)"
+          rows={byCategory.map(([cat, value]) => {
+            const Icon = CATEGORY_ICON[cat];
+            return { label: cat, value, icon: <Icon className="text-muted size-3.5 shrink-0" aria-hidden /> };
+          })}
+        />
+      </ChartBlock>
       <div className="px-5 pt-4 pb-3">
         <Segmented
           label="Filter expenses"
@@ -271,7 +366,9 @@ function ExpensesTable() {
                       {applied && <Pill tone="good">Saving applied</Pill>}
                     </div>
                   </Td>
-                  <Td className="text-ink-2">{e.category}</Td>
+                  <Td className="text-ink-2">
+                    <CategoryLabel category={e.category} />
+                  </Td>
                   <Td>
                     <Pill tone={e.cadence === "monthly" ? "neutral" : "info"}>{e.cadence === "monthly" ? "Monthly" : "One-off"}</Pill>
                   </Td>
@@ -331,6 +428,18 @@ function InventoryTable() {
         title="Stock"
         sub="Units on hand at cost. Synced sales count down from your last count; type a new count after a stocktake."
       />
+      <ChartBlock title="Stock value by product · at cost">
+        <HBars
+          color="var(--color-violet)"
+          rows={[...rows]
+            .sort((a, b) => b.value - a.value)
+            .map((r) => ({
+              label: r.item.name,
+              value: r.value,
+              note: r.units < 20 ? <Pill tone={r.units < 10 ? "bad" : "warn"}>Low</Pill> : undefined,
+            }))}
+        />
+      </ChartBlock>
       <div className="relative mt-4 overflow-x-auto">
         <table className="w-full min-w-[560px] text-sm">
           <thead className="border-line bg-canvas border-y text-left">
@@ -395,6 +504,12 @@ function CashTable() {
   return (
     <Card>
       <CardHeader title="Cash" sub="Where your money sits. Orders and expenses move these balances until you type a fresh count." />
+      <ChartBlock title="Where the cash sits today">
+        <PartsBar
+          format={money}
+          parts={rows.map((r, i) => ({ label: r.account.name, value: r.balance, color: CASH_STEPS[i % CASH_STEPS.length] }))}
+        />
+      </ChartBlock>
       <div className="relative mt-4 overflow-x-auto">
         <table className="w-full min-w-[520px] text-sm">
           <thead className="border-line bg-canvas border-y text-left">
@@ -438,5 +553,27 @@ function CashTable() {
         </span>
       </div>
     </Card>
+  );
+}
+
+/** One blue, dark to light: the accounts are parts of one total, ordered by how quickly the cash can be spent. */
+const CASH_STEPS = ["#184f95", "#2a78d6", "#6da7ec", "#b7d3f6"];
+
+function ChartBlock({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="border-line bg-canvas/60 mt-4 border-y px-5 py-4">
+      <Caps className="mb-3">{title}</Caps>
+      {children}
+    </div>
+  );
+}
+
+function CategoryLabel({ category }: { category: ExpenseCategory }) {
+  const Icon = CATEGORY_ICON[category];
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <Icon className="text-muted size-3.5" aria-hidden />
+      {category}
+    </span>
   );
 }

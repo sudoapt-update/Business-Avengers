@@ -1,12 +1,12 @@
 "use client";
 
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Droplets, HeartPulse, Hourglass, Wallet } from "lucide-react";
 import { useStore } from "@/store/store";
 import { useDerived } from "@/store/derived";
 import { money } from "@/lib/format";
 import { scoreBand } from "@/lib/engine";
-import { Button, Caps, Delta, Pill } from "@/components/ui/primitives";
-import { Sparkline } from "@/components/ui/charts";
+import { Button, Caps, Delta, IconTile, Pill, type TileTone } from "@/components/ui/primitives";
+import { AnimatedNumber, Sparkline } from "@/components/ui/charts";
 
 export function AlertBanner() {
   const d = useDerived();
@@ -29,13 +29,13 @@ export function AlertBanner() {
       };
 
   return (
-    <div className="rounded-card border-line bg-panel flex flex-col gap-3 border px-4 py-3.5 sm:flex-row sm:items-center sm:px-5">
-      <span className="bg-warn-bg text-warn grid size-8 shrink-0 place-items-center rounded-lg" aria-hidden>
+    <div className="rounded-card border-warn-dot/40 bg-warn-bg flex flex-col gap-3 border px-4 py-3.5 sm:flex-row sm:items-center sm:px-5">
+      <span className="bg-panel text-warn grid size-8 shrink-0 place-items-center rounded-lg" aria-hidden>
         <AlertTriangle className="size-4" />
       </span>
       <div className="min-w-0 flex-1">
         <div className="text-sm font-medium">{msg.title}</div>
-        <div className="text-muted text-[13px]">{msg.body}</div>
+        <div className="text-ink-2 text-[13px]">{msg.body}</div>
       </div>
       <Button onClick={msg.go} className="self-start sm:self-auto">
         {msg.cta}
@@ -47,14 +47,20 @@ export function AlertBanner() {
 function Kpi({
   label,
   value,
+  format,
   unit,
   delta,
   caption,
   spark,
   tone = "good",
+  icon,
+  tile,
 }: {
   label: string;
-  value: string;
+  value: number;
+  format: (n: number) => string;
+  icon: React.ReactNode;
+  tile: TileTone;
   unit?: string;
   delta: React.ReactNode;
   caption: string;
@@ -63,12 +69,17 @@ function Kpi({
 }) {
   return (
     <div className="rounded-card border-line bg-panel border p-4 sm:p-5">
-      <div className="flex items-start justify-between gap-2">
-        <Caps>{label}</Caps>
-        {spark && <Sparkline values={spark} tone={tone} className="-mt-1 h-7 w-20" />}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex min-w-0 items-center gap-2">
+          <IconTile tone={tile} size="sm">
+            {icon}
+          </IconTile>
+          <Caps className="truncate">{label}</Caps>
+        </div>
+        {spark && <Sparkline values={spark} tone={tone} className="h-7 w-16 shrink-0" />}
       </div>
       <div className="tnum mt-3 text-[28px] leading-none font-semibold tracking-tight">
-        {value}
+        <AnimatedNumber value={value} format={format} />
         {unit && <span className="text-muted ml-1 text-base font-medium">{unit}</span>}
       </div>
       <div className="text-muted mt-3 flex flex-wrap items-center gap-2 text-[13px]">
@@ -91,22 +102,31 @@ export function KpiRow() {
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <Kpi
         label="Health score"
-        value={m.score.toFixed(1)}
+        icon={<HeartPulse />}
+        tile="info"
+        value={m.score}
+        format={(n) => n.toFixed(1)}
         unit="/100"
         delta={<Delta value={m.score - p.score} />}
         caption={`${band.label} · vs 30 days ago`}
         spark={last30.map((x) => x.score)}
       />
       <Kpi
-        label="True profit · 30 days"
-        value={money(m.trueProfit)}
+        label="True profit · 30d"
+        icon={<Wallet />}
+        tile="good"
+        value={m.trueProfit}
+        format={money}
         delta={<Delta value={profitChange * 100} suffix="%" />}
         caption={`${(m.margin * 100).toFixed(1)}% of ${money(m.revenue)} sales`}
         spark={last30.map((x) => x.trueProfit)}
       />
       <Kpi
         label="Cash runway"
-        value={m.runwayWeeks.toFixed(1)}
+        icon={<Hourglass />}
+        tile="warn"
+        value={m.runwayWeeks}
+        format={(n) => n.toFixed(1)}
         unit="weeks"
         delta={<Delta value={m.runwayWeeks - p.runwayWeeks} suffix=" wk" />}
         caption={`${money(m.cash)} in cash`}
@@ -115,7 +135,10 @@ export function KpiRow() {
       />
       <Kpi
         label="Money leaking"
-        value={money(m.leakMonthly)}
+        icon={<Droplets />}
+        tile="bad"
+        value={m.leakMonthly}
+        format={money}
         unit="/mo"
         delta={<Pill tone={m.leakCount ? "bad" : "good"}>{m.leakCount ? `${m.leakCount} leaks` : "None"}</Pill>}
         caption={m.leakCount ? `largest ${money(m.largestLeak)}/mo` : "all fixed"}

@@ -103,6 +103,42 @@ export function cashAt(data: DemoData, day: Day, today: Day) {
   return c;
 }
 
+export interface CashWeek {
+  /** First and last day of the week, oldest week first. */
+  from: Day;
+  to: Day;
+  in: Record<Channel, number>;
+  totalIn: number;
+  /** Stock, fees, postage, running costs and owner pay for the week. */
+  out: number;
+  net: number;
+}
+
+/**
+ * Money in and out for each of the last `weeks` seven-day blocks, ending today.
+ * Uses the same flows as cashAt, so the nets add up to the change in cash.
+ */
+export function weeklyCashflow(data: DemoData, today: Day, weeks: number): CashWeek[] {
+  const out: CashWeek[] = [];
+  for (let w = weeks - 1; w >= 0; w--) {
+    const to = addDays(today, -7 * w);
+    const from = addDays(to, -6);
+    const before = addDays(from, -1);
+    const inBy: Record<Channel, number> = { shopify: 0, amazon: 0, market: 0 };
+    let spent = 0;
+    for (const o of data.orders) {
+      if (o.day <= before || o.day > to) continue;
+      inBy[o.channel] += o.gross;
+      spent += o.cogs + o.platformFee + o.paymentFee + o.shipping;
+    }
+    spent += ((expensesFor(data, to).monthly + data.ownerDrawMonthly) / 30) * 7;
+    for (const e of data.expenses) if (e.cadence === "one-off" && e.day > before && e.day <= to) spent += e.amount;
+    const totalIn = inBy.shopify + inBy.amazon + inBy.market;
+    out.push({ from, to, in: inBy, totalIn, out: spent, net: totalIn - spent });
+  }
+  return out;
+}
+
 export interface Factor {
   key: "margin" | "runway" | "fees" | "expenses" | "freshness";
   label: string;
@@ -136,7 +172,11 @@ export interface Metrics {
   score: number;
 }
 
-export function computeMetrics(data: DemoData, day: Day, today: Day): Metrics {
+/**
+ * `opts.cash` replaces the cash balance. The Time Machine uses it to replay the last 30 days with a
+ * change: the cash today then differs from the real balance by the change in profit.
+ */
+export function computeMetrics(data: DemoData, day: Day, today: Day, opts: { cash?: number } = {}): Metrics {
   const from = addDays(day, -30);
   let revenue = 0,
     cogs = 0,
@@ -158,7 +198,7 @@ export function computeMetrics(data: DemoData, day: Day, today: Day): Metrics {
   const trueProfit = revenue - cogs - platformFees - paymentFees - shipping - tools;
   const margin = revenue > 0 ? trueProfit / revenue : 0;
 
-  const cash = cashAt(data, day, today);
+  const cash = opts.cash ?? cashAt(data, day, today);
   const weeklyFixed = ((exp.monthly + data.ownerDrawMonthly) * 12) / 52;
   const runwayWeeks = weeklyFixed > 0 ? Math.max(0, cash / weeklyFixed) : 52;
 

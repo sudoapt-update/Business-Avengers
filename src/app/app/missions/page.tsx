@@ -1,11 +1,13 @@
-import { ComingNext } from "@/components/app/ComingNext";
+import type { Metadata } from "next";
+import { Ready } from "@/components/app/Ready";
+import { MissionsView } from "@/components/missions/MissionsView";
 
-export default function Page() {
+export const metadata: Metadata = { title: "Missions" };
+
+export default function MissionsPage() {
   return (
-    <ComingNext
-      title="Missions"
-      sub="Today's missions and the 90-day plan they add up to."
-      note="The full missions page is next in the build. Today's missions already work from the Overview."
-    />
+    <Ready>
+      <MissionsView />
+    </Ready>
   );
 }

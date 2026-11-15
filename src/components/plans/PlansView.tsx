@@ -32,7 +32,10 @@ const ROWS: Row[] = [
   },
   { label: "Books: income, expenses, stock, cash", values: { starter: true, growth: true, pro: true, scale: true } },
   { label: "Order sync (demo connections)", values: { starter: true, growth: true, pro: true, scale: true } },
-  { label: "Time Machine what-ifs", soon: true, values: { starter: false, growth: "Limited", pro: "Unlimited", scale: "Unlimited" } },
+  {
+    label: "Time Machine what-ifs",
+    values: { starter: "1 change at a time", growth: "2 changes together", pro: "All 4 together", scale: "All 4 together" },
+  },
   { label: "Entrepreneur Wrapped", soon: true, values: { starter: false, growth: false, pro: true, scale: true } },
   { label: "Export to your accountant", soon: true, values: { starter: false, growth: false, pro: true, scale: true } },
   { label: "Multi-store", soon: true, values: { starter: false, growth: false, pro: false, scale: true } },

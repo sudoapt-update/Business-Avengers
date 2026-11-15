@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { X } from "lucide-react";
 import { useStore } from "@/store/store";
 
@@ -36,6 +37,15 @@ export function Toaster() {
                     </span>
                   )}
                 </div>
+              )}
+              {t.action && (
+                <Link
+                  href={t.action.href}
+                  onClick={() => dismiss(t.id)}
+                  className="text-ink hover:bg-hover mt-2 -ml-1.5 inline-flex h-7 items-center rounded-md px-1.5 text-[13px] font-medium underline underline-offset-2"
+                >
+                  {t.action.label}
+                </Link>
               )}
             </div>
             <button

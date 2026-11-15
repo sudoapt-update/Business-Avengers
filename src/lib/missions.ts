@@ -159,9 +159,10 @@ export const STREAK_BONUS_FROM = 3;
 export const STREAK_BONUS = 0.2;
 
 export const BADGES = {
-  "first-sync": { name: "First Order Sync", hint: "Synced your first order" },
-  "leak-hunter": { name: "Leak Hunter", hint: "Stopped a money leak" },
-  "streak-7": { name: "7-Day Streak", hint: "Seven days in a row" },
-  "score-80": { name: "Score 80+", hint: "Health Score reached 80" },
-  "level-growing": { name: "Growing", hint: "Reached the Growing level" },
+  "first-sync": { name: "First Order Sync", hint: "Synced your first order", todo: "Sync your first order" },
+  "leak-hunter": { name: "Leak Hunter", hint: "Stopped a money leak", todo: "Stop a money leak" },
+  "streak-7": { name: "7-Day Streak", hint: "Seven days in a row", todo: "Finish a mission seven days in a row" },
+  "score-80": { name: "Score 80+", hint: "Health Score reached 80", todo: "Reach a Health Score of 80" },
+  "level-growing": { name: "Growing", hint: "Reached the Growing level", todo: "Reach the Growing level" },
+  connected: { name: "Connected", hint: "Connected another platform", todo: "Connect another platform" },
 } as const;

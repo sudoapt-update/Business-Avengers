@@ -92,7 +92,7 @@ export interface BadgeEntry {
   day: Day;
 }
 
-export type BadgeId = "first-sync" | "leak-hunter" | "streak-7" | "score-80" | "level-growing";
+export type BadgeId = "first-sync" | "leak-hunter" | "streak-7" | "score-80" | "level-growing" | "connected";
 
 export interface DemoData {
   version: number;
@@ -111,6 +111,8 @@ export interface DemoData {
   reviews: { day: Day; missionId: string }[];
   badges: BadgeEntry[];
   orderSeq: number;
+  /** Demo platforms connected by the visitor, on top of the two the sample store starts with. */
+  connections?: string[];
   /** AI Adviser conversation, oldest first. */
   chat?: ChatEntry[];
 }

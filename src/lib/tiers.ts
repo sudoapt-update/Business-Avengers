@@ -7,6 +7,8 @@ export interface TierInfo {
   tokens: number;
   missionsPerDay: number;
   rewardMultiplier: number;
+  /** How many Time Machine changes can be combined in one scenario. */
+  whatIfLevers: number;
   blurb: string;
   adds: string[];
 }
@@ -14,6 +16,7 @@ export interface TierInfo {
 export const TIERS: TierInfo[] = [
   {
     id: "starter",
+    whatIfLevers: 1,
     name: "Starter",
     price: 0,
     tokens: 50,
@@ -24,6 +27,7 @@ export const TIERS: TierInfo[] = [
   },
   {
     id: "growth",
+    whatIfLevers: 2,
     name: "Growth",
     price: 19,
     tokens: 500,
@@ -34,6 +38,7 @@ export const TIERS: TierInfo[] = [
   },
   {
     id: "pro",
+    whatIfLevers: 4,
     name: "Pro",
     price: 39,
     tokens: 2000,
@@ -44,6 +49,7 @@ export const TIERS: TierInfo[] = [
   },
   {
     id: "scale",
+    whatIfLevers: 4,
     name: "Scale",
     price: 79,
     tokens: 8000,

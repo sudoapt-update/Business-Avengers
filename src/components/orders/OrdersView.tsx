@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { RefreshCw } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Lightbulb, RefreshCw } from "lucide-react";
 import { useStore } from "@/store/store";
 import { useDerived } from "@/store/derived";
 import { addDays } from "@/lib/date";
@@ -15,6 +16,8 @@ import { Button, Card, CardHeader, Caps, Pill } from "@/components/ui/primitives
 import { Pager, Segmented } from "@/components/ui/table";
 import { SyncImpact } from "@/components/overview/Money";
 import { ChannelLabel, OrderList } from "./OrderList";
+import { BrandIcon, CHANNEL_COLOR } from "@/components/ui/brand";
+import { PartsBar } from "@/components/ui/charts";
 
 const CHANNELS: Channel[] = ["shopify", "amazon", "market"];
 const PAGE = 6;
@@ -86,9 +89,10 @@ export function OrdersView() {
 
         <div className="grid gap-3 md:grid-cols-3">
           {stats.map((s) => (
-            <Card key={s.channel} className="p-4 sm:p-5">
+            <Card key={s.channel} className="relative overflow-hidden p-4 pt-5 sm:p-5 sm:pt-6">
+              <span className="absolute inset-x-0 top-0 h-1" style={{ background: CHANNEL_COLOR[s.channel] }} aria-hidden />
               <div className="flex items-center justify-between gap-2">
-                <ChannelLabel channel={s.channel} />
+                <ChannelLabel channel={s.channel} size="md" />
                 <Pill tone={s.channel === "market" ? "neutral" : "info"}>{s.channel === "market" ? "Added by hand" : "Demo sync"}</Pill>
               </div>
               <div className="tnum mt-3 text-[26px] leading-none font-semibold tracking-tight">{money(s.gross)}</div>
@@ -121,8 +125,25 @@ export function OrdersView() {
           ))}
         </div>
 
+        <Card className="p-4 sm:p-5">
+          <div className="mb-3 flex items-baseline justify-between gap-3">
+            <h2 className="text-[15px] font-semibold tracking-tight">Where your sales come from</h2>
+            <span className="text-muted text-[13px]">Share of sales, 30 days</span>
+          </div>
+          <PartsBar
+            parts={stats.map((s) => ({
+              label: CHANNEL_LABEL[s.channel],
+              value: s.gross,
+              color: CHANNEL_COLOR[s.channel],
+              icon: <BrandIcon id={s.channel} size="xs" />,
+            }))}
+          />
+        </Card>
+
         {own.gross > 0 && mkt.gross > 0 && (
-          <div className="rounded-card border-line bg-panel text-ink-2 border px-4 py-3 text-[13px] sm:px-5">
+          <div className="rounded-card border-info-dot/30 bg-info-bg text-ink-2 flex gap-3 border px-4 py-3 text-[13px] sm:px-5">
+            <Lightbulb className="text-info mt-0.5 size-4 shrink-0" aria-hidden />
+            <p>
             On every $100 sold, you keep <span className="tnum text-ink font-mono font-medium">{money2(own.keepPer100)}</span> on your own
             store and <span className="tnum text-ink font-mono font-medium">{money2(mkt.keepPer100)}</span> on the marketplace. Moving one
             repeat buyer a week to your store is worth about{" "}
@@ -130,6 +151,7 @@ export function OrdersView() {
               {money(((own.keepPer100 - mkt.keepPer100) / 100) * (mkt.gross / Math.max(1, mkt.count)) * 52)}
             </span>{" "}
             a year.
+            </p>
           </div>
         )}
 
@@ -158,7 +180,12 @@ export function OrdersView() {
         </Card>
 
         <Card className="p-4 sm:p-5">
-          <Caps>Connections</Caps>
+          <div className="flex items-center justify-between gap-3">
+            <Caps>Connections</Caps>
+            <Link href="/app/connections" className="hover:text-ink text-muted inline-flex items-center gap-1 text-[13px]">
+              Connect more platforms <ArrowRight className="size-3.5" />
+            </Link>
+          </div>
           <ul className="mt-3 grid gap-2 sm:grid-cols-3">
             {CHANNELS.map((c) => (
               <li key={c} className="border-line flex items-center justify-between rounded-lg border px-3 py-2.5 text-[13px]">

@@ -1,7 +1,13 @@
-import { ComingNext } from "@/components/app/ComingNext";
+import type { Metadata } from "next";
+import { Ready } from "@/components/app/Ready";
+import { ConnectionsView } from "@/components/connections/ConnectionsView";
 
-export default function Page() {
+export const metadata: Metadata = { title: "Connections" };
+
+export default function ConnectionsPage() {
   return (
-    <ComingNext title="Connections" sub="Demo connections. No real account is accessed." note="Mock connections come later in the build." />
+    <Ready>
+      <ConnectionsView />
+    </Ready>
   );
 }

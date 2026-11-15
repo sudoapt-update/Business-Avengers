@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // The floating dev badge sits on top of the sidebar's missions card; it is never part of a production build.
+  devIndicators: false,
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {

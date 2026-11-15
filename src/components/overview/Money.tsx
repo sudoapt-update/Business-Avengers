@@ -1,12 +1,27 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Lock, RefreshCw } from "lucide-react";
+import {
+  ArrowDownUp,
+  ArrowRight,
+  CreditCard,
+  Droplets,
+  Lock,
+  Package,
+  PiggyBank,
+  RefreshCw,
+  ShoppingBag,
+  Store,
+  Truck,
+  Wrench,
+  type LucideIcon,
+} from "lucide-react";
 import { leakUnlocked, useStore } from "@/store/store";
 import { useDerived } from "@/store/derived";
-import { byNewest } from "@/lib/engine";
-import { cn, money, money2, pct } from "@/lib/format";
-import { Button, Card, CardHeader, Pill, dotTone, type Tone } from "@/components/ui/primitives";
+import { byNewest, weeklyCashflow } from "@/lib/engine";
+import { cn, money, money2, pct, signedMoney } from "@/lib/format";
+import { Button, Card, CardHeader, Caps, IconTile, Pill, type TileTone } from "@/components/ui/primitives";
+import { CashFlowChart } from "@/components/ui/charts";
 import { OrderList } from "@/components/orders/OrderList";
 
 export function OrderFeed() {
@@ -20,10 +35,15 @@ export function OrderFeed() {
     <Card>
       <span id="order-feed" className="block scroll-mt-24" />
       <CardHeader
+        icon={
+          <IconTile tone="violet">
+            <RefreshCw />
+          </IconTile>
+        }
         title="Live order sync"
         sub="Demo connection — no real account is accessed."
         right={
-          <Button variant="primary" size="sm" onClick={simulateOrder} className="shrink-0">
+          <Button variant="primary" size="sm" onClick={() => simulateOrder()} className="shrink-0">
             <RefreshCw className="size-3.5" /> Simulate new order
           </Button>
         }
@@ -58,91 +78,128 @@ export function SyncImpact({ todayCount }: { todayCount: number }) {
   );
 }
 
-export function ProfitBridge() {
+/** Money in against money out, week by week, with the totals for the period above the chart. */
+export function CashFlowCard({
+  weeks = 8,
+  booksLink = true,
+}: {
+  weeks?: number;
+  /** Off when the card already sits on the Books page. */ booksLink?: boolean;
+}) {
   const d = useDerived();
-  const m = d.metrics;
-  const rows: {
-    label: string;
-    sub: string;
-    value: number;
-    tone: Tone | "ink";
-    kind?: "start" | "end";
-  }[] = [
-    {
-      label: "Sales",
-      sub: `${m.orders} orders across 3 channels`,
-      value: m.revenue,
-      tone: "good",
-      kind: "start",
-    },
-    {
-      label: "Cost of goods",
-      sub: "What the products cost you to make",
-      value: -m.cogs,
-      tone: "neutral",
-    },
-    {
-      label: "Marketplace fees",
-      sub: "Referral and fulfilment fees",
-      value: -m.platformFees,
-      tone: "neutral",
-    },
-    {
-      label: "Card and payment fees",
-      sub: "Your own checkout and card reader",
-      value: -m.paymentFees,
-      tone: "neutral",
-    },
-    {
-      label: "Shipping labels",
-      sub: "Postage you paid on free-shipping orders",
-      value: -m.shipping,
-      tone: "neutral",
-    },
-    {
-      label: "Tools and running costs",
-      sub: "Subscriptions, ads, booth, storage",
-      value: -m.tools,
-      tone: "neutral",
-    },
-    {
-      label: "True profit",
-      sub: "What the business actually kept",
-      value: m.trueProfit,
-      tone: "ink",
-      kind: "end",
-    },
-  ];
+  const rows = weeklyCashflow(d.data, d.today, weeks);
+  const totalIn = rows.reduce((s, w) => s + w.totalIn, 0);
+  const totalOut = rows.reduce((s, w) => s + w.out, 0);
+  const net = totalIn - totalOut;
+  const up = rows.filter((w) => w.net >= 0).length;
 
   return (
     <Card>
-      <CardHeader title="Where your sales went" sub="The last 30 days, from money in to what you kept." />
-      <ul className="mt-2 px-5">
-        {rows.map((r) => (
-          <li key={r.label} className={cn("flex items-center gap-3 py-2.5", r.kind === "end" && "border-line mt-1 border-t pt-3.5")}>
-            <span className={cn("size-2 shrink-0 rounded-full", r.tone === "ink" ? "bg-ink" : dotTone[r.tone as Tone])} aria-hidden />
-            <div className="min-w-0 flex-1">
-              <div className={cn("text-sm", r.kind ? "font-medium" : "text-ink-2")}>{r.label}</div>
-              <div className="text-muted text-xs">{r.sub}</div>
-            </div>
-            <div className="hidden w-28 sm:block" aria-hidden>
-              <div className="bg-hover h-1.5 overflow-hidden rounded-full">
-                <div
-                  className={cn("h-full rounded-full", r.kind ? "bg-ink" : "bg-faint")}
-                  style={{
-                    width: `${Math.min(100, (Math.abs(r.value) / m.revenue) * 100)}%`,
-                  }}
-                />
-              </div>
-            </div>
-            <div className={cn("tnum w-24 text-right font-mono text-sm", r.kind && "font-semibold")}>
-              {r.value < 0 ? `−${money(-r.value)}` : money(r.value)}
-            </div>
-          </li>
+      <CardHeader
+        icon={
+          <IconTile tone="info">
+            <ArrowDownUp />
+          </IconTile>
+        }
+        title="Cash flow"
+        sub={`Money in and money out, last ${weeks} weeks. Hover a week for its figures.`}
+        right={
+          booksLink ? (
+            <Link href="/app/books" className="text-muted hover:text-ink shrink-0 text-[13px]">
+              Open Books
+            </Link>
+          ) : undefined
+        }
+      />
+      <dl className="border-line mx-5 mt-4 grid grid-cols-3 divide-x divide-[var(--color-line)] rounded-lg border">
+        {[
+          { k: "Money in", v: money(totalIn), c: "" },
+          { k: "Money out", v: `−${money(totalOut)}`, c: "" },
+          { k: "Net", v: signedMoney(net), c: net >= 0 ? "text-good" : "text-bad" },
+        ].map((x) => (
+          <div key={x.k} className="px-3 py-2.5 sm:px-4">
+            <dt>
+              <Caps>{x.k}</Caps>
+            </dt>
+            <dd className={cn("tnum mt-1 text-base font-semibold tracking-tight sm:text-xl", x.c)}>{x.v}</dd>
+          </div>
         ))}
+      </dl>
+      <div className="px-5 pt-4">
+        <CashFlowChart weeks={rows} />
+      </div>
+      <p className="border-line text-muted mt-3 border-t px-5 py-3 text-[13px]">
+        {up} of {weeks} weeks brought in more than went out. Money out counts stock, fees, postage, running costs and your own pay.
+      </p>
+    </Card>
+  );
+}
+
+export function ProfitBridge() {
+  const d = useDerived();
+  const m = d.metrics;
+  const rows: { label: string; sub: string; value: number; icon: LucideIcon; tile: TileTone; kind?: "start" | "end" }[] = [
+    { label: "Sales", sub: `${m.orders} orders, 3 channels`, value: m.revenue, icon: ShoppingBag, tile: "info", kind: "start" },
+    { label: "Cost of goods", sub: "What the products cost to make", value: -m.cogs, icon: Package, tile: "neutral" },
+    { label: "Marketplace fees", sub: "Referral and fulfilment", value: -m.platformFees, icon: Store, tile: "neutral" },
+    { label: "Card fees", sub: "Checkout and card reader", value: -m.paymentFees, icon: CreditCard, tile: "neutral" },
+    { label: "Shipping labels", sub: "Postage on free-shipping orders", value: -m.shipping, icon: Truck, tile: "neutral" },
+    { label: "Running costs", sub: "Subscriptions, ads, booth", value: -m.tools, icon: Wrench, tile: "neutral" },
+    { label: "True profit", sub: "What the business kept", value: m.trueProfit, icon: PiggyBank, tile: "good", kind: "end" },
+  ];
+  // Waterfall: each cost starts where the one before it ended, so the bars step down from sales to profit.
+  let left = m.revenue;
+  const bars = rows.map((r) => {
+    if (r.kind) return { from: 0, width: Math.max(0, r.value) };
+    left += r.value;
+    return { from: Math.max(0, left), width: -r.value };
+  });
+  const scale = (n: number) => `${Math.min(100, (n / Math.max(1, m.revenue)) * 100)}%`;
+
+  return (
+    <Card>
+      <CardHeader
+        icon={
+          <IconTile tone="good">
+            <PiggyBank />
+          </IconTile>
+        }
+        title="Where your sales went"
+        sub="The last 30 days, from money in to what you kept."
+      />
+      <ul className="mt-3 px-5">
+        {rows.map((r, i) => {
+          const Icon = r.icon;
+          return (
+            <li key={r.label} className={cn("flex items-center gap-3 py-2", r.kind === "end" && "border-line mt-1 border-t pt-3")}>
+              <IconTile tone={r.tile} size="sm">
+                <Icon />
+              </IconTile>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-baseline justify-between gap-2">
+                  <span className={cn("truncate text-sm", r.kind ? "font-medium" : "text-ink-2")} title={r.sub}>
+                    {r.label}
+                  </span>
+                  <span className={cn("tnum font-mono text-sm", r.kind && "font-semibold", r.kind === "end" && "text-good")}>
+                    {r.value < 0 ? `−${money(-r.value)}` : money(r.value)}
+                  </span>
+                </div>
+                <div className="bg-hover relative mt-1.5 h-2 overflow-hidden rounded-full" aria-hidden>
+                  <span
+                    className={cn(
+                      "absolute inset-y-0 rounded-full transition-[left,width] duration-500",
+                      r.kind === "start" ? "bg-info-dot" : r.kind === "end" ? "bg-good-dot" : "bg-ch-out",
+                    )}
+                    style={{ left: scale(bars[i].from), width: scale(bars[i].width) }}
+                  />
+                </div>
+              </div>
+            </li>
+          );
+        })}
       </ul>
-      <div className="bg-canvas text-ink-2 mx-5 mt-2 mb-5 rounded-lg px-4 py-3 text-[13px]">
-        Out of every $100 of sales, you keep <span className="tnum text-ink font-mono font-medium">${(m.margin * 100).toFixed(2)}</span>.
+      <div className="bg-good-bg text-ink-2 mx-5 mt-3 mb-5 rounded-lg px-4 py-3 text-[13px]">
+        Out of every $100 of sales, you keep <span className="tnum text-good font-mono font-semibold">${(m.margin * 100).toFixed(2)}</span>.
         Fees take <span className="tnum font-mono">{pct(m.feeLoad)}</span>, more than shipping.
       </div>
     </Card>
@@ -160,6 +217,11 @@ export function TopLeaks() {
   return (
     <Card>
       <CardHeader
+        icon={
+          <IconTile tone="bad">
+            <Droplets />
+          </IconTile>
+        }
         title="Top money leaks"
         sub={open.length ? `${money(d.metrics.leakMonthly)}/mo across ${open.length} leaks` : "No open leaks"}
         right={

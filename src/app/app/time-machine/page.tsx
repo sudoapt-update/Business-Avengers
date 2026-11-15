@@ -1,11 +1,13 @@
-import { ComingNext } from "@/components/app/ComingNext";
+import type { Metadata } from "next";
+import { Ready } from "@/components/app/Ready";
+import { TimeMachineView } from "@/components/time-machine/TimeMachineView";
 
-export default function Page() {
+export const metadata: Metadata = { title: "Time Machine" };
+
+export default function TimeMachinePage() {
   return (
-    <ComingNext
-      title="Time Machine"
-      sub="Try a what-if before you make the change for real."
-      note="The Time Machine comes later in the build."
-    />
+    <Ready>
+      <TimeMachineView />
+    </Ready>
   );
 }

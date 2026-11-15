@@ -18,6 +18,7 @@ import {
 } from "@/lib/missions";
 import { PRODUCTS, buildOrder, createSeed, ordersForDay, pickChannel, rng } from "@/lib/seed";
 import { tierInfo, tierRank } from "@/lib/tiers";
+import { CONNECTORS, CONNECT_REWARD, extraConnectionsFor } from "@/lib/connectors";
 import type { BadgeId, ChatEntry, DemoData, Expense, Tier } from "@/lib/types";
 import { ADVISER_COST, MAX_QUESTION, buildContext, fallbackAnswer } from "@/lib/adviser";
 
@@ -28,6 +29,8 @@ export interface Toast {
   chips?: string[];
   scoreFrom?: number;
   scoreTo?: number;
+  /** A link shown under the toast, for when the change it reports is on another page. */
+  action?: { label: string; href: string };
 }
 
 export type UpgradeReason = { title: string; body: string } | null;
@@ -51,7 +54,8 @@ interface State {
   reset: () => void;
   advanceDay: () => void;
   setTier: (t: Tier) => void;
-  simulateOrder: () => void;
+  /** `viewLink` adds a "View in Orders" link to the toast, for pages that do not show the order feed. */
+  simulateOrder: (opts?: { viewLink?: boolean }) => void;
   addExpense: (e: Pick<Expense, "name" | "category" | "amount" | "cadence">) => void;
   addSale: (s: { product: string; qty: number; price: number; card: boolean }) => void;
   updateExpenseAmount: (id: string, amount: number) => void;
@@ -63,6 +67,8 @@ interface State {
   unlockLeak: (leakId: string) => boolean;
   applyLeak: (leakId: string) => void;
   spendTokens: (amount: number, reason: string) => boolean;
+  connectPlatform: (id: string) => boolean;
+  disconnectPlatform: (id: string) => void;
   openSheet: (s: Sheet) => void;
   openUpgrade: (r: UpgradeReason) => void;
   dismissToast: (id: number) => void;
@@ -113,7 +119,7 @@ export const useStore = create<State>()(
        * The one reward function. Every mission completion goes through here:
        * tokens, XP, streak, badges and the toast all update together.
        */
-      const grantReward = (missionId: MissionId, scoreFrom?: number) => {
+      const grantReward = (missionId: MissionId, scoreFrom?: number, action?: Toast["action"]) => {
         const { data, tier } = get();
         if (!data) return;
         const today = get().today();
@@ -153,6 +159,7 @@ export const useStore = create<State>()(
           ],
           scoreFrom: scoreFrom !== undefined && scoreFrom !== scoreTo ? scoreFrom : undefined,
           scoreTo: scoreFrom !== undefined && scoreFrom !== scoreTo ? scoreTo : undefined,
+          action,
         });
         if (lvlAfter.index > lvlBefore.index) {
           pushToast({ title: `Level up · You reached ${lvlAfter.name}`, detail: "Your Financial Level moved up a step." });
@@ -217,7 +224,7 @@ export const useStore = create<State>()(
           pushToast({ title: `Viewing as ${tierInfo(t).name}`, detail: "Limits, allowance and rewards now follow this plan." });
         },
 
-        simulateOrder: () => {
+        simulateOrder: (opts) => {
           const { data } = get();
           if (!data) return;
           const today = get().today();
@@ -236,13 +243,15 @@ export const useStore = create<State>()(
           const profit = order.gross - order.platformFee - order.paymentFee - order.shipping - order.cogs;
           set({ lastOrderId: order.id, lastImpact: { orderId: order.id, scoreFrom: from, scoreTo: to, profit, cash: profit } });
           const before = get().data!.missionLog.length;
-          grantReward("simulate-order", from);
+          const action = opts?.viewLink ? { label: "View in Orders", href: "/app/orders" } : undefined;
+          grantReward("simulate-order", from, action);
           if (get().data!.missionLog.length === before) {
             pushToast({
               title: `Order ${order.ref} synced`,
               detail: `${order.item} ×${order.qty}. You keep ${profit < 0 ? "−" : ""}$${Math.abs(profit).toFixed(2)} after fees and stock.`,
               scoreFrom: from !== to ? from : undefined,
               scoreTo: from !== to ? to : undefined,
+              action,
             });
           }
         },
@@ -440,6 +449,51 @@ export const useStore = create<State>()(
           }
           if (!data.badges.some((b) => b.id === "leak-hunter"))
             pushToast({ title: `Badge earned · ${BADGES["leak-hunter"].name}`, detail: BADGES["leak-hunter"].hint });
+        },
+
+        connectPlatform: (id) => {
+          const { data, tier } = get();
+          const c = CONNECTORS.find((x) => x.id === id);
+          const have = data?.connections ?? [];
+          if (!data || !c || c.builtIn || have.includes(id)) return false;
+          if (have.length >= extraConnectionsFor(tier)) {
+            set({
+              upgrade: {
+                title: "Connect every platform on Growth",
+                body: `Starter connects ${extraConnectionsFor(tier)} platforms on top of your two stores. Growth connects all ${CONNECTORS.length}, so every fee lands in one place.`,
+              },
+            });
+            return false;
+          }
+          const today = get().today();
+          const first = have.length === 0 && !data.badges.some((b) => b.id === "connected");
+          const tokens = first ? Math.round(CONNECT_REWARD * tierInfo(tier).rewardMultiplier) : 0;
+          let next: DemoData = { ...data, connections: [...have, id] };
+          if (first) {
+            next = award(next, "connected", today);
+            next = {
+              ...next,
+              tokenLedger: [...next.tokenLedger, { id: `t${Date.now()}`, day: today, amount: tokens, reason: `Connected ${c.name}` }],
+            };
+          }
+          set({ data: next });
+          pushToast(
+            first
+              ? {
+                  title: `${c.name} connected`,
+                  detail: "Demo connection. No real account is accessed.",
+                  chips: [`+${tokens} tokens`, "Badge: Connected"],
+                }
+              : { title: `${c.name} connected`, detail: "Demo connection. No real account is accessed." },
+          );
+          return true;
+        },
+
+        disconnectPlatform: (id) => {
+          const { data } = get();
+          if (!data?.connections?.includes(id)) return;
+          set({ data: { ...data, connections: data.connections.filter((x) => x !== id) } });
+          pushToast({ title: `${CONNECTORS.find((x) => x.id === id)?.name ?? "Platform"} disconnected` });
         },
 
         openSheet: (s) => {

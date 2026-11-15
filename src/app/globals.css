@@ -36,12 +36,46 @@
   --color-brand-a-ink: #079455;
   --color-brand-b-ink: #1570ef;
 
+  /* Chart colours. One per sales channel, fixed to the channel wherever it appears. */
+  --color-ch-shopify: #1baf7a;
+  --color-ch-amazon: #eb6834;
+  --color-ch-market: #2a78d6;
+  --color-ch-out: #b4b4bd;
+  --color-violet: #5925dc;
+  --color-violet-bg: #f4f3ff;
+
   --radius-card: 10px;
 
   --animate-row-in: row-in 700ms ease-out;
   --animate-toast-in: toast-in 220ms ease-out;
   --animate-sheet-in: sheet-in 220ms ease-out;
   --animate-fade-in: fade-in 160ms ease-out;
+  --animate-rise-in: rise-in 420ms ease-out both;
+  --animate-pop: pop 380ms ease-out;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 @keyframes row-in {
@@ -126,6 +160,54 @@ h3 {
 :focus-visible {
   outline: 2px solid var(--color-info-dot);
   outline-offset: 2px;
+}
+
+/* Time Machine sliders: a thin track whose filled part (set in --track) runs from today's value to the new one. */
+.tm-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 22px;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.tm-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--track, var(--color-line));
+}
+.tm-range::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--track, var(--color-line));
+}
+.tm-range::-webkit-slider-thumb {
+  appearance: none;
+  margin-top: -6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--color-panel);
+  border: 2px solid var(--color-ink);
+  box-shadow: 0 1px 2px rgb(10 10 11 / 0.15);
+  transition: transform 120ms ease-out;
+}
+.tm-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--color-panel);
+  border: 2px solid var(--color-ink);
+  box-shadow: 0 1px 2px rgb(10 10 11 / 0.15);
+}
+.tm-range:hover::-webkit-slider-thumb,
+.tm-range:active::-webkit-slider-thumb {
+  transform: scale(1.12);
+}
+.tm-range:focus-visible {
+  outline: 2px solid var(--color-info-dot);
+  outline-offset: 4px;
   border-radius: 6px;
 }
 
@@ -148,7 +230,9 @@ h3 {
   .animate-sheet-in {
     animation-name: fade-in;
   }
-  .animate-pulse {
+  .animate-pulse,
+  .animate-rise-in,
+  .animate-pop {
     animation: none;
   }
   *,
