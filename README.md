@@ -1,6 +1,8 @@
 # Business-Avengers
 
-Repository for the Business Cup from team Avengers.
+Repository for the Business Cup case solution from the Avengers team.
+
+Team mambers: Alikhan Baiadil, Dilyara Uvatayeva, Angsar Serikbekov
 
 ## FinPath
 
