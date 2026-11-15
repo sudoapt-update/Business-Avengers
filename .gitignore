@@ -52,3 +52,6 @@ shots/
 
 .claude/
 skills-lock.json
+
+# reanimate capture evidence
+.reanimate/

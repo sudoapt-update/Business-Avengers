@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>FinPath: a health score for Shopify and Amazon sellers</title>
-<meta name="description" content="See whether your shop makes money: one score out of 100 from your sales, fees and costs, a 90-day plan and a five-minute task a day.">
+<title>FinPath: focus on work, we handle finance</title>
+<meta name="description" content="Finance help for first-time entrepreneurs: sales, costs and cash in one place, in plain words, with one five-minute task a day. Built by entrepreneurs.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="FinPath: a health score for Shopify and Amazon sellers">
-<meta property="og:description" content="One score out of 100 from your sales, fees and costs, a 90-day plan and a five-minute task a day.">
+<meta property="og:title" content="FinPath: focus on work, we handle finance">
+<meta property="og:description" content="Sales, costs and cash in one place, in plain words, with one five-minute task a day. From entrepreneurs, to entrepreneurs.">
 <meta property="og:image" content="/landing/share.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -44,13 +44,9 @@
 <script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
 <script src="/assets/backgrounds/backgrounds.js"></script>
 <script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
-<link rel="modulepreload" href="/assets/moments/moments.js">
-<link rel="modulepreload" href="/assets/moments/lib.js">
-<link rel="modulepreload" href="/assets/moments/letters-assemble/moment.js">
-<link rel="modulepreload" href="/assets/moments/iris-opens/moment.js">
 </head>
 <body>
-<!-- type: software (fintech app for small online and market sellers)
+<!-- type: software (finance help for first-time entrepreneurs; narrative: from entrepreneurs, to entrepreneurs)
      deal: hero split, nav nav-centre, close close-type, footer footer-columns, rhythm surface-pairs, buttons tonal,
            mark: the client's own logo (replaces the dealt arc), grounds: none, effect: none (the plan asks for a static page)
      palette: the client's own colours through start.mjs brand (near-white ground, deep navy ink and action), type geist
@@ -67,27 +63,9 @@
         <path d="M18 14.5 24.5 7.5" stroke="url(#fp-logo-g)" stroke-width="3" stroke-linecap="round"/><circle cx="24.5" cy="7.5" r="2.6" fill="url(#fp-logo-g)"/>
       </svg>FinPath</a>
     <nav class="nav__links" aria-label="Main">
-      <div class="nav__item">
-        <a class="nav__link" href="#score">Product <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-        <div class="nav__menu">
-          <div class="wrap grid">
-            <div class="menu-col span-3">
-              <p class="t-label">See where you stand</p>
-              <a href="#score">Health Score<span>One number out of 100</span></a>
-              <a href="#costs">Profit bridge<span>Where each sale goes</span></a>
-              <a href="#proof">Live order sync<span>Watch one order land</span></a>
-            </div>
-            <div class="menu-col span-3">
-              <p class="t-label">Raise it</p>
-              <a href="#how">90-day plan<span>Three phases, one target</span></a>
-              <a href="#rewards">Daily missions<span>Five minutes, real rewards</span></a>
-              <a href="#adviser">AI Adviser<span>Answers from your numbers</span></a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="nav__item"><a class="nav__link" href="#leaks">Leaks</a></div>
-      <div class="nav__item"><a class="nav__link" href="#adviser">Adviser</a></div>
+      <div class="nav__item"><a class="nav__link" href="#before">How it works</a></div>
+      <div class="nav__item"><a class="nav__link" href="#features">Features</a></div>
+      <div class="nav__item"><a class="nav__link" href="#story">Our story</a></div>
       <div class="nav__item"><a class="nav__link" href="#pricing">Pricing</a></div>
       <div class="nav__item"><a class="nav__link" href="#faq">Questions</a></div>
     </nav>
@@ -101,374 +79,237 @@
 </header>
 
 <main id="top">
-  <!-- HERO: split (dealt). The picture is the product: the score's 90-day path, with the live score as the float card. -->
-  <section class="hero hero--split" data-enter aria-labelledby="hero-h">
-    <div class="wrap"><div class="hero-text grid hero__grid">
-      <div class="hero__text span-5">
-        <p class="hero__kicker"><span class="dot" aria-hidden="true"></span>Free plan, paid plans from $19 a month</p>
-        <h1 id="hero-h">Health score for Shopify and Amazon sellers</h1>
-        <p class="hero__lead">FinPath turns your sales, fees and costs into one score out of 100, then gives you a 90-day plan and a five-minute task each day to raise it.</p>
-        <div class="btn-row"><a class="btn btn--primary" href="/app">Try the live demo<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a><a class="btn btn--secondary" href="#how">See how it works</a></div>
-        <dl class="hero-facts">
-          <div><dt>Sells on</dt><dd>Shopify, Amazon, Etsy, markets</dd></div>
-          <div><dt>Setup</dt><dd>None: a sample store opens</dd></div>
-          <div><dt>Each day</dt><dd>One task, about 5 minutes</dd></div>
-        </dl>
+  <!-- HERO: framed split. Left: the promise, email capture, demo link. Right: the photo slot (.fp-h__media, set --photo
+       in landing.css once /landing/hero-photo.jpg exists) with the real dashboard inset and two live cards. -->
+  <section class="hero fp-h" data-enter aria-labelledby="hero-h">
+    <div class="wrap"><div class="fp-h__card">
+      <div class="fp-h__text">
+        <p class="fp-trust"><span class="fp-trust__badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 20h10M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8Z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2Z"/></svg></span><b>From entrepreneurs</b><span>to entrepreneurs</span></p>
+        <h1 id="hero-h">Focus on work.<br>We handle finance.</h1>
+        <p class="fp-h__lead">FinPath keeps the money side of your first business in order: sales, costs and cash in one place, explained in plain words, with one small task a day.</p>
+        <form class="fp-cta" action="/app" method="get">
+          <label class="sr-only" for="hero-email">Your work email</label>
+          <input id="hero-email" type="email" placeholder="What's your work email?" autocomplete="email" required>
+          <button class="btn btn--primary" type="submit">Get started for free<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button>
+        </form>
+        <p class="fp-h__note">Free plan, no card. Works with Shopify, Amazon, Etsy and 12 more.</p>
+        <a class="fp-h__more" href="/app">Explore the product <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h9M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </div>
-      <div class="hero__media span-6 start-7 fp-hero">
-        <div class="fp-path" role="img" aria-label="The sample store's Health Score path: from 62 on day 1 to a target of 80 on day 90">
-          <div class="fp-path__head"><span>Business Health Score</span><span class="fp-mono">90-day path</span></div>
-          <svg class="fp-path__dots" viewBox="0 0 600 420" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            <defs>
-              <linearGradient id="fp-path-g" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#079455"/><stop offset="1" stop-color="#1570ef"/></linearGradient>
-              <pattern id="fp-grid" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1.6" fill="#0b1530" opacity=".13"/></pattern>
-            </defs>
-            <rect width="600" height="420" fill="url(#fp-grid)"/>
-            <path d="M30 330 C 140 322, 190 290, 250 262 S 380 196, 430 168 S 530 96, 570 82" fill="none" stroke="url(#fp-path-g)" stroke-width="4" stroke-linecap="round"/>
-            <g fill="url(#fp-path-g)">
-              <circle cx="90" cy="324" r="5"/><circle cx="150" cy="310" r="5"/><circle cx="210" cy="282" r="5"/><circle cx="270" cy="252" r="5"/>
-              <circle cx="330" cy="222" r="5"/><circle cx="390" cy="190" r="5"/><circle cx="450" cy="158" r="5"/><circle cx="510" cy="118" r="5"/>
-            </g>
-            <circle cx="30" cy="330" r="8" fill="#fafafa" stroke="#079455" stroke-width="3"/>
-            <circle cx="570" cy="82" r="9" fill="#1570ef"/>
-          </svg>
-          <span class="fp-path__label fp-path__label--start fp-mono">Day 1 · 62</span>
-          <span class="fp-path__label fp-path__label--end fp-mono">Day 90 · 80</span>
+      <div class="fp-h__media">
+        <div class="fp-h__screen"><img src="/landing/hero-app.jpg" width="1800" height="1125" alt="The FinPath overview of a sample candle shop: true profit $2,933 for 30 days, 11.1 weeks of cash and today's tasks"></div>
+        <div class="fp-h__float fp-h__float--score">
+          <span class="fp-h__live">You kept, last 30 days</span>
+          <p><b data-fp="profit">$2,933</b><small>of <span data-fp="revenue">$14,230</span> in sales</small></p>
         </div>
-        <div class="ly-float fp-float">
-          <div class="ly-float__row"><span class="ly-live">Sample store, today</span><span class="fp-mono" data-fp="band">Fair</span></div>
-          <div class="ly-float__title"><span class="fp-big" data-fp="score">62.2</span> <span class="fp-of">/ 100</span></div>
+        <div class="fp-h__float fp-h__float--leak">
+          <span class="fp-h__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
+          <span><b>Today, 2 min</b><br>Review yesterday's Amazon fees</span>
         </div>
       </div>
     </div></div>
   </section>
 
-  <!-- APP-FRAME: the product big, the synced orders beside the open score. -->
-  <section class="section" id="score" aria-labelledby="score-h">
+  <!-- BEFORE / AFTER: the spreadsheet most of us start with, beside the same month in FinPath. -->
+  <section class="section fp-ba" id="before" aria-labelledby="before-h">
     <div class="wrap">
-      <div class="grid grid--top">
-        <h2 id="score-h" class="span-5">Your score and orders on one screen</h2>
-        <p class="span-6 start-7 fp-intro">Orders sync into the list. Beside it, the score and the five parts behind it: margin, cash runway, fees, leaks and how fresh your books are. <a class="link" href="/app">See the dashboard</a></p>
+      <div class="fp-sec-head">
+        <h2 id="before-h">From a messy spreadsheet to a clear picture</h2>
+        <p>Most of us start here. FinPath takes the same sales and costs and sorts them for you.</p>
       </div>
-      <div class="ui app fill" role="img" aria-label="The FinPath dashboard: synced orders on the left, the Health Score and its five parts on the right">
-        <div class="app__pane app__pane--list">
-          <div class="ui ui-panel fp-list">
-            <div class="fp-list__bar"><span>Orders</span><span class="fp-chip fp-chip--info">Live sync</span></div>
-            <ul>
-              <li><span class="fp-list__who">Shopify</span><span class="fp-list__sub">Candle trio gift set ×1 · $64.00</span><span class="fp-list__keep">$28.44</span></li>
-              <li><span class="fp-list__who">Market</span><span class="fp-list__sub">Reed diffuser ×3 · $126.00</span><span class="fp-list__keep">$74.57</span></li>
-              <li><span class="fp-list__who">Amazon</span><span class="fp-list__sub">Wax melts, 6-pack ×2 · $32.00</span><span class="fp-list__keep">$6.40</span></li>
-              <li><span class="fp-list__who">Shopify</span><span class="fp-list__sub">Ceramic mug candle ×2 · $72.00</span><span class="fp-list__keep">$33.21</span></li>
-              <li><span class="fp-list__who">Amazon</span><span class="fp-list__sub">Reed diffuser ×1 · $42.00</span><span class="fp-list__keep">$14.80</span></li>
-              <li><span class="fp-list__who">Shopify</span><span class="fp-list__sub">Wick trimmer ×1 · $18.00</span><span class="fp-list__keep">$6.48</span></li>
-              <li><span class="fp-list__who">Market</span><span class="fp-list__sub">Soy candle, 8 oz ×2 · $56.00</span><span class="fp-list__keep">$33.39</span></li>
-              <li><span class="fp-list__who">Amazon</span><span class="fp-list__sub">Candle trio gift set ×1 · $64.00</span><span class="fp-list__keep">$20.18</span></li>
-              <li><span class="fp-list__who">Shopify</span><span class="fp-list__sub">Wax melts, 6-pack ×3 · $48.00</span><span class="fp-list__keep">$21.79</span></li>
-              <li><span class="fp-list__who">Shopify</span><span class="fp-list__sub">Soy candle, 8 oz ×1 · $28.00</span><span class="fp-list__keep">$9.07</span></li>
+      <div class="fp-ba__grid">
+        <figure class="fp-ba__side">
+          <figcaption class="fp-ba__tag fp-ba__tag--before">Before</figcaption>
+          <div class="fp-sheet" role="img" aria-label="A messy sales spreadsheet: mixed date formats, missing fees, a broken formula and notes like 'refund??' and 'cancel??'">
+            <div class="fp-sheet__title"><span class="fp-sheet__doc"></span>sales 2026 FINAL (2)<span class="fp-sheet__menu">File&nbsp;&nbsp;Edit&nbsp;&nbsp;View&nbsp;&nbsp;Insert&nbsp;&nbsp;Format&nbsp;&nbsp;Data</span></div>
+            <div class="fp-sheet__fx"><i>fx</i>=SUM(D2:D9)-E4*0.15??</div>
+            <div class="fp-sheet__scroll">
+              <table>
+                <thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th></tr></thead>
+                <tbody>
+                  <tr class="h"><th>1</th><td>date</td><td>what</td><td>where</td><td>$$</td><td>fees?</td><td>notes</td></tr>
+                  <tr><th>2</th><td>3/1</td><td>candles x3</td><td>etsy</td><td>54</td><td class="y">?</td><td></td></tr>
+                  <tr><th>3</th><td>march 2</td><td>Diffuser</td><td>Shopify</td><td>$42.00</td><td>6.3</td><td>paid??</td></tr>
+                  <tr><th>4</th><td>03.03</td><td>wax melts</td><td>amzn</td><td>32</td><td class="r">#REF!</td><td></td></tr>
+                  <tr><th>5</th><td></td><td>ads???</td><td>insta</td><td class="r">-120</td><td></td><td class="y">ask Sam</td></tr>
+                  <tr><th>6</th><td>3/5</td><td>candles</td><td>market</td><td>126</td><td>0</td><td>cash, in drawer</td></tr>
+                  <tr><th>7</th><td>3/6</td><td>candle trio</td><td>etsy</td><td>64</td><td></td><td class="y">refund??</td></tr>
+                  <tr><th>8</th><td></td><td>shop app sub</td><td></td><td>39</td><td></td><td>cancel??</td></tr>
+                  <tr><th>9</th><td>3/9</td><td>soy candle</td><td>Shopify</td><td>28</td><td class="y">?</td><td></td></tr>
+                  <tr class="t"><th>10</th><td>TOTAL</td><td></td><td></td><td class="r">1,247??</td><td></td><td>profit = ?</td></tr>
+                </tbody>
+              </table>
+              <span class="fp-sheet__note">which month is this??</span>
+            </div>
+            <div class="fp-sheet__tabs"><span>Sheet1</span><span>Copy of Sheet1</span><span class="on">FINAL</span><span>FINAL_v2</span></div>
+          </div>
+        </figure>
+        <span class="fp-ba__arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        <figure class="fp-ba__side">
+          <figcaption class="fp-ba__tag fp-ba__tag--after">After, with FinPath</figcaption>
+          <div class="fp-sorted" role="img" aria-label="The same shop in FinPath: $14,230 in sales, $2,933 kept after every cost, each cost in its own row, 11.1 weeks of cash and one task for today">
+            <div class="fp-sorted__top"><span>Last 30 days · sample candle shop</span><span class="fp-chip fp-chip--good">Up to date</span></div>
+            <p class="fp-sorted__big"><span class="fp-sorted__k">You kept</span><b data-fp="profit">$2,933</b><span class="fp-sorted__of">of <span data-fp="revenue">$14,230</span> in sales</span></p>
+            <div class="fp-sorted__bar" aria-hidden="true"><i style="--w:38%;--c:#98a2b3"></i><i style="--w:10%;--c:#f79009"></i><i style="--w:2%;--c:#fdb022"></i><i style="--w:6%;--c:#7a5af8"></i><i style="--w:23%;--c:#2e90fa"></i><i style="--w:21%;--c:#12b76a"></i></div>
+            <ul class="fp-sorted__rows">
+              <li><i style="--c:#98a2b3"></i>Product costs<b data-fp="cogs">−$5,413</b></li>
+              <li><i style="--c:#f79009"></i>Marketplace fees<b data-fp="platformFees">−$1,436</b></li>
+              <li><i style="--c:#fdb022"></i>Card fees<b data-fp="paymentFees">−$302</b></li>
+              <li><i style="--c:#7a5af8"></i>Shipping labels<b data-fp="shipping">−$836</b></li>
+              <li><i style="--c:#2e90fa"></i>Tools and running costs<b data-fp="tools">−$3,310</b></li>
             </ul>
-          </div>
-        </div>
-        <div class="app__pane app__pane--open">
-          <div class="ui ui-panel fp-open">
-            <div class="fp-open__top">
-              <div>
-                <p class="fp-mono fp-dim">Business Health Score</p>
-                <p class="fp-open__score"><span data-fp="score">62.2</span><small>/ 100</small></p>
-                <p class="fp-open__pills"><span class="fp-chip fp-chip--warn" data-fp="band">Fair</span><span class="fp-chip fp-chip--info">Target 80</span></p>
-              </div>
-              <dl class="fp-kpis">
-                <div><dt>True profit, 30 days</dt><dd data-fp="profit">$2,933</dd></div>
-                <div><dt>Cash runway</dt><dd><span data-fp="runway">11.1</span> weeks</dd></div>
-                <div><dt>Money leaking</dt><dd><span data-fp="leaks">$214</span>/mo</dd></div>
-              </dl>
+            <div class="fp-sorted__foot">
+              <div><span>Cash lasts</span><b><span data-fp="runway">11.1</span> weeks</b></div>
+              <div><span>Today's task</span><b>Review Amazon fees · 2 min</b></div>
             </div>
-            <ul class="fp-factors">
-              <li><span>Profit margin</span><b><span data-fp="f-margin">20.6</span> / 30</b><i style="--v:.69" data-fp-bar="margin"></i></li>
-              <li><span>Cash runway</span><b><span data-fp="f-runway">17.3</span> / 25</b><i style="--v:.69" data-fp-bar="runway"></i></li>
-              <li><span>Fee load</span><b><span data-fp="f-fees">12.2</span> / 20</b><i style="--v:.61" data-fp-bar="fees"></i></li>
-              <li><span>Expense control</span><b><span data-fp="f-expenses">8.5</span> / 15</b><i style="--v:.57" data-fp-bar="expenses"></i></li>
-              <li><span>Books fresh</span><b><span data-fp="f-freshness">4.3</span> / 10</b><i style="--v:.43" data-fp-bar="freshness"></i></li>
-            </ul>
+          </div>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES: tabs beside one open panel (layout and timing from .reanimate/block/features-tabs.html). -->
+  <section class="section fp-feat" id="features" aria-labelledby="features-h">
+    <div class="wrap">
+      <div class="fp-sec-head">
+        <h2 id="features-h">Everything your first business needs for its money</h2>
+        <p>No finance degree needed. FinPath does the sorting; you make the calls.</p>
+      </div>
+      <div class="fp-feat__grid">
+        <div class="fp-tabs" role="tablist" aria-label="What FinPath does">
+          <button class="fp-tab" role="tab" id="ft-1" aria-controls="fp-1" aria-selected="true"><span class="fp-tab__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span><span><b>All in one place</b><small>Sales, costs and cash from every channel, sorted for you.</small></span><i class="fp-tab__bar" aria-hidden="true"></i></button>
+          <button class="fp-tab" role="tab" id="ft-2" aria-controls="fp-2" aria-selected="false" tabindex="-1"><span class="fp-tab__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z"/><path d="M2 9v1c0 1.1.9 2 2 2h1"/><path d="M16 11h.01"/></svg></span><span><b>Know what you keep</b><small>Real profit after fees, shipping and product costs.</small></span><i class="fp-tab__bar" aria-hidden="true"></i></button>
+          <button class="fp-tab" role="tab" id="ft-3" aria-controls="fp-3" aria-selected="false" tabindex="-1"><span class="fp-tab__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span><b>Five minutes a day</b><small>One small money habit a day, picked from your numbers.</small></span><i class="fp-tab__bar" aria-hidden="true"></i></button>
+          <button class="fp-tab" role="tab" id="ft-4" aria-controls="fp-4" aria-selected="false" tabindex="-1"><span class="fp-tab__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg></span><span><b>Ask any question</b><small>Plain-word answers about your own shop.</small></span><i class="fp-tab__bar" aria-hidden="true"></i></button>
+        </div>
+        <div class="fp-tps">
+          <div class="fp-tp" role="tabpanel" id="fp-1" aria-labelledby="ft-1">
+            <div class="fp-tp__top"><span class="fp-tp__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span><p class="fp-stat"><b>15</b><span>tools connect</span></p></div>
+            <h3>No more copy-pasting into spreadsheets</h3>
+            <p class="fp-tp__desc">Orders from Shopify, Amazon, Etsy and your market stall land in one list. Fees and costs are sorted into plain categories as they come in.</p>
+            <ul class="fp-rows"><li>Orders sync on their own</li><li>Fees split out of every sale</li><li>Costs sorted into categories</li><li>Cash per account, always current</li></ul>
+          </div>
+          <div class="fp-tp" role="tabpanel" id="fp-2" aria-labelledby="ft-2" hidden>
+            <div class="fp-tp__top"><span class="fp-tp__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z"/><path d="M2 9v1c0 1.1.9 2 2 2h1"/><path d="M16 11h.01"/></svg></span><p class="fp-stat"><b data-fp="profit">$2,933</b><span>kept by the sample shop, 30 days</span></p></div>
+            <h3>See your real profit, not just sales</h3>
+            <p class="fp-tp__desc">Every sale is broken down into what it cost you, so you know what you actually keep each day, not once a year at tax time.</p>
+            <ul class="fp-rows"><li>Profit after every cost</li><li>Where each dollar of sales went</li><li>Weeks of cash left at today's pace</li><li>Costs you could cut, with cheaper options</li></ul>
+          </div>
+          <div class="fp-tp" role="tabpanel" id="fp-3" aria-labelledby="ft-3" hidden>
+            <div class="fp-tp__top"><span class="fp-tp__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><p class="fp-stat"><b>5 min</b><span>a day, three tasks</span></p></div>
+            <h3>Small daily habits instead of a scary year-end</h3>
+            <p class="fp-tp__desc">Each morning brings three short tasks picked from your numbers: check a fee, count your cash, look at one order. Done in five minutes, and your books stay current.</p>
+            <ul class="fp-rows"><li>Three short tasks picked for you</li><li>Each one explained step by step</li><li>Tokens and XP for every task</li><li>+20% bonus from a 3-day streak</li></ul>
+          </div>
+          <div class="fp-tp" role="tabpanel" id="fp-4" aria-labelledby="ft-4" hidden>
+            <div class="fp-tp__top"><span class="fp-tp__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg></span><p class="fp-stat"><b>AI</b><span>adviser that reads your numbers</span></p></div>
+            <h3>Ask what you'd be shy to ask an accountant</h3>
+            <p class="fp-tp__desc">"Can I afford to hire help?" "Why did I make less this month?" Get an answer built on your own sales, costs and cash, in plain words.</p>
+            <ul class="fp-rows"><li>Uses your sales, costs and cash</li><li>Paid with tokens you earn from tasks</li><li>No accounting jargon</li><li>Educational, not financial advice</li></ul>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SPLIT-TEXT-LEFT: the three hidden costs beside the profit bridge. -->
-  <section class="section" id="costs" aria-labelledby="costs-h">
-    <div class="wrap">
-      <div class="grid grid--top">
-        <div class="span-5 fp-split-text">
-          <h2 id="costs-h">3 costs between your sales and your bank</h2>
-          <p class="t-lead">Fees come off every order but never show as one total. Tool subscriptions stack up one at a time. True profit only appears at tax time.</p>
-          <ul class="fp-facts">
-            <li>Platform and card fees: <b data-fp="feeRound">12%</b> of the sample store's sales</li>
-            <li>Tools and running costs: <b data-fp="toolsPlain">$3,310</b> a month</li>
-            <li>What the store keeps: <b data-fp="marginRound">21%</b> of sales, known today</li>
-          </ul>
-          <a class="link" href="/app">See the profit bridge</a>
+  <!-- CONNECTS: the logo orbit (cloned motion: .reanimate/logo-orbit/spec.md). Five rings turn at the reference speeds,
+       alternating direction; every disc counter-rotates so its logo stays upright. The 15 connectors the app lists sit on
+       the two sharp inner rings; the blurred outer rings are tools on the list. -->
+  <section class="section ground-inverse fp-connects" id="connects" aria-labelledby="connects-h">
+    <div class="fp-orbit" aria-hidden="true">
+      <div class="fp-orbit__c">
+        <div class="fp-ring fp-ring--1" style="--r:0.121;--dur:45.5s;--dir:normal;--rdir:reverse;--blur:0;--op:1.0"><i class="fp-ring__line"></i>
+          <span class="fp-disc" style="--a:0.0deg"><span class="fp-disc__in"><img src="/landing/logos/shopify.png" alt="" loading="eager" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:60.0deg"><span class="fp-disc__in"><img src="/landing/logos/amazon-selling-partner-api.png" alt="" loading="eager" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:120.0deg"><span class="fp-disc__in"><img src="/landing/logos/etsy.png" alt="" loading="eager" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:180.0deg"><span class="fp-disc__in"><img src="/landing/logos/stripe.png" alt="" loading="eager" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:240.0deg"><span class="fp-disc__in"><img src="/landing/logos/paypal.png" alt="" loading="eager" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:300.0deg"><span class="fp-disc__in"><img src="/landing/logos/square.png" alt="" loading="eager" decoding="async"></span></span>
         </div>
-        <div class="frame frame--split span-6 start-7">
-          <div class="stage stage--fade-br">
-            <div class="at-corner to-edge" style="--ax:56px;--ay:56px">
-              <div class="ui ui-panel fp-bridge" role="img" aria-label="The profit bridge: 30 days of sales minus product costs, fees, shipping and running costs, leaving true profit">
-                <p class="fp-bridge__title">Where your sales went <span class="fp-dim">· 30 days</span></p>
-                <ul>
-                  <li><i class="fp-dot fp-dot--good"></i><span>Sales</span><b data-fp="revenue">$14,230</b></li>
-                  <li><i class="fp-dot"></i><span>Cost of goods</span><b data-fp="cogs">−$5,413</b></li>
-                  <li><i class="fp-dot"></i><span>Marketplace fees</span><b data-fp="platformFees">−$1,436</b></li>
-                  <li><i class="fp-dot"></i><span>Card and payment fees</span><b data-fp="paymentFees">−$302</b></li>
-                  <li><i class="fp-dot"></i><span>Shipping labels</span><b data-fp="shipping">−$836</b></li>
-                  <li><i class="fp-dot"></i><span>Tools and running costs</span><b data-fp="tools">−$3,310</b></li>
-                  <li class="fp-bridge__end"><i class="fp-dot fp-dot--ink"></i><span>True profit</span><b data-fp="profit">$2,933</b></li>
-                </ul>
-              </div>
-            </div>
-          </div>
+        <div class="fp-ring fp-ring--2" style="--r:0.2135;--dur:46.4s;--dir:reverse;--rdir:normal;--blur:0.0006;--op:0.88"><i class="fp-ring__line"></i>
+          <span class="fp-disc" style="--a:17.0deg"><span class="fp-disc__in"><img src="/landing/logos/ebay.png" alt="" loading="eager" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:57.0deg"><span class="fp-disc__in"><img src="/landing/logos/walmart-marketplace.png" alt="" loading="eager" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:97.0deg"><span class="fp-disc__in"><img src="/landing/logos/tiktok-shop.png" alt="" loading="eager" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:137.0deg"><span class="fp-disc__in"><img src="/landing/logos/woocommerce.png" alt="" loading="eager" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:177.0deg"><span class="fp-disc__in"><img src="/landing/logos/bigcommerce.png" alt="" loading="eager" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:217.0deg"><span class="fp-disc__in"><img src="/landing/logos/squarespace.png" alt="" loading="eager" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:257.0deg"><span class="fp-disc__in"><img src="/landing/logos/wix.png" alt="" loading="eager" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:297.0deg"><span class="fp-disc__in"><img src="/landing/logos/quickbooks-online.png" alt="" loading="eager" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:337.0deg"><span class="fp-disc__in"><img src="/landing/logos/xero.png" alt="" loading="eager" decoding="async"></span></span>
         </div>
+        <div class="fp-ring fp-ring--3" style="--r:0.306;--dur:48.0s;--dir:normal;--rdir:reverse;--blur:0.0014;--op:0.55"><i class="fp-ring__line"></i>
+          <span class="fp-disc" style="--a:34.0deg"><span class="fp-disc__in"><img src="/landing/logos/shipstation.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:58.0deg"><span class="fp-disc__in"><img src="/landing/logos/shipbob.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:82.0deg"><span class="fp-disc__in"><img src="/landing/logos/klaviyo.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:106.0deg"><span class="fp-disc__in"><img src="/landing/logos/mailchimp.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:130.0deg"><span class="fp-disc__in"><img src="/landing/logos/klarna.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:154.0deg"><span class="fp-disc__in"><img src="/landing/logos/afterpay.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:178.0deg"><span class="fp-disc__in"><img src="/landing/logos/affirm.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:202.0deg"><span class="fp-disc__in"><img src="/landing/logos/plaid.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:226.0deg"><span class="fp-disc__in"><img src="/landing/logos/freshbooks.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:250.0deg"><span class="fp-disc__in"><img src="/landing/logos/wave.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:274.0deg"><span class="fp-disc__in"><img src="/landing/logos/zoho-books.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:298.0deg"><span class="fp-disc__in"><img src="/landing/logos/sage.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:322.0deg"><span class="fp-disc__in"><img src="/landing/logos/magento.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:346.0deg"><span class="fp-disc__in"><img src="/landing/logos/google-sheets.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:370.0deg"><span class="fp-disc__in"><img src="/landing/logos/adyen.png" alt="" loading="lazy" decoding="async"></span></span>
+        </div>
+        <div class="fp-ring fp-ring--4" style="--r:0.4;--dur:68.6s;--dir:reverse;--rdir:normal;--blur:0.0028;--op:0.32"><i class="fp-ring__line"></i>
+          <span class="fp-disc" style="--a:51.0deg"><span class="fp-disc__in"><img src="/landing/logos/braintree.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:75.0deg"><span class="fp-disc__in"><img src="/landing/logos/authorize-net.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:99.0deg"><span class="fp-disc__in"><img src="/landing/logos/netsuite.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:123.0deg"><span class="fp-disc__in"><img src="/landing/logos/cin7.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:147.0deg"><span class="fp-disc__in"><img src="/landing/logos/inventory-planner.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:171.0deg"><span class="fp-disc__in"><img src="/landing/logos/hubspot.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:195.0deg"><span class="fp-disc__in"><img src="/landing/logos/salesforce.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:219.0deg"><span class="fp-disc__in"><img src="/landing/logos/slack.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:243.0deg"><span class="fp-disc__in"><img src="/landing/logos/notion.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:267.0deg"><span class="fp-disc__in"><img src="/landing/logos/gmail.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:291.0deg"><span class="fp-disc__in"><img src="/landing/logos/target-plus.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:315.0deg"><span class="fp-disc__in"><img src="/landing/logos/yodlee.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:339.0deg"><span class="fp-disc__in"><img src="/landing/logos/mx.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:363.0deg"><span class="fp-disc__in"><img src="/landing/logos/finicity.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:387.0deg"><span class="fp-disc__in"><img src="/landing/logos/teller.png" alt="" loading="lazy" decoding="async"></span></span>
+        </div>
+        <div class="fp-ring fp-ring--5" style="--r:0.49;--dur:75.4s;--dir:normal;--rdir:reverse;--blur:0.0038;--op:0.2"><i class="fp-ring__line"></i>
+          <span class="fp-disc" style="--a:68.0deg"><span class="fp-disc__in"><img src="/landing/logos/flinks.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:92.0deg"><span class="fp-disc__in"><img src="/landing/logos/akoya.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:116.0deg"><span class="fp-disc__in"><img src="/landing/logos/quiltt.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:140.0deg"><span class="fp-disc__in"><img src="/landing/logos/google-calendar.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:164.0deg"><span class="fp-disc__in"><img src="/landing/logos/outlook-calendar.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:188.0deg"><span class="fp-disc__in"><img src="/landing/logos/apple-calendar.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:212.0deg"><span class="fp-disc__in"><img src="/landing/logos/calendly.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:236.0deg"><span class="fp-disc__in"><img src="/landing/logos/shipstation.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:260.0deg"><span class="fp-disc__in"><img src="/landing/logos/klaviyo.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:284.0deg"><span class="fp-disc__in"><img src="/landing/logos/plaid.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:308.0deg"><span class="fp-disc__in"><img src="/landing/logos/freshbooks.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:332.0deg"><span class="fp-disc__in"><img src="/landing/logos/hubspot.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:356.0deg"><span class="fp-disc__in"><img src="/landing/logos/slack.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:380.0deg"><span class="fp-disc__in"><img src="/landing/logos/notion.png" alt="" loading="lazy" decoding="async"></span></span>
+          <span class="fp-disc" style="--a:404.0deg"><span class="fp-disc__in"><img src="/landing/logos/gmail.png" alt="" loading="lazy" decoding="async"></span></span>
+        </div>
+      </div>
+    </div>
+    <div class="wrap fp-connects__wrap">
+      <div class="fp-connects__centre">
+        <h2 id="connects-h">Works with 15 tools you already sell on</h2>
+        <p>The inner 15 connect today; the rest are next.</p>
       </div>
     </div>
   </section>
 
-  <!-- STEPS: three real steps, each with its result shown. -->
-  <section class="section" id="how" style="--hm: 2" aria-labelledby="how-h">
+  <!-- STORY: who built it and why. -->
+  <section class="section fp-story" id="story" aria-labelledby="story-h">
     <div class="wrap">
-      <div class="section-head">
-        <h2 id="how-h">Raise your score in 3 steps. <span class="muted">Each one is a screen in the demo.</span></h2>
-      </div>
-      <div class="grid">
-        <article class="card card--row card--open span-4">
-          <span class="step-num">1</span>
-          <h3>See your Health Score</h3>
-          <p>Sales, fees and costs become one number out of 100, split into the five parts that move it.</p>
-          <div class="panel fp-panel">
-            <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:300px;--ax:max(24px, 50% - 150px);--ay:40px;--ay-sm:24px">
-              <div class="ui ui-panel fp-mini">
-                <p class="fp-mono fp-dim">Health Score</p>
-                <p class="fp-mini__score"><span data-fp="score">62.2</span><small>/ 100</small></p>
-                <ul class="fp-factors fp-factors--mini">
-                  <li><span>Profit margin</span><i style="--v:.69" data-fp-bar="margin"></i></li>
-                  <li><span>Cash runway</span><i style="--v:.69" data-fp-bar="runway"></i></li>
-                  <li><span>Fee load</span><i style="--v:.61" data-fp-bar="fees"></i></li>
-                  <li><span>Expense control</span><i style="--v:.57" data-fp-bar="expenses"></i></li>
-                </ul>
-              </div>
-            </div></div>
-          </div>
-        </article>
-        <article class="card card--row card--open span-4">
-          <span class="step-num">2</span>
-          <h3>Follow a 90-day path</h3>
-          <p>Three 30-day phases: stop the leaks, fix your margins, then build a cash cushion.</p>
-          <div class="panel fp-panel">
-            <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:300px;--ax:max(24px, 50% - 150px);--ay:40px;--ay-sm:24px">
-              <div class="ui ui-panel fp-mini">
-                <p class="fp-mono fp-dim">Day 18 of 90</p>
-                <div class="fp-phases" aria-hidden="true"><i style="--v:.6"></i><i></i><i></i></div>
-                <ol class="fp-phase-list">
-                  <li><b>Stop the leaks</b><span>Days 1–30 · score 66</span></li>
-                  <li><b>Fix your margins</b><span>Days 31–60 · score 73</span></li>
-                  <li><b>Build a cash cushion</b><span>Days 61–90 · score 80</span></li>
-                </ol>
-              </div>
-            </div></div>
-          </div>
-        </article>
-        <article class="card card--row card--open span-4">
-          <span class="step-num">3</span>
-          <h3>Do one 5-minute mission a day</h3>
-          <p>A mission takes about five minutes and only counts when you do the work it names.</p>
-          <div class="panel fp-panel">
-            <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:300px;--ax:max(24px, 50% - 150px);--ay:40px;--ay-sm:24px">
-              <div class="ui ui-panel fp-mini">
-                <p class="fp-mono fp-dim">Today's mission</p>
-                <p class="fp-mission">Review yesterday's Amazon fees</p>
-                <p class="fp-mini__chips"><span class="fp-chip">+12 tokens · +30 XP</span><span class="fp-chip fp-chip--warn">Streak +20%</span></p>
-                <span class="fp-fakebtn">Review fees</span>
-              </div>
-            </div></div>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- PROOF on the surface ground, with the iris-opens moment: the same engine as the app adds one order. -->
-  <section class="section ground-surface" id="proof" data-moment="iris-opens" data-moment-opts='{"from": "base"}' aria-labelledby="proof-h">
-    <div class="wrap">
-      <div class="grid grid--top">
-        <div class="span-5 fp-split-text">
-          <h2 id="proof-h">One order moves your score</h2>
-          <p class="t-lead">Add an order to the sample store. Its fees, product cost and postage come off, then revenue, cash and the score update, as they do in the demo.</p>
-          <div class="btn-row"><button class="btn btn--secondary" type="button" data-fp-add>Add a sample order</button></div>
-          <p class="t-small muted" aria-live="polite" data-fp-order="count">No orders added yet</p>
-        </div>
-        <div class="span-6 start-7">
-          <div class="ui ui-panel fp-proof" aria-live="polite">
-            <div class="fp-proof__row">
-              <div><p class="fp-mono fp-dim">Health Score</p><p class="fp-proof__big"><span data-fp="score">62.2</span><small>/ 100</small></p></div>
-              <div><p class="fp-mono fp-dim">Revenue, 30 days</p><p class="fp-proof__mid" data-fp="revenue">$14,230</p></div>
-              <div><p class="fp-mono fp-dim">Cash</p><p class="fp-proof__mid" data-fp="cash">$13,600</p></div>
-            </div>
-            <div class="fp-proof__order" data-fp-order-row hidden>
-              <div class="fp-proof__item"><b data-fp-order="item">Order</b><span class="fp-mono fp-dim" data-fp-order="meta"></span></div>
-              <dl>
-                <div><dt>Sale</dt><dd data-fp-order="gross"></dd></div>
-                <div><dt>Fees and postage</dt><dd data-fp-order="fees"></dd></div>
-                <div><dt>Product cost</dt><dd data-fp-order="cost"></dd></div>
-                <div class="fp-proof__keep"><dt>You keep</dt><dd data-fp-order="keep"></dd></div>
-              </dl>
-              <span class="fp-chip fp-chip--good" data-fp-order="delta"></span>
-            </div>
-            <p class="fp-proof__empty fp-dim" data-fp-empty>The order you add appears here with what it leaves you.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- STATEMENT with the letters-assemble moment: the leak total, then the line under it. -->
-  <section class="section statement" id="leak-total" data-moment="letters-assemble" aria-labelledby="leak-total-h">
-    <div class="wrap">
-      <h2 class="mo-la__type" id="leak-total-h">$214 a month leaks out</h2>
-      <p class="mo-la__sub">The sample store pays for an email tier it doesn't use, two label apps doing one job and a design seat nobody opens. That is more than five times the Pro plan.</p>
-    </div>
-  </section>
-
-  <!-- LEAKS: the app's Leak Detector as one window, the four leaks of the sample store as rows. -->
-  <section class="section" id="leaks" aria-labelledby="leaks-h">
-    <div class="wrap">
-      <div class="grid grid--top">
-        <h2 id="leaks-h" class="span-6">4 leaks, each with a cheaper option</h2>
-        <p class="span-6 start-7 fp-intro">It reads the monthly rows in your books and compares each tool with a smaller plan that does the same job. The largest leak is open on the free plan; the rest open on Growth or for 3 tokens each.</p>
-      </div>
-      <div class="ui ui-panel fp-leaks" role="img" aria-label="The Leak Detector: four leaks in the sample store with the price now, the cheaper option and the monthly saving">
-        <div class="fp-leaks__head"><span>Leak</span><span>You pay now</span><span>Cheaper option</span><span>Saving</span><span>Steps</span></div>
-        <div class="fp-leaks__row"><span><b>Email tool on a tier you don't use</b><em>1,840 contacts, four campaigns a month</em></span><span class="fp-mono">$99/mo</span><span><b class="fp-mono">$29/mo</b><em>Standard tier, same contact limit</em></span><span class="fp-leaks__save fp-mono">−$70/mo</span><span><span class="fp-fakebtn">See the steps</span></span></div>
-        <div class="fp-leaks__row"><span><b>Inventory app sized for a warehouse</b><em>Five locations, six products in one unit</em></span><span class="fp-mono">$89/mo</span><span><b class="fp-mono">$39/mo</b><em>Basic plan, one location</em></span><span class="fp-leaks__save fp-mono">−$50/mo</span><span><span class="fp-lock"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="7" width="9" height="6.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>Growth or 3 tokens</span></span></div>
-        <div class="fp-leaks__row"><span><b>Two shipping label apps doing one job</b><em>The second printed 9% of labels</em></span><span class="fp-mono">$49/mo</span><span><b class="fp-mono">$0</b><em>Keep the first app only</em></span><span class="fp-leaks__save fp-mono">−$49/mo</span><span><span class="fp-lock"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="7" width="9" height="6.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>Growth or 3 tokens</span></span></div>
-        <div class="fp-leaks__row"><span><b>Design seat nobody has opened</b><em>Last login 47 days ago</em></span><span class="fp-mono">$45/mo</span><span><b class="fp-mono">$0</b><em>Remove the seat</em></span><span class="fp-leaks__save fp-mono">−$45/mo</span><span><span class="fp-lock"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="7" width="9" height="6.5" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>Growth or 3 tokens</span></span></div>
-        <div class="fp-leaks__total"><span>4 leaks</span><span class="fp-mono">$214/mo · $2,568 a year</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- BENTO: why sellers come back each day. -->
-  <section class="section g2" id="rewards" aria-labelledby="rewards-h">
-    <div class="wrap">
-      <div class="group">
-        <div class="section-head">
-          <h2 id="rewards-h">5 minutes a day, paid in AI tokens. <span class="muted">You spend them on advice.</span></h2>
-        </div>
-        <div class="grid">
-          <article class="card card--row card--open span-6">
-            <h3>Pays 5 to 25 AI tokens a mission</h3>
-            <p>Each finished task adds 5 to 25 tokens and some XP; a 3-day streak adds 20% more.</p>
-            <div class="panel fp-panel">
-              <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:420px;--ax:max(24px, 50% - 210px);--ay:48px;--ay-sm:24px">
-                <div class="ui ui-panel fp-toast">
-                  <span class="fp-dot fp-dot--good"></span>
-                  <div>
-                    <p class="fp-toast__title">Mission complete · Review yesterday's Amazon fees</p>
-                    <p class="fp-mini__chips"><span class="fp-chip">+12 tokens (streak +20%)</span><span class="fp-chip">+30 XP</span><span class="fp-chip">Streak: 4 days</span><span class="fp-chip fp-chip--good">Score 62.2 → 67.9</span></p>
-                  </div>
-                </div>
-              </div></div>
-            </div>
-          </article>
-          <article class="card card--row card--open span-6">
-            <h3>Adds 20% on a 3-day streak</h3>
-            <p>One mission a day keeps the streak going.</p>
-            <div class="panel fp-panel">
-              <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:260px;--ax:max(24px, 50% - 130px);--ay:48px;--ay-sm:24px">
-                <div class="ui ui-panel fp-mini">
-                  <p class="fp-mono fp-dim">Today's missions</p>
-                  <div class="fp-seg" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="next"></i></div>
-                  <p class="fp-mission">Day 4 streak</p>
-                  <p class="fp-dim fp-mono">2 of 3 done · resets at 00:00</p>
-                </div>
-              </div></div>
-            </div>
-          </article>
-        </div>
-      </div>
-      <div class="grid">
-        <article class="card card--row card--open span-4">
-          <h3>Climbs 3 Financial Levels</h3>
-          <p>From Stable to Growing to Resilient.</p>
-          <div class="panel fp-panel">
-            <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:260px;--ax:max(24px, 50% - 130px);--ay:48px;--ay-sm:24px">
-              <div class="ui ui-panel fp-mini">
-                <p class="fp-mono fp-dim">Financial level</p>
-                <p class="fp-mission">Growing</p>
-                <div class="fp-xp" aria-hidden="true"><i style="--v:.12"></i></div>
-                <p class="fp-dim fp-mono">230 / 500 XP</p>
-              </div>
-            </div></div>
-          </div>
-        </article>
-        <article class="card card--row card--open span-4">
-          <h3>Earns 4 milestone badges</h3>
-          <p>Leak Hunter, 7-Day Streak, Score 80+.</p>
-          <div class="panel fp-panel">
-            <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:260px;--ax:max(24px, 50% - 130px);--ay:48px;--ay-sm:24px">
-              <div class="ui ui-panel fp-mini">
-                <p class="fp-mono fp-dim">Badges</p>
-                <p class="fp-badges"><span class="fp-chip fp-chip--good">First Order Sync</span><span class="fp-chip fp-chip--good">Leak Hunter</span><span class="fp-chip fp-chip--off">7-Day Streak</span><span class="fp-chip fp-chip--off">Score 80+</span></p>
-              </div>
-            </div></div>
-          </div>
-        </article>
-        <article class="card card--row card--open span-4">
-          <h3>Pays up to 2× on paid plans</h3>
-          <p>Growth, Pro and Scale multiply each reward.</p>
-          <div class="panel fp-panel">
-            <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:260px;--ax:max(24px, 50% - 130px);--ay:48px;--ay-sm:24px">
-              <div class="ui ui-panel fp-mini">
-                <p class="fp-mono fp-dim">Reward multiplier</p>
-                <ul class="fp-mult"><li><span>Starter</span><b>1×</b></li><li><span>Growth</span><b>1.25×</b></li><li><span>Pro</span><b>1.5×</b></li><li><span>Scale</span><b>2×</b></li></ul>
-              </div>
-            </div></div>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- SPLIT-TEXT-LEFT: the AI Adviser, the kit's chat fragment rewritten to the client. -->
-  <section class="section" id="adviser" aria-labelledby="adviser-h">
-    <div class="wrap">
-      <div class="grid grid--top">
-        <div class="span-5 fp-split-text">
-          <h2 id="adviser-h">An AI Adviser that reads your score</h2>
-          <p class="t-lead">Ask about hiring, prices, stock or cash. Each answer quotes your own figures and ends with one step for this week.</p>
-          <ul class="fp-facts">
-            <li>A question costs <b>5 tokens</b>; missions earn them back</li>
-            <li>Starter includes <b>50 tokens</b> a month, Growth <b>500</b></li>
-            <li>Educational, not financial advice</li>
-          </ul>
-          <a class="link" href="/app/adviser">Ask the adviser in the demo</a>
-        </div>
-        <div class="frame frame--split span-6 start-7">
-          <div class="stage stage--fade-b"><div class="at-rise to-edge" style="--w:420px;--ax:max(24px, 50% - 210px);--ay:56px;--ay-sm:24px">
-            <div class="ui ui-panel ui-chat" data-ui="chat">
-              <div class="ui-head"><span class="ui-agent" aria-hidden="true"></span><div class="ui-title">FinPath Adviser</div><span class="ui-chat__online">Reads your books</span><span class="ui-spacer"></span></div>
-              <div class="ui-chat__body">
-                <div class="ui-chat__day">Today</div>
-                <div class="ui-msg ui-msg--me" data-chat-q><span class="ui-msg__text">Can I afford a part-time packer?</span></div>
-                <div class="ui-msg ui-msg--bot" data-chat-a>
-                  <span class="ui-agent ui-msg__av" aria-hidden="true"></span>
-                  <span class="ui-msg__col">
-                    <span class="ui-chat__answer">15 hours a week costs about <b>$1,104 a month</b>. Last month the shop kept <b data-fp="profit">$2,933</b>, so you would still keep about $1,800. Next step: try 8 hours for a month first.</span>
-                    <span class="ui-chat__srcs"><span class="ui-chat__src"><svg class="ui-icon" viewBox="0 0 16 16"><path d="M4 2.5h5l3 3v8H4z"/><path d="M9 2.5v3h3"/></svg>Profit bridge, 30 days</span></span>
-                  </span>
-                </div>
-              </div>
-              <div class="ui-chat__input"><span class="ui-chat__ph">Ask about your numbers</span><span class="ui-chat__send" aria-hidden="true"><svg viewBox="0 0 16 16" width="14" height="14"><path d="M8 13V3.5M3.8 7.5 8 3.3l4.2 4.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-            </div>
-          </div></div>
-        </div>
+      <div class="fp-story__card">
+        <p class="fp-story__kicker">From entrepreneurs, to entrepreneurs</p>
+        <h2 id="story-h">We built the tool we wished we'd had</h2>
+        <p class="fp-story__text">We started our own first businesses with a spreadsheet and a lot of guesswork. Fees we didn't notice, subscriptions we forgot, profit we only saw at tax time. FinPath is built around those mistakes, so your first years are calmer than ours were.</p>
+        <ul class="fp-story__points">
+          <li><b>Plain words</b><span>No accounting terms you have to look up.</span></li>
+          <li><b>Five minutes, not five hours</b><span>Small steps that fit around real work.</span></li>
+          <li><b>Your comfort first</b><span>Calm screens, one next step at a time.</span></li>
+        </ul>
+        <p class="fp-story__sign">The FinPath team · Business Cup 2.0</p>
       </div>
     </div>
   </section>
@@ -477,13 +318,7 @@
   <section class="section" id="pricing" style="--hm: 2" aria-labelledby="pricing-h">
     <div class="wrap">
       <div class="grid grid--top fp-pricing-head">
-        <h2 id="pricing-h" class="span-6">Pricing. <span class="muted">Start free; the sample store's leaks pay for any plan.</span></h2>
-        <div class="ui ui-panel fp-topbar span-6 start-7" role="img" aria-label="The demo's top bar on the free plan: demo data, 42 AI tokens, a 3-day streak and an Upgrade button">
-          <span class="fp-topbar__pill"><i></i>Demo data</span>
-          <span class="fp-topbar__chip fp-mono">42 tokens</span>
-          <span class="fp-topbar__chip fp-mono">3-day streak</span>
-          <span class="fp-topbar__plan">Starter <span class="fp-fakebtn">Upgrade</span></span>
-        </div>
+        <h2 id="pricing-h" class="span-6">Pricing. <span class="muted">Start free, upgrade when your shop grows.</span></h2>
       </div>
       <div class="grid fp-plans">
         <article class="card card--plan span-3">
@@ -491,7 +326,7 @@
           <p class="muted">For trying it out</p>
           <p class="price"><span class="t-stat">$0</span><span class="muted">/month</span></p>
           <a class="btn btn--secondary" href="/app">Try this plan</a>
-          <ul><li>Health Score, today</li><li>3 missions a day</li><li>50 AI tokens a month</li><li>Largest leak with steps</li></ul>
+          <ul><li>Sales, costs and cash in one place</li><li>3 missions a day</li><li>50 AI tokens a month</li><li>Your biggest saving, with steps</li></ul>
         </article>
         <article class="card card--plan span-3 is-featured">
           <span class="badge">Recommended</span>
@@ -499,7 +334,7 @@
           <p class="muted">For active sellers</p>
           <p class="price"><span class="t-stat">$19</span><span class="muted">/month</span></p>
           <a class="btn btn--primary" href="/app">Try this plan</a>
-          <ul><li>Every leak, with steps</li><li>5 missions a day, 1.25× rewards</li><li>500 AI tokens a month</li><li>90-day score history</li></ul>
+          <ul><li>Every saving, with steps</li><li>5 missions a day, 1.25× rewards</li><li>500 AI tokens a month</li><li>90 days of history</li></ul>
         </article>
         <article class="card card--plan span-3">
           <h3>Pro plan</h3>
@@ -525,21 +360,13 @@
       <div class="grid grid--top">
         <div class="span-5 fp-split-text">
           <h2 id="faq-h">Questions</h2>
-          <p class="muted">About the demo, your data and the tokens.</p>
-          <a class="link" href="#pricing">Compare the plans</a>
-          <div class="ui ui-panel fp-menu" role="img" aria-label="The demo controls in the account menu: advance to tomorrow, view as any plan, reset the demo">
-            <p class="fp-mono fp-dim">Demo controls</p>
-            <p class="fp-menu__item">Advance to tomorrow</p>
-            <p class="fp-menu__label">View as plan</p>
-            <p class="fp-menu__tiers"><span class="is-on">Starter</span><span>Growth</span><span>Pro</span><span>Scale</span></p>
-            <p class="fp-menu__item fp-menu__item--bad">Reset demo</p>
-          </div>
+          <p class="muted">About who it is for, your data and the demo.</p>
         </div>
         <div class="faq span-6 start-7">
+          <div class="faq__item"><h3>Who is FinPath for?</h3><p>People in their first years of running a business: online shops, marketplace sellers, market stalls. No finance background needed.</p></div>
           <div class="faq__item"><h3>Is the sample store real?</h3><p>No. The demo opens with a sample store, Emberline Candle Co., and 120 days of invented orders. Every figure is calculated from those orders.</p></div>
           <div class="faq__item"><h3>Do I connect my store?</h3><p>Not in the demo. Store connections are simulated and no real account is accessed.</p></div>
           <div class="faq__item"><h3>Does FinPath replace my accountant?</h3><p>No. FinPath shows where your money goes each day; your accountant still files your taxes. Nothing here is financial or tax advice.</p></div>
-          <div class="faq__item"><h3>What are FinPath tokens?</h3><p>Credits for the AI Adviser. A question costs 5, a detailed leak costs 3, and daily missions earn them back.</p></div>
           <div class="faq__item"><h3>Where does FinPath keep my data?</h3><p>In your browser. Only an adviser question leaves it, sent with the sample store's figures to the AI model.</p></div>
         </div>
       </div>
@@ -551,8 +378,8 @@
   <div class="wrap">
     <div class="closing__cta close--type">
       <div class="section-head">
-        <h2 id="close-h">See your score in two minutes</h2>
-        <p>Opens with a sample store. Nothing to connect, no sign-up.</p>
+        <h2 id="close-h">Spend your time on the work you love</h2>
+        <p>Try FinPath on a sample shop. Nothing to connect, no sign-up.</p>
       </div>
       <a class="btn btn--primary btn--xl btn--wide" href="/app">Try the live demo<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
     </div>
@@ -560,15 +387,15 @@
       <div class="grid">
         <div class="span-4 stack-4">
           <a class="nav__logo" href="#top"><svg class="fp-logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0b1530"/><circle cx="7" cy="23.5" r="2" fill="#fff" opacity=".45"/><circle cx="12.5" cy="19.5" r="2" fill="#fff" opacity=".65"/><circle cx="18" cy="14.5" r="2" fill="#fff" opacity=".85"/><path d="M18 14.5 24.5 7.5" stroke="#2e90fa" stroke-width="3" stroke-linecap="round"/><circle cx="24.5" cy="7.5" r="2.6" fill="#2e90fa"/></svg>FinPath</a>
-          <p class="footer__lede">Profit clarity for small sellers.</p>
+          <p class="footer__lede">Finance help for first-time entrepreneurs.</p>
         </div>
-        <div class="span-2 footer__col"><h3>Product</h3><ul><li><a href="#score">Health Score</a></li><li><a href="#how">90-day plan</a></li><li><a href="#rewards">Missions</a></li></ul></div>
-        <div class="span-2 footer__col"><h3>Leaks</h3><ul><li><a href="#leaks">Leak Detector</a></li><li><a href="#costs">Profit bridge</a></li></ul></div>
-        <div class="span-2 footer__col"><h3>Adviser</h3><ul><li><a href="#adviser">AI Adviser</a></li><li><a href="#proof">Live order sync</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Product</h3><ul><li><a href="#before">How it works</a></li><li><a href="#features">Features</a></li><li><a href="#connects">Integrations</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Company</h3><ul><li><a href="#story">Our story</a></li><li><a href="https://github.com/sudoapt-update/Business-Avengers" target="_blank" rel="noopener noreferrer">GitHub</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Try it</h3><ul><li><a href="/app">Live demo</a></li></ul></div>
         <div class="span-2 footer__col"><h3>Pricing</h3><ul><li><a href="#pricing">Plans</a></li><li><a href="#faq">Questions</a></li></ul></div>
       </div>
       <div class="footer__legal">
-        <span>&copy; 2026 FinPath &nbsp; Business Cup 2.0 demo with sample data, not financial or tax advice</span>
+        <span>&copy; 2026 FinPath &nbsp; Business Cup 2.0 demo with sample data, not financial or tax advice. Product names and logos are trademarks of their owners.</span>
         <div class="socials"><a href="https://github.com/sudoapt-update/Business-Avengers" target="_blank" rel="noopener noreferrer" aria-label="FinPath on GitHub (opens in a new tab)" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a></div>
       </div>
     </div>
@@ -579,5 +406,36 @@
 <script type="module" src="/assets/motion/motion.js"></script>
 <script type="module" src="/assets/layout/layout.js"></script>
 <script type="module" src="/landing/proof.js"></script>
+<script>
+(() => {
+  const root = document.getElementById('features'); if (!root) return;
+  const tabs = [...root.querySelectorAll('.fp-tab')], panels = [...root.querySelectorAll('.fp-tp')];
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const EVERY = 6000; let active = 0, timer = 0, busy = false;
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  async function show(i, focus) {
+    if (busy || i === active) return; busy = true;
+    tabs.forEach((t, k) => { t.setAttribute('aria-selected', k === i); t.tabIndex = k === i ? 0 : -1; });
+    if (focus) tabs[i].focus();
+    const out = panels[active]; active = i;
+    if (!still) { out.classList.add('is-out'); await wait(220); }
+    out.hidden = true; out.classList.remove('is-out');
+    const inn = panels[i]; inn.classList.add('is-pre'); inn.hidden = false;
+    requestAnimationFrame(() => requestAnimationFrame(() => inn.classList.remove('is-pre')));
+    busy = false;
+  }
+  const play = () => { stop(); if (still) return; root.classList.add('is-playing'); timer = setInterval(() => show((active + 1) % tabs.length), EVERY); };
+  const stop = () => { clearInterval(timer); root.classList.remove('is-playing'); };
+  tabs.forEach((t, k) => t.addEventListener('click', () => { show(k); play(); }));
+  root.querySelector('.fp-tabs').addEventListener('keydown', e => {
+    const d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key]; if (!d) return;
+    e.preventDefault(); show((active + d + tabs.length) % tabs.length, true);
+  });
+  root.addEventListener('mouseenter', stop); root.addEventListener('mouseleave', play);
+  root.addEventListener('focusin', stop);
+  // only run while on screen
+  new IntersectionObserver(([e]) => e.isIntersecting ? play() : stop(), { threshold: .35 }).observe(root);
+})();
+</script>
 </body>
 </html>
